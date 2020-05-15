@@ -21,7 +21,7 @@ jobs:
           PYTHON: python
       - name: Enforce code format
         run: |
-          git rev-parse hello.txt
+          git rev-parse HEAD > commit_hash.txt
           git add .
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
