@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Update hello.txt
+      - name: Format code
         run: |
-          git config user.email "taichigardener@gmail.com"
-          git config user.name "Taichi Gardener"
           git rev-parse HEAD > hello.txt
           git add hello.txt
-          git commit -m "Update hello.txt"
-          git push
+      - name: Push commit
+        uses: taichi-dev/gardener@v0.0.1
+        with:
+          args: "[skip ci] enforce code format"
