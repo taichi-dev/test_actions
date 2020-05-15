@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: |
+      - name: Update hello.txt
+        run: |
           git rev-parse HEAD > hello.txt
           git add hello.txt
-          git commit "Update hello.txt"
+          git commit -m "Update hello.txt"
           git push
     env:
       GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
