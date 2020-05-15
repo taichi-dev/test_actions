@@ -9,12 +9,21 @@ jobs:
     name: Update Commit Hash ID
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Format code
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Build Taichi
         run: |
-          git rev-parse HEAD > hello.txt
-          git add hello.txt
-      - name: Push commit
-        uses: taichi-dev/gardener@master
+          echo CC=$CC CXX=$CXX PYTHON_VERSION=$PYTHON_VERSION PYTHON=$PYTHON
+        env:
+          CC: clang
+          CXX: clang++
+          PYTHON_VERSION: 3.8.1
+          PYTHON: python
+      - name: Enforce code format
+        uses: taichi-dev/gardener@v0.0.2
         with:
-          args: "[skip ci] enforce code format"
+          args:
+            - "[skip ci] enforce code format"
+            - |
+              git rev-parse HEAD > commit_hash.txt
+              git add .
