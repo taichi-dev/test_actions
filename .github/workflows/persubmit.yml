@@ -1,0 +1,19 @@
+name: Taichi Per-submit Check
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update_commit_id:
+    name: Update hello.txt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git rev-parse HEAD > hello.txt
+	  git add hello.txt
+	  git commit "Update hello.txt"
+	  git push
+    env:
+      GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
