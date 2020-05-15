@@ -15,6 +15,6 @@ jobs:
           git rev-parse HEAD > hello.txt
           git add hello.txt
       - name: Push commit
-        uses: taichi-dev/gardener@v0.0.1
+        uses: taichi-dev/gardener@master
         with:
           args: "[skip ci] enforce code format"
