@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          git rev-parse HEAD > hello.txt
-	  git add hello.txt
-	  git commit "Update hello.txt"
-	  git push
+        git rev-parse HEAD > hello.txt
+        git add hello.txt
+        git commit "Update hello.txt"
+        git push
     env:
       GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
