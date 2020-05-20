@@ -2,7 +2,7 @@ name: Auto Comment
 on: [pull_request]
 
 jobs:
-  example:
+  comment:
     runs-on: ubuntu-latest
     steps:
       - name: Create comment
@@ -11,7 +11,7 @@ jobs:
         with:
           type: create
           body: "- [ ] Run tests"
-          issue_number: ${{ github.event.pull_request.id }}
+          issue_number: ${{ github.event.pull_request.number }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update comment
