@@ -4,6 +4,18 @@ on:
     types: [created, edited]
 
 jobs:
+  comment:
+    name: Update comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update comment
+        uses: jungwinter/comment@v1
+        with:
+          type: edit
+          body: ${{ github.event.comment.body + "\n- [ ] Run tests" }}
+          issue_number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   rebase:
     name: Rebase
     runs-on: ubuntu-latest
