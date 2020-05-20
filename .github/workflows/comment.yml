@@ -12,7 +12,7 @@ jobs:
         uses: jungwinter/comment@v1
         with:
           type: edit
-          body: ${{ github.event.comment.body + "\n- [ ] Run tests" }}
+          body: ${{ github.event.comment.body }}"\n- [ ] Run tests"
           issue_number: ${{ github.event.pull_request.number }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
