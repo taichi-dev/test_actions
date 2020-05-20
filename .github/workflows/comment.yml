@@ -4,20 +4,7 @@ on:
     types: [created, edited]
 
 jobs:
-  comment:
-    name: Update comment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update comment
-        uses: jungwinter/comment@v1
-        with:
-          type: edit
-          body: ${{ github.event.comment.body }}"\n- [ ] Run tests"
-          comment_id: ${{ github.event.comment.id }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   rebase:
-    name: Rebase
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase')
     steps:
@@ -28,8 +15,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  revert_commit:
-    name: Revert commit
+  revert:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/revert')
     steps:
@@ -37,3 +23,12 @@ jobs:
       - uses: srt32/revert@v0.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  format:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/format')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Trigger Format Server
+        run: |
+          echo curl http://kun.csail.mit.edu:31415/${{ github.event.pull_request.number }} -LO || :
