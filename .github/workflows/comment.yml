@@ -13,7 +13,7 @@ jobs:
         with:
           type: edit
           body: ${{ github.event.comment.body }}"\n- [ ] Run tests"
-          issue_number: ${{ github.event.pull_request.number }}
+          comment_id: ${{ github.event.comment.id }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
   rebase:
