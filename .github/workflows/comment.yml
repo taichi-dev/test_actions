@@ -20,6 +20,8 @@ jobs:
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/revert')
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: srt32/revert@v0.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/format')
     steps:
-      - uses: actions/checkout@v2
       - name: Trigger Format Server
         run: |
           echo curl http://kun.csail.mit.edu:31415/${{ github.event.pull_request.number }} -LO || :
