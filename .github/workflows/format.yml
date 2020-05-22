@@ -1,0 +1,13 @@
+name: Review Requested Hooks
+on:
+  pull_request:
+    types: [push, review_requested]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.pull_request.requested_reviewers, 'taichi-gardener') }}
+    steps:
+      - name: Trigger Format Server
+        run: |
+          echo curl http://kun.csail.mit.edu:31415/${{ github.event.pull_request.number }} -LO || :
