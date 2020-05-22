@@ -10,6 +10,6 @@ jobs:
     steps:
       - name: Trigger Format Server
         run: |
-          echo ${{ github.event.pull_request.review_requested.reviewer }}
-          echo ${{ github.event.pull_request.reviewers }}
+          echo ${{ github.event.pull_request.requested_reviewers }}
+          echo ${{ contains(github.event.pull_request.requested_reviewers, 'taichi-gardener') }}
           echo curl http://kun.csail.mit.edu:31415/${{ github.event.pull_request.number }} -LO || :
