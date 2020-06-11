@@ -1,4 +1,7 @@
-title = __import__('sys').argv[1]
+import sys
+
+title = sys.argv[1]
+print(f'Checking PR title: {title}')
 
 prtags = []
 with open('prtags.txt') as f:
@@ -12,6 +15,12 @@ with open('prtags.txt') as f:
 if not title.startswith('['):
     raise Exception(f'PR tltle does not starts with any tag: {title}')
 
+if title.endswith(' '):
+    raise Exception(f'PR tltle should not ends with a space: {title}')
+
+if '`' in title:
+    raise Exception(f'PR tltle should not contain backquotes (`): {title}')
+
 for x in title.split(']')[1:]:
     if x[0] != ' ':
         raise Exception(f'No space before: {x}')
@@ -20,10 +29,12 @@ for x in title.split(']')[1:]:
 
 x = title.split(']')[-1].strip()
 if x[0].islower():
-    raise Exception(f'PR title content should be uppercase at: {x}')
+    raise Exception(f'PR title should be uppercase at: {x}')
 
 for x in title.split('] ')[:-1]:
     if x[0] != '[':
         raise Exception(f'No starting [ for tag: {x}]')
     if x[1:].lower() not in prtags:
         raise Exception(f'Unrecognized PR tag: [{x[1:]}]')
+
+print('OK!')
