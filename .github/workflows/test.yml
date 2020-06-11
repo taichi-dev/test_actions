@@ -1,0 +1,14 @@
+name: Test Action
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check_title:
+    name: Check PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo $GITHUB_EVENT_JSON
+        env:
+          GITHUB_EVENT_JSON: ${{ toJSON(github.event) }}
