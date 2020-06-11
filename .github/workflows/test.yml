@@ -1,14 +1,15 @@
 name: Test Action
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, editied, synchronize, reopened]
 
 jobs:
   check_title:
     name: Check PR Title
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: |
-          echo $GITHUB_EVENT_JSON
+          python check_pr_title.py $PR_TITLE
         env:
-          GITHUB_EVENT_JSON: ${{ toJSON(github.event) }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
