@@ -27,5 +27,3 @@ for x in title.split('] ')[:-1]:
         raise Exception(f'No starting [ for tag: {x}]')
     if x[1:].lower() not in prtags:
         raise Exception(f'Unrecognized PR tag: [{x[1:]}]')
-
-exit(1)
