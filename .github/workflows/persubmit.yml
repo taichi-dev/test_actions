@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: |
-          FOR /F "tokens=* USEBACKQ" %F IN (`cd`) DO (set TAICHI_REPO_DIR=%F)
+          FOR /F "tokens=* USEBACKQ" %%F IN (`cd`) DO (set TAICHI_REPO_DIR=%%F)
           echo %TAICHI_REPO_DIR%
           set PATH=%TAICHI_REPO_DIR%\bin;%PATH%
           echo %PATH%
