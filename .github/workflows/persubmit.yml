@@ -9,9 +9,9 @@ jobs:
     name: Build and Test (Windows GPU)
     runs-on: [self-hosted, Windows]
     steps:
-      - name: Show CD
+      - name: Clean Up the Previous Run
         run: |
-          cd
+          del /S .
         shell: cmd
       - uses: actions/checkout@v2
       - name: Build and Test
