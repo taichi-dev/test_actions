@@ -10,7 +10,7 @@ jobs:
     runs-on: [self-hosted, Windows]
     steps:
       - uses: actions/checkout@v2
-      - name: Build
+      - name: Build and Test
         run: |
           FOR /F "tokens=* USEBACKQ" %%F IN (`cd`) DO (set TAICHI_REPO_DIR=%%F)
           echo %TAICHI_REPO_DIR%
@@ -20,6 +20,7 @@ jobs:
           mkdir build
           cd build
           cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE=python -DLLVM_DIR="C:\LLVM\taichi-llvm-10.0.0-msvc2019\lib\cmake\llvm" -DTI_WITH_CUDA=ON -DTI_WITH_OPENGL=OFF -DTI_WITH_CC=OFF
+          msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
         shell: cmd
       # - name: Test
       #   run: |
