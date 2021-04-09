@@ -14,8 +14,10 @@ jobs:
         run: |
           FOR /F "tokens=* USEBACKQ" %%F IN (`cd`) DO (set TAICHI_REPO_DIR=%%F)
           echo %TAICHI_REPO_DIR%
+          git submodule update --init --recursive
           set PATH=%TAICHI_REPO_DIR%\bin;%PATH%
           echo %PATH%
+          set PYTHONPATH=%TAICHI_REPO_DIR%/python
           clang --version
           mkdir build
           cd build
