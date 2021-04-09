@@ -12,12 +12,15 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: |
-          cd
+          FOR /F "tokens=* USEBACKQ" %F IN (`cd`) DO (set TAICHI_REPO_DIR=%F)
+          echo %TAICHI_REPO_DIR%
+          set PATH=%TAICHI_REPO_DIR%\bin;%PATH%
           echo %PATH%
-          where msbuild
+          clang --version
+          mkdir build
+          cd build
+          cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE=python -DLLVM_DIR="C:\LLVM\taichi-llvm-10.0.0-msvc2019\lib\cmake\llvm" -DTI_WITH_CUDA=ON -DTI_WITH_OPENGL=OFF -DTI_WITH_CC=OFF
         shell: cmd
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_CUDA:BOOL=ON -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=OFF
       # - name: Test
       #   run: |
       #     set TAICHI_REPO_DIR=C:\taichi
