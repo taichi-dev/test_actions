@@ -9,20 +9,28 @@ jobs:
     name: Build and Test (Windows GPU)
     runs-on: [self-hosted, Windows]
     steps:
+      - name: Show CD
+        run: |
+          cd
+        shell: cmd
       - uses: actions/checkout@v2
       - name: Build and Test
         run: |
           FOR /F "tokens=* USEBACKQ" %%F IN (`cd`) DO (set TAICHI_REPO_DIR=%%F)
           echo %TAICHI_REPO_DIR%
-          git submodule update --init --recursive
           set PATH=%TAICHI_REPO_DIR%\bin;%PATH%
           echo %PATH%
           set PYTHONPATH=%TAICHI_REPO_DIR%/python
           clang --version
+          python misc/ci_setup.py ci"
           mkdir build
           cd build
           cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE=python -DLLVM_DIR="C:\LLVM\taichi-llvm-10.0.0-msvc2019\lib\cmake\llvm" -DTI_WITH_CUDA=ON -DTI_WITH_OPENGL=OFF -DTI_WITH_CC=OFF
           msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
+          cd ..
+          python -c "import taichi"
+          python examples/laplace.py
+          python bin/taichi diagnose
         shell: cmd
       # - name: Test
       #   run: |
