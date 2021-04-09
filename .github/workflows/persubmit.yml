@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Clean Up the Previous Run
         run: |
-          del /S .
+          del /S /q .
         shell: cmd
       - uses: actions/checkout@v2
       - name: Build and Test
@@ -30,7 +30,7 @@ jobs:
           cd ..
           python -c "import taichi"
           python examples/laplace.py
-          python bin/taichi diagnose
+          python python/taichi/main.py diagnose
         shell: cmd
       # - name: Test
       #   run: |
