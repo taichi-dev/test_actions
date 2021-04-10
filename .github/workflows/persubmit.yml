@@ -18,20 +18,22 @@ jobs:
         run: |
           FOR /F "tokens=* USEBACKQ" %%F IN (`cd`) DO (set TAICHI_REPO_DIR=%%F)
           echo %TAICHI_REPO_DIR%
+          set PYTHONPATH=%TAICHI_REPO_DIR%/python
           set PATH=%TAICHI_REPO_DIR%\bin;%PATH%
           echo %PATH%
-          set PYTHONPATH=%TAICHI_REPO_DIR%/python
           clang --version
-          python misc/ci_setup.py ci"
+          %PYTHON% misc/ci_setup.py ci
           mkdir build
           cd build
-          cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE=python -DLLVM_DIR="C:\LLVM\taichi-llvm-10.0.0-msvc2019\lib\cmake\llvm" -DTI_WITH_CUDA=ON -DTI_WITH_OPENGL=OFF -DTI_WITH_CC=OFF
+          cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE=%PYTHON% -DLLVM_DIR="C:\LLVM\taichi-llvm-10.0.0-msvc2019\lib\cmake\llvm" -DTI_WITH_CUDA=ON -DTI_WITH_OPENGL=OFF -DTI_WITH_CC=OFF
           msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
           cd ..
-          python -c "import taichi"
-          python examples/laplace.py
-          python python/taichi/main.py diagnose
+          %PYTHON% -c "import taichi"
+          %PYTHON% examples/laplace.py
+          %PYTHON% bin/ti test -t2
         shell: cmd
+        env:
+          PYTHON: C:\Python\Python38\python.exe
       # - name: Test
       #   run: |
       #     set TAICHI_REPO_DIR=C:\taichi
