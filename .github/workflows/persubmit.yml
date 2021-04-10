@@ -30,7 +30,7 @@ jobs:
           cd ..
           %PYTHON% -c "import taichi"
           %PYTHON% examples/laplace.py
-          %PYTHON% bin/ti test -t1 -v
+          %PYTHON% bin/ti test -t2 -vr2
         shell: cmd
         env:
           PYTHON: C:\Python\Python38\python.exe
