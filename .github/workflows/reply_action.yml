@@ -5,9 +5,10 @@ on:
 
 jobs:
   check_comments:
-    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, 'do something now')
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/test')
     runs-on: ubuntu-latest
     steps:
       name: Dump Github Context
-      env: GITHUB_CONTEXT: ${{ toJson(github) }}
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT"
