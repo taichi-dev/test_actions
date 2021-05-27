@@ -8,8 +8,8 @@ jobs:
     name: Code Format
     runs-on: ubuntu-latest
     # This job will be required to pass before merging to master branch.
-    steps:
       - uses: actions/checkout@v2
+  steps:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
