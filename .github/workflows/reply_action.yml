@@ -3,6 +3,7 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
+# Create actions according to user's comments
 jobs:
   check_comments:
     runs-on: ubuntu-latest
