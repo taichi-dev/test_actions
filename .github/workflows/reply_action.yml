@@ -1,0 +1,13 @@
+name: PR reply actions
+on:
+  issue_comment:
+    types: [created, edited, deleted]
+
+jobs:
+  check_comments:
+    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, 'do something now')
+    runs-on: ubuntu-latest
+    steps:
+      name: Dump Github Context
+      env: GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
