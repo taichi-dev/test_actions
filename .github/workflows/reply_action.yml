@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
-# 
+# AAA
 jobs:
   check_comments:
     runs-on: ubuntu-latest
@@ -16,5 +16,11 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - name: Run
-        run: 'echo Found it'
+      - name: skip tests
+        if: steps.check.outputs.triggered == 'false'
+        uses: andymckay/cancel-action@0.2
+  random_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: rd_step
+        run: 'echo hahaha'
