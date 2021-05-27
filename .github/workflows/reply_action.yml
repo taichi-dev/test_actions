@@ -8,7 +8,7 @@ jobs:
     if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/test')
     runs-on: ubuntu-latest
     steps:
-      name: Dump Github Context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
+      - name: Dump Github Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
