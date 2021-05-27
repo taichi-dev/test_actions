@@ -1,0 +1,15 @@
+name: PR reply actions
+on:
+  issue_comment:
+    types: [created, edited, deleted]
+
+jobs:
+  check_comments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Request Comment Trigger
+        uses: Khan/pull-request-comment-trigger@1.0.0
+        id: check
+        with:
+          trigger: '#test'
+          reaction: rocket
