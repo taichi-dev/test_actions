@@ -5,10 +5,11 @@ on:
 
 jobs:
   check_comments:
-    if: contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/test')
     runs-on: ubuntu-latest
     steps:
-      - name: Dump Github Context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+      - name: Pull Request Comment Trigger
+        uses: Khan/pull-request-comment-trigger@1.0.0
+        id: check
+        with:
+          trigger: '#test'
+          reaction: rocket
