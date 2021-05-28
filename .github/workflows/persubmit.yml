@@ -3,6 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Where does this run?
 jobs:
   code_format:
     name: Code Format
