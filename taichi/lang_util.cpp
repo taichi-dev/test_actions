@@ -18,7 +18,7 @@ std::string runtime_tmp_dir;
 
 real get_cpu_frequency() {
   static real cpu_frequency = 0;
-  if (cpu_frequency == 0) {
+  if (cpu_frequency                                                           == 0) {
     uint64 cycles = Time::get_cycles();
     Time::sleep(1);
     uint64 elapsed_cycles = Time::get_cycles() - cycles;

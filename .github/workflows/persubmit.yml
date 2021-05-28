@@ -37,5 +37,7 @@ jobs:
         uses: mritunjaysharma394/autoyapf@v2
         with:
           args: --style pep8 --recursive --in-place .
+      - name: auto clang format
+        uses: SKIRT/auto-format@master
       - name: Prettify
         uses: creyD/prettier_action@v3.3
