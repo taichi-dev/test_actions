@@ -3,10 +3,8 @@ const github = require("@actions/github");
 
 async function run() {
   try {
-    const [
-      gitHubRepoOwner,
-      gitHubRepoName
-    ] = process.env.GITHUB_REPOSITORY.split("/");
+    const [gitHubRepoOwner, gitHubRepoName] =
+      process.env.GITHUB_REPOSITORY.split("/");
     const gitHubSha = process.env.GITHUB_SHA;
     const gitHubToken = core.getInput("github-token");
 
@@ -21,8 +19,8 @@ async function run() {
       conclusion: "success",
       output: {
         title: "Check Created by API",
-        summary: `# All good ![step 1](https://www.imore.com/sites/imore.com/files/styles/w1600h900crop/public/field/image/2019/07/pokemonswordshieldstartertrio.jpg "Step 1")`
-      }
+        summary: `# All good ![step 1](https://www.imore.com/sites/imore.com/files/styles/w1600h900crop/public/field/image/2019/07/pokemonswordshieldstartertrio.jpg "Step 1")`,
+      },
     });
 
     core.setOutput("time", new Date().toTimeString());
