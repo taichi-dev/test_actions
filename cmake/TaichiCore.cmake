@@ -1,9 +1,9 @@
-# option(USE_STDCPP "Use -stdlib=libc++" OFF)
-# option(TI_WITH_CUDA "Build with the CUDA backend" ON)
-# option(TI_WITH_OPENGL "Build with the OpenGL backend" ON)
-# option(TI_WITH_CC "Build with the C backend" ON)
+option(USE_STDCPP "Use -stdlib=libc++" OFF)
+option(TI_WITH_CUDA "Build with the CUDA backend" ON)
+option(TI_WITH_OPENGL "Build with the OpenGL backend" ON)
+option(TI_WITH_CC "Build with the C backend" ON)
 
-#if (APPLE)
+if (APPLE)
     if (TI_WITH_CUDA)
         set(TI_WITH_CUDA OFF)
         message(WARNING "CUDA backend not supported on OS X. Setting TI_WITH_CUDA to OFF.")
@@ -30,7 +30,7 @@ if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/glad/src/glad.c")
     message(WARNING "external/glad submodule not detected. Settings TI_WITH_OPENGL to OFF.")
 endif()
 
-# file(GLOB TAICHI_CORE_SOURCE
+file(GLOB TAICHI_CORE_SOURCE
         "taichi/*/*/*/*.cpp" "taichi/*/*/*.cpp" "taichi/*/*.cpp" "taichi/*.cpp"
         "taichi/*/*/*/*.h" "taichi/*/*/*.h" "taichi/*/*.h" "taichi/*.h" "tests/cpp/*.cpp")
 
