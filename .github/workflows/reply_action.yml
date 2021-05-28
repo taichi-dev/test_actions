@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
-# AAABBB
+# AAABBBCCC
 jobs:
   check_comments:
     runs-on: ubuntu-latest
@@ -20,9 +20,47 @@ jobs:
         if: steps.check.outputs.triggered == 'false'
         uses: andymckay/cancel-action@0.2
   
-  random_job:
-    runs-on: ubuntu-latest
+  build_and_test_cpu_required:
+    # This job will be required to pass before merging to master branch.
+    name: Required Build and Test (CPU)
     needs: check_comments
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: 3.6
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: rd_step
-        run: 'echo hahaha'
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Download Pre-Built LLVM 10.0.0
+        run: |
+          python misc/ci_download.py
+          mkdir taichi-llvm
+          cd taichi-llvm
+          unzip ../taichi-llvm.zip
+        env:
+          CI_PLATFORM: ${{ matrix.os }}
+
+      - name: Build
+        run: |
+          export TAICHI_REPO_DIR=`pwd`
+          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+          export CXX=clang++
+          python misc/ci_setup.py ci
+        env:
+          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON
+
+      - name: Test
+        run: |
+          export TAICHI_REPO_DIR=`pwd`
+          export PATH=$TAICHI_REPO_DIR/bin:$PATH
+          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+          export PYTHONPATH=$TAICHI_REPO_DIR/python
+          python examples/laplace.py
+          ti diagnose
+          ./build/taichi_cpp_tests
+          ti test -vr2 -t2
