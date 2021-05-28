@@ -22,10 +22,13 @@ jobs:
         run: | 
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
-      - name: Push changes of code format
-        uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Commit changes
+        run: |
+          git config --local user.email "taichigardener@gmail.com"
+          git config --local user.name "Taichi Gardener"
+          git commit -m "Auto Code Format"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          commit_message: Auto code format
-          commit_user_name: leonz5288
-          commit_user_email: leonz5288@hotmail.com
-          commit_author: leonz5288 <leonz5288@hotmail.com>
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.pull_request.ref }}
