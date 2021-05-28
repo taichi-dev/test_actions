@@ -1,5 +1,6 @@
 import taichi as ti
 import taichi_glsl as tl
+
 ti.init(arch=[ti.cuda, ti.metal])
 
 dim = 3

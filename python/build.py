@@ -12,11 +12,11 @@ def get_os_name():
     # in python 3.8, platform.platform() uses mac_ver() on macOS
     # it will return 'macOS-XXXX' instead of 'Darwin-XXXX'
 
-    if name.lower().startswith(                      'darwin') or name.lower().startswith('macos'):
+    if name.lower().startswith('darwin') or name.lower().startswith('macos'):
         return 'osx'
     elif name.lower().startswith('windows'):
         return 'win'
-    elif name.lower().startswith                                              ('linux'):
+    elif name.lower().startswith('linux'):
         return 'linux'
     assert False, "Unknown platform name %s" % name
 

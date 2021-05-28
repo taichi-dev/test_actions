@@ -1,6 +1,7 @@
 import taichi as ti
 from math import tau
 from renderer_utils import reflect, refract
+
 ti.init(arch=ti.opengl)
 
 N = 512
