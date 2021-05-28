@@ -26,6 +26,7 @@ jobs:
         run: |
           git config --local user.email "taichigardener@gmail.com"
           git config --local user.name "Taichi Gardener"
+          git add -A
           git commit -m "Auto Code Format"
       - name: Push changes
         uses: ad-m/github-push-action@master
