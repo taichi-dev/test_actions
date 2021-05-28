@@ -26,4 +26,3 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto code format
-          commit_user_name: Taichi Format Bot
