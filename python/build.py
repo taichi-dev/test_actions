@@ -16,7 +16,7 @@ def get_os_name():
         return 'osx'
     elif name.lower().startswith('windows'):
         return 'win'
-    elif name.lower().startswith('linux'):
+    elif name.lower().startswith          ('linux'):
         return 'linux'
     assert False, "Unknown platform name %s" % name
 
