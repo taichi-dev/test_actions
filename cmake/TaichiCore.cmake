@@ -3,7 +3,7 @@ option(TI_WITH_CUDA "Build with the CUDA backend" ON)
 option(TI_WITH_OPENGL "Build with the OpenGL backend" ON)
 option(TI_WITH_CC "Build with the C backend" ON)
 
-if (APPLE)
+#if (APPLE)
     if (TI_WITH_CUDA)
         set(TI_WITH_CUDA OFF)
         message(WARNING "CUDA backend not supported on OS X. Setting TI_WITH_CUDA to OFF.")
