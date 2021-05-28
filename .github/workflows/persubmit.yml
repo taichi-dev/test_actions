@@ -17,6 +17,8 @@ jobs:
           python-version: 3.8
       - name: Check code format
         run: 
+          git fetch https://github.com/taichi-dev/taichi.git refs/heads/master
+          git reset FETCH_HEAD
           python3 -m pip install --user yapf gitpython colorama
           python3 python/taichi/code_format.py
       - name: Push changes of code format
