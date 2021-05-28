@@ -2,6 +2,7 @@
 # Author: archibate <1931127624@qq.com>, all left reserved
 import taichi as ti
 import taichi_glsl as tl
+
 ti.init()
 if not hasattr(ti, 'jkl'):
     ti.jkl = ti.indices(1, 2, 3)
