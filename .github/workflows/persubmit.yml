@@ -11,13 +11,15 @@ jobs:
     # This job will be required to pass before merging to master branch.
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: $ {{ github.event.pull_request.head.ref }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
       - name: Check code format
         run: | 
-          python3 -m pip install yapf gitpython colorama
+          python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
       - name: Push changes of code format
         uses: stefanzweifel/git-auto-commit-action@v4
