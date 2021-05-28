@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Check code format
-        run: 
+        run: | 
           git fetch https://github.com/taichi-dev/taichi.git refs/heads/master
           git reset FETCH_HEAD
           python3 -m pip install yapf gitpython colorama
