@@ -3,7 +3,7 @@ on:
   issue_comment:
     types: [created, edited, deleted]
 
-# AAABBBCCC
+# AAABBBCCCDDD
 jobs:
   check_comments:
     runs-on: ubuntu-latest
@@ -31,7 +31,24 @@ jobs:
             python: 3.6
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Github API Request
+        id: request
+        uses: octokit/request-action@v2.0.0
+        with:
+          route: ${{ github.event.issue.pull_request.url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get PR info
+        id: pr_data
+        run: |
+          echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_data.outputs.branch }}
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
