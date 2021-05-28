@@ -9,9 +9,30 @@ jobs:
     name: Code Format
     runs-on: ubuntu-latest
     # This job will be required to pass before merging to master branch.
+    steps:
       - uses: actions/checkout@v2
-  steps:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      - name: Check code format
+        run: |
+          python3 -m pip install yapf gitpython colorama isort
+          python3 python/taichi/code_format.py
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Auto Code Format
+          commit_user_name: Taichi Gardener
+          commit_user_email: taichigardener@gmail.com
+          commit_author: taichigardener <taichigardener@gmail.com>
+          # - name: Commit changes
+          #run: |
+          #git config --local user.email "taichigardener@gmail.com"
+          #git config --local user.name "Taichi Gardener"
+          #git add -A
+          #git commit -m "Auto Code Format"
+          #- name: Push changes
+          #uses: ad-m/github-push-action@master
+          #with:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #branch: ${{ steps.pr_data.outputs.branch }}

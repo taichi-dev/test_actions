@@ -1,7 +1,7 @@
 name: Taichi Gardener
 on:
   pull_request:
-    types: [review_requested, synchronize]
+    types: [review_requested]
 
 jobs:
   format:
