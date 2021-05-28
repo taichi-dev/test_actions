@@ -19,7 +19,7 @@ jobs:
         run: 
           git fetch https://github.com/taichi-dev/taichi.git refs/heads/master
           git reset FETCH_HEAD
-          python3 -m pip install --user yapf gitpython colorama
+          python3 -m pip install yapf gitpython colorama
           python3 python/taichi/code_format.py
       - name: Push changes of code format
         uses: stefanzweifel/git-auto-commit-action@v4
