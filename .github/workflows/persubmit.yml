@@ -85,12 +85,12 @@ jobs:
           # git status
           # git push
 
-      - name: Prettify
-        uses: creyD/prettier_action@v3.3
-        with:
-          prettier_options: --write **/*.{js,md}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Prettify
+      #   uses: creyD/prettier_action@v3.3
+      #   with:
+      #     prettier_options: --write **/*.{js,md}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       # - name: Push Changes
       #   uses: ad-m/github-push-action@master
@@ -98,11 +98,11 @@ jobs:
       #     github_token: ${{ secrets.AUTOFORMAT }}
       #     branch: ${{ steps.pr_data.outputs.branch }}
 
-      # - name: Push changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.AUTOFORMAT }}
-      #     branch: ${{ steps.pr_data.outputs.branch }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.AUTOFORMAT }}
+          branch: ${{ steps.pr_data.outputs.branch }}
 
       # - uses: stefanzweifel/git-auto-commit-action@v4
       #   with:
