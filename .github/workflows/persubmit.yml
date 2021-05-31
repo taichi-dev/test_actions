@@ -38,6 +38,8 @@ jobs:
         run: |
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
           git reset FETCH_HEAD
+          echo "1"
+          git branch -v
           git add .
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
@@ -47,6 +49,8 @@ jobs:
           git reset FETCH_HEAD
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
+          echo "2"
+          git branch -v
           git add .
           git commit -m "auto code format"
           git status
