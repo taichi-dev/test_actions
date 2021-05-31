@@ -39,6 +39,7 @@ jobs:
           echo "-1"
           git branch -v
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
+          git fetch https://github.com/taichi-dev/test_actions.git format
           echo "0"
           git branch -v
           git checkout -b _tmp_format
