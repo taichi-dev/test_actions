@@ -36,7 +36,11 @@ jobs:
           python-version: 3.8
       - name: Check code format
         run: |
+          echo "-1"
+          git branch -v
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
+          echo "0"
+          git branch -v
           git checkout -b _tmp_format
           git checkout ${{ steps.pr_data.outputs.branch }}
           git reset FETCH_HEAD
