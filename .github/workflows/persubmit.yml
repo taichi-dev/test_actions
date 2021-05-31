@@ -51,6 +51,7 @@ jobs:
           git commit -m "auto code format"
           git status
           git branch -v
+          echo "${{ steps.pr_data.outputs.branch }}"
       - name: clone branch of PR
         uses: actions/checkout@v2
         with:
