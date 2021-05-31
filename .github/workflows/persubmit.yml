@@ -85,7 +85,7 @@ jobs:
       - name: Push Changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: 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
+          github_token: ${{ secrets.AUTOFORMAT }}
           branch: ${{ steps.pr_data.outputs.branch }}
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
