@@ -20,12 +20,15 @@ jobs:
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
           git reset FETCH_HEAD
           git add .
+          git config user.email "taichigardener@gmail.com"
+          git config user.name "Taichi Gardener"
           git commit -m "fake squash commit" || true
           git checkout -b _last_squash
           git checkout -b _enforced_format
           git reset FETCH_HEAD
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
+          git status
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto Code Format
