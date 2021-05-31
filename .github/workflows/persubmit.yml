@@ -90,13 +90,11 @@ jobs:
       #     github_token: ${{ secrets.AUTOFORMAT }}
       #     branch: ${{ steps.pr_data.outputs.branch }}
 
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          push: true
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.AUTOFORMAT }}
+          github_token: ${{ secrets.AUTOFORMAT }}
+          branch: ${{ steps.pr_data.outputs.branch }}
 
       # - uses: stefanzweifel/git-auto-commit-action@v4
       #   with:
