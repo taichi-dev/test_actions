@@ -50,7 +50,6 @@ jobs:
           git config user.name "Taichi Gardener"
           git commit -m "auto format code" || true
           git merge FETCH_HEAD
-          echo "${{ secrets.AUTOFORMAT }}"
 
           # echo "-1"
           # git branch -v
