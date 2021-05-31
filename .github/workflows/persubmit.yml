@@ -37,6 +37,8 @@ jobs:
       - name: Check code format
         run: |
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
+          git checkout -b _tmp_format
+          git checkout ${{ steps.pr_data.outputs.branch }}
           git reset FETCH_HEAD
           echo "1"
           git branch -v
@@ -55,10 +57,9 @@ jobs:
           git commit -m "auto code format"
           git status
           git checkout ${{ steps.pr_data.outputs.branch }}
-          git push
           git status
           git branch -v
-          git merge _enforced_format -m "auto code format"
+          git merge _tmp_format -m "auto code format"
           git status
           git push
           git log
