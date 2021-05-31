@@ -49,9 +49,6 @@ jobs:
           git config user.name "Taichi Gardener"
           git commit -m "fake squash commit" || true
           git merge FETCH_HEAD
-          git push 
-        with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
           # echo "-1"
           # git branch -v
           # git fetch https://github.com/taichi-dev/test_actions.git format
