@@ -65,8 +65,8 @@ jobs:
           # git branch -v
           # git remote -v
           # git add .
-          # git config user.email "taichigardener@gmail.com"
-          # git config user.name "Taichi Gardener"
+          # git config user.email "leonz5288@hotmail.com"
+          # git config user.name "Leonz5288"
           # git commit -m "fake squash commit" || true
           # git checkout -b _last_squash
           # git checkout -b _enforced_format
