@@ -20,6 +20,10 @@ jobs:
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
           git reset FETCH_HEAD
           git add .
+          git commit -m "fake squash commit" || true
+          git checkout -b _last_squash
+          git checkout -b _enforced_format
+          git reset FETCH_HEAD
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
       - uses: stefanzweifel/git-auto-commit-action@v4
