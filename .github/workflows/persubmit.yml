@@ -28,6 +28,14 @@ jobs:
           git reset FETCH_HEAD
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
+          git add .
+          git commit -m "auto code format"
+          git status
+      - uses: actions/checkout@v2
+      - name: Merge to current branch
+        run: |
+          git status
+          git merge _enforced_format -m "auto code format"
           git status
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
