@@ -24,13 +24,18 @@ jobs:
           echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
           echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
+      - name: clone branch of PR
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_data.outputs.branch }}
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
       - name: Check code format
         run: |
-          git checkout ${{ steps.pr_data.outputs.branch }}
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
           git reset FETCH_HEAD
           git add .
@@ -46,6 +51,7 @@ jobs:
           git commit -m "auto code format"
           git status
           git checkout ${{ steps.pr_data.outputs.branch }}
+          git push
           git status
           git branch -v
           git merge _enforced_format -m "auto code format"
