@@ -45,11 +45,11 @@ jobs:
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
           git reset _tmp_format
-          git add .
-          git config user.email "taichigardener@gmail.com"
-          git config user.name "Taichi Gardener"
-          git commit -m "fake squash commit" || true
-          git merge FETCH_HEAD --no-commit
+          # git add .
+          # git config user.email "taichigardener@gmail.com"
+          # git config user.name "Taichi Gardener"
+          # git commit -m "fake squash commit" || true
+          # git merge FETCH_HEAD --no-commit
           echo "${{ secrets.AUTOFORMAT }}"
 
           # echo "-1"
