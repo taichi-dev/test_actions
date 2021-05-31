@@ -30,6 +30,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ steps.pr_data.outputs.branch }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -48,7 +49,9 @@ jobs:
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
           git commit -m "fake squash commit" || true
-          git merge FETCH_HEAD --no-commit
+          git merge FETCH_HEAD
+          git push
+
           # echo "-1"
           # git branch -v
           # git fetch https://github.com/taichi-dev/test_actions.git format
