@@ -37,6 +37,7 @@ jobs:
       - name: Check code format
         run: |
           git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
+          git checkout -b ${{ steps.pr_data.outputs.branch }}
           git reset FETCH_HEAD
           git add .
           git config user.email "taichigardener@gmail.com"
