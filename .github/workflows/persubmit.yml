@@ -11,7 +11,6 @@ jobs:
     # This job will be required to pass before merging to master branch.
     steps:
       - name: GitHub API Request
-        if: steps.check.outputs.triggered == 'true'
         id: request
         uses: octokit/request-action@v2.0.0
         with:
@@ -19,7 +18,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get PR informations
-        if: steps.check.outputs.triggered == 'true'
         id: pr_data
         run: |
           echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
@@ -27,7 +25,6 @@ jobs:
           echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
       - name: clone branch of PR
-        if: steps.check.outputs.triggered == 'true'
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +51,6 @@ jobs:
           git commit -m "auto code format"
           git status
       - name: clone branch of PR
-        if: steps.check.outputs.triggered == 'true'
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
