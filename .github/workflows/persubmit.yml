@@ -49,7 +49,7 @@ jobs:
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
           git commit -m "fake squash commit" || true
-          git merge FETCH_HEAD
+          git merge FETCH_HEAD --no-commit
           echo "${{ secrets.AUTOFORMAT }}"
 
           # echo "-1"
@@ -84,11 +84,11 @@ jobs:
           # git merge _enforced_format -m "auto code format" -s ours 
           # git status
           # git push
-      - name: Push Changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.AUTOFORMAT }}
-          branch: ${{ steps.pr_data.outputs.branch }}
+      # - name: Push Changes
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.AUTOFORMAT }}
+      #     branch: ${{ steps.pr_data.outputs.branch }}
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto Code Format
