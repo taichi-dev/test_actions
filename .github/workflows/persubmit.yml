@@ -66,7 +66,7 @@ jobs:
           git checkout _tmp_format
           git status
           git branch -v
-          git merge _enforced_format -m "auto code format" -s theirs
+          git merge _enforced_format -m "auto code format" -s ours 
           git status
           git push
       - uses: stefanzweifel/git-auto-commit-action@v4
