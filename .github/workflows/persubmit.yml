@@ -47,6 +47,7 @@ jobs:
           git reset FETCH_HEAD
           echo "1"
           git branch -v
+          git remote -v
           git add .
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
