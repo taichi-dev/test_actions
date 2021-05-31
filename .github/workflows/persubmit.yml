@@ -3,7 +3,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-# Where does this run?
 jobs:
   code_format:
     name: Code Format
@@ -30,13 +29,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ steps.pr_data.outputs.branch }}
           fetch-depth: 0
-          # persist-credentials: false
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: Check code format
+      - name: Check and change code format
         run: |
           git checkout -b _tmp_format
           git checkout ${{ steps.pr_data.outputs.branch }}
@@ -48,75 +45,10 @@ jobs:
           git add .
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
-          git commit -m "auto format code" || true
+          git commit -m "Auto Format" || true
           git merge FETCH_HEAD
-
-          # echo "-1"
-          # git branch -v
-          # git fetch https://github.com/taichi-dev/test_actions.git format
-          # git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
-          # echo "0"
-          # git branch -v
-          # git checkout -b _tmp_format
-          # git checkout ${{ steps.pr_data.outputs.branch }}
-          # git reset FETCH_HEAD
-          # echo "1"
-          # git branch -v
-          # git remote -v
-          # git add .
-          # git config user.email "taichigardener@gmail.com"
-          # git config user.name "Taichi Gardener"
-          # git commit -m "fake squash commit" || true
-          # git checkout -b _last_squash
-          # git checkout -b _enforced_format
-          # git reset FETCH_HEAD
-          # python3 -m pip install yapf gitpython colorama isort
-          # python3 python/taichi/code_format.py
-          # echo "2"
-          # git branch -v
-          # git add .
-          # git commit -m "auto code format"
-          # git status
-          # git checkout _tmp_format
-          # git status
-          # git branch -v
-          # git merge _enforced_format -m "auto code format" -s ours 
-          # git status
-          # git push
-
-      # - name: Prettify
-      #   uses: creyD/prettier_action@v3.3
-      #   with:
-      #     prettier_options: --write **/*.{js,md}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      # - name: Push Changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.AUTOFORMAT }}
-      #     branch: ${{ steps.pr_data.outputs.branch }}
-
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.pr_data.outputs.branch }}
-
-      # - uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: Auto Code Format
-      #     commit_user_name: Taichi Gardener
-      #     commit_user_email: taichigardener@gmail.com
-      #     commit_author: taichigardener <taichigardener@gmail.com>
-          # - name: Commit changes
-          #run: |
-          #git config --local user.email "taichigardener@gmail.com"
-          #git config --local user.name "Taichi Gardener"
-          #git add -A
-          #git commit -m "Auto Code Format"
-          #- name: Push changes
-          #uses: ad-m/github-push-action@master
-          #with:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          #branch: ${{ steps.pr_data.outputs.branch }}
