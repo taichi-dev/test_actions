@@ -55,6 +55,7 @@ jobs:
           git branch -v
           git merge _enforced_format -m "auto code format"
           git status
+          git push
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto Code Format
