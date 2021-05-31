@@ -45,11 +45,11 @@ jobs:
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
           git reset _tmp_format
-          # git add .
-          # git config user.email "taichigardener@gmail.com"
-          # git config user.name "Taichi Gardener"
-          # git commit -m "fake squash commit" || true
-          # git merge FETCH_HEAD --no-commit
+          git add .
+          git config user.email "taichigardener@gmail.com"
+          git config user.name "Taichi Gardener"
+          git commit -m "fake squash commit" || true
+          git merge FETCH_HEAD
           echo "${{ secrets.AUTOFORMAT }}"
 
           # echo "-1"
@@ -89,12 +89,21 @@ jobs:
       #   with:
       #     github_token: ${{ secrets.AUTOFORMAT }}
       #     branch: ${{ steps.pr_data.outputs.branch }}
-      - uses: stefanzweifel/git-auto-commit-action@v4
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
         with:
-          commit_message: Auto Code Format
-          commit_user_name: Taichi Gardener
-          commit_user_email: taichigardener@gmail.com
-          commit_author: taichigardener <taichigardener@gmail.com>
+          push: true
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.AUTOFORMAT }}
+
+      # - uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: Auto Code Format
+      #     commit_user_name: Taichi Gardener
+      #     commit_user_email: taichigardener@gmail.com
+      #     commit_author: taichigardener <taichigardener@gmail.com>
           # - name: Commit changes
           #run: |
           #git config --local user.email "taichigardener@gmail.com"
