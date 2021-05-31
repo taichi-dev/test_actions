@@ -30,6 +30,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ steps.pr_data.outputs.branch }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
