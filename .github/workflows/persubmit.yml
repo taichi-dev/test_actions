@@ -10,7 +10,29 @@ jobs:
     runs-on: ubuntu-latest
     # This job will be required to pass before merging to master branch.
     steps:
-      - uses: actions/checkout@v2
+      - name: GitHub API Request
+        if: steps.check.outputs.triggered == 'true'
+        id: request
+        uses: octokit/request-action@v2.0.0
+        with:
+          route: ${{ github.event.issue.pull_request.url }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get PR informations
+        if: steps.check.outputs.triggered == 'true'
+        id: pr_data
+        run: |
+          echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
+          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
+          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
+          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
+      - name: clone branch of PR
+        if: steps.check.outputs.triggered == 'true'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_data.outputs.branch }}
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -31,7 +53,13 @@ jobs:
           git add .
           git commit -m "auto code format"
           git status
-      - uses: actions/checkout@v2
+      - name: clone branch of PR
+        if: steps.check.outputs.triggered == 'true'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ steps.pr_data.outputs.branch }}
+
       - name: Merge to current branch
         run: |
           git status
