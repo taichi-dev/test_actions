@@ -94,7 +94,7 @@ def main(all=False, diff=None):
         files = list(Path(repo_dir).glob(
             '*'))  # Include all files under the root folder
         for d in directories:
-            files += list(Path(os.path.join(repo_dir, d)).rglob('*'))
+            files                             += list(Path(os.path.join(repo_dir, d)).rglob('*'))
     else:
         if diff is None:
 

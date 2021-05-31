@@ -17,6 +17,9 @@ jobs:
           python-version: 3.8
       - name: Check code format
         run: |
+          git fetch https://github.com/taichi-dev/test_actions.git refs/heads/master
+          git reset FETCH_HEAD
+          git add .
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
       - uses: stefanzweifel/git-auto-commit-action@v4
