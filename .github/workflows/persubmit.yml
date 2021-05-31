@@ -27,6 +27,7 @@ jobs:
       - name: clone branch of PR
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ steps.pr_data.outputs.branch }}
           fetch-depth: 0
           persist-credentials: false
@@ -100,6 +101,7 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
+          force: true
           github_token: ${{ secrets.AUTOFORMAT }}
           branch: ${{ steps.pr_data.outputs.branch }}
 
