@@ -50,6 +50,7 @@ jobs:
           git add .
           git commit -m "auto code format"
           git status
+          git branch -v
       - name: clone branch of PR
         uses: actions/checkout@v2
         with:
@@ -59,6 +60,7 @@ jobs:
       - name: Merge to current branch
         run: |
           git status
+          git branch -v
           git merge _enforced_format -m "auto code format"
           git status
       - uses: stefanzweifel/git-auto-commit-action@v4
