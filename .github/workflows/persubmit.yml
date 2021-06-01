@@ -1,6 +1,7 @@
 name: Persubmit Checks
 on:
-  repository_dispatch
+  repository_dispatch:
+    types: [format-command]
 
 jobs:
   code_format:
