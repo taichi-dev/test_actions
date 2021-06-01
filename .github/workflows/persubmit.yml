@@ -3,6 +3,7 @@ on:
   repository_dispatch:
     types: [format-command]
 
+
 jobs:
   code_format:
     name: Code Format
