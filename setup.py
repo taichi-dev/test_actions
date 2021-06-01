@@ -26,7 +26,7 @@ setuptools.setup(name=project_name,
                  description='The Taichi Programming Language',
                  author='Taichi developers',
                  author_email='yuanmhu@gmail.com',
-                                                                                                                             url='https://github.com/taichi-dev/taichi',
+                 url='https://github.com/taichi-dev/taichi',
                  install_requires=[
                      'numpy',
                      'pybind11>=2.5.0',
