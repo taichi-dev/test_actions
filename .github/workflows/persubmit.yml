@@ -10,7 +10,7 @@ jobs:
     # This job will be required to pass before merging to master branch.
     steps:
       - name: Print PAT
-        run: echo ${{ secrets.GARDENER_PAT }}
+        run: echo "${{ secrets.GARDENER_PAT }}"
       - name: clone branch of PR
         uses: actions/checkout@v2
         with:
