@@ -1,89 +1,15 @@
-name: PR reply actions
+name: Slash Command Dispatch
 on:
-  pull_request_review_comment:
-    types: [created, deleted]
-
-# AAABBBCCCDDD
+  issue_comment:
+    types: [created]
 jobs:
-  check_comments:
+  slashCommandDispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Create Status Check
-        uses: ./.github/actions/create_status_check
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
-      - name: Pull Request Comment Trigger
-        uses: Khan/pull-request-comment-trigger@1.0.0
-        id: check
-        with:
-          trigger: '#test'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        #name: skip tests
-        #if: steps.check.outputs.triggered == 'false'
-        #uses: andymckay/cancel-action@0.2
-  
-  build_and_test_cpu_required:
-    # This job will be required to pass before merging to master branch.
-    name: Required Build and Test (CPU)
-    needs: check_comments
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            python: 3.6
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Github API Request
-        id: request
-        uses: octokit/request-action@v2.0.0
-        with:
-          route: ${{ github.event.pull_request.url }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get PR info
-        id: pr_data
-        run: |
-          echo "::set-output name=branch::${{ fromJson(steps.request.outputs.data).head.ref }}"
-          echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).base.repo.full_name }}"
-          echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).base.repo.clone_url }}"
-          echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).base.repo.ssh_url }}"
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ steps.pr_data.outputs.branch }}
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
-
-      - name: Build
-        run: |
-          export TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export CXX=clang++
-          python misc/ci_setup.py ci
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON
-
-      - name: Test
-        run: |
-          export TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/bin:$PATH
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export PYTHONPATH=$TAICHI_REPO_DIR/python
-          python examples/laplace.py
-          ti diagnose
-          ./build/taichi_cpp_tests
-          ti test -vr2 -t2
+          token: ${{ secrets.GARDENER_PAT }}
+          reaction-token: ${{ secrets.GARDENER_PAT }}
+          commands: |
+            format
