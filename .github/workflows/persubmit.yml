@@ -15,7 +15,7 @@ jobs:
         with:
           route: ${{ github.event.pull_request.url }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GARDENER_PAT }}
       - name: Get PR informations
         id: pr_data
         run: |
@@ -26,7 +26,7 @@ jobs:
       - name: clone branch of PR
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GARDENER_PAT }}
           ref: ${{ steps.pr_data.outputs.branch }}
           repository: ${{ steps.pr_data.outputs.repo_name }}
           fetch-depth: 0
@@ -51,6 +51,6 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GARDENER_PAT }}
           branch: ${{ steps.pr_data.outputs.branch }}
           repository: ${{ steps.pr_data.outputs.repo_name }}
