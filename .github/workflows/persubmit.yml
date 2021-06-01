@@ -1,7 +1,6 @@
 name: Persubmit Checks
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  repository_dispatch
 
 jobs:
   code_format:
