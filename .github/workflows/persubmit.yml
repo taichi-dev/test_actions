@@ -32,6 +32,7 @@ jobs:
           python3 -m pip install yapf gitpython colorama isort
           python3 python/taichi/code_format.py
           git reset _tmp_format
+          echo "# hahaha" >> python/build.py
           git add .
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
