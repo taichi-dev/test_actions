@@ -11,5 +11,6 @@ jobs:
         with:
           token: ${{ secrets.GARDENER_PAT }}
           reaction-token: ${{ secrets.GARDENER_PAT }}
+          repository: taichi-dev/ci_workflows
           commands: |
             format
