@@ -18,5 +18,5 @@ jobs:
           repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
           fetch-depth: 0
       - name: install clang-format
-        runs: |
+        run: |
           sudo apt-get install clang-format
