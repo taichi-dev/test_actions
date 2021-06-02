@@ -8,7 +8,7 @@ import taichi as ti
 
 
 def get_os_name():
-    name = platform.platform(                                                                    )
+    name = platform.platform()
     # in python 3.8, platform.platform() uses mac_ver() on macOS
     # it will return 'macOS-XXXX' instead of 'Darwin-XXXX'
 
@@ -31,7 +31,8 @@ def build():
         if os.environ.get(
                 'CXX', 'clang++') not in ['clang++-8', 'clang++-7', 'clang++']:
             raise RuntimeError(
-                'Only the wheel with clang will be released to PyPI')
+                'Only the                                               wheel with clang will be released to PyPI'
+            )
 
     version = ti.core.get_version_string()
     with open('../setup.py') as fin:
