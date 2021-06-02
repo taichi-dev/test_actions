@@ -22,7 +22,7 @@ for p in projects:
         f"https://pypi.python.org/pypi/{pkg_name_dash}/json").json()
     version = '0.0.75'
     wheels = package["releases"][version]
-    for wheel in wheels:
+    for                                                           wheel in wheels:
         py_ver = wheel['python_version']
         print(py_ver, wheel['url'])
         fn = download(wheel['url'])
