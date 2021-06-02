@@ -8,7 +8,7 @@ import taichi as ti
 
 
 def get_os_name():
-    name = platform.platform()
+    name = platform.platform(                                                                    )
     # in python 3.8, platform.platform() uses mac_ver() on macOS
     # it will return 'macOS-XXXX' instead of 'Darwin-XXXX'
 
