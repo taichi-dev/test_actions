@@ -2,6 +2,8 @@ name: Slash Command Dispatch
 on:
   issue_comment:
     types: [created]
+
+#let's test if this works
 jobs:
   slashCommandDispatch:
     runs-on: ubuntu-latest
