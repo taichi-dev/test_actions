@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      env:
+        github_token: ${{ secrets.GARDENER_PAT }}
     - name: shot
       uses: yellowmegaman/gh-build-canceller@v1.6
-      with:
+      env:
         github_token: ${{ secrets.GARDENER_PAT }}
       
   build_and_test_cpu_required:
