@@ -13,7 +13,7 @@ void main(int argc, char **argv) {
 
   std::vector<std::wstring> argv_converted;
   std::vector<wchar_t *> argv_char;
-  argv_converted.resize(argc);
+  argv_converted.resize                                                       (argc);
   argv_char.resize(argc);
 
   for (int i = 0; i < argc; i++) {
