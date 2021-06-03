@@ -2,6 +2,7 @@ import glob
 
 import setuptools
 
+#test
 classifiers = [
     'Development Status :: 2 - Pre-Alpha',
     'Topic :: Software Development :: Compilers',
