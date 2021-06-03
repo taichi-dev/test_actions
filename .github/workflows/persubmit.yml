@@ -1,23 +1,60 @@
 name: Persubmit Checks
 on:
-  repository_dispatch:
-    types: [format-command]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 
 # test
 jobs:
-  code_format:
-    name: install clang-format test
+  cleanup-runs:
     runs-on: ubuntu-latest
-    # This job will be required to pass before merging to master branch.
     steps:
-      - name: clone branch of PR
-        uses: actions/checkout@v2
+      - uses: rokroskar/workflow-run-cleanup-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: TRUE
+      
+  build_and_test_cpu_required:
+    # This job will be required to pass before merging to master branch.
+    name: Required Build and Test (CPU)
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip ci') }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: 3.6
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
         with:
-          token: ${{ secrets.GARDENER_PAT }}
-          ref: ${{ github.event.client_payload.pull_request.head.ref }}
-          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
-          fetch-depth: 0
-      - name: install clang-format
+          python-version: ${{ matrix.python }}
+
+      - name: Download Pre-Built LLVM 10.0.0
         run: |
-          sudo apt-get install clang-format
+          python misc/ci_download.py
+          mkdir taichi-llvm
+          cd taichi-llvm
+          unzip ../taichi-llvm.zip
+        env:
+          CI_PLATFORM: ${{ matrix.os }}
+
+      - name: Build
+        run: |
+          export TAICHI_REPO_DIR=`pwd`
+          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+          export CXX=clang++
+          python misc/ci_setup.py ci
+        env:
+          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON
+
+      - name: Test
+        run: |
+          export TAICHI_REPO_DIR=`pwd`
+          export PATH=$TAICHI_REPO_DIR/bin:$PATH
+          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+          export PYTHONPATH=$TAICHI_REPO_DIR/python
+          python examples/laplace.py
+          ti diagnose
+          ./build/taichi_cpp_tests
+          ti test -vr2 -t2
