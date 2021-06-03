@@ -4,6 +4,7 @@ on: workflow_run:
   types:
     - requested
 
+#now test
 jobs:
   cancel:
     runs-on: ubuntu-latest
