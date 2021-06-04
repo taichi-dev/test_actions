@@ -5,7 +5,7 @@ on:
     types:
       - requested
 
-#now test
+#trigger how?
 jobs:
   cancel:
     runs-on: ubuntu-latest
