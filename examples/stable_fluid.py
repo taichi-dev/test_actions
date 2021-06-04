@@ -4,8 +4,9 @@
 # https://www.bilibili.com/video/BV1ZK411H7Hc?p=4
 # https://github.com/ShaneFX/GAMES201/tree/master/HW01
 
-import taichi as ti
 import numpy as np
+
+import taichi as ti
 
 use_mgpcg = False  # True to use multigrid-preconditioned conjugate gradients
 res = 512

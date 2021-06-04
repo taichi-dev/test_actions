@@ -1,4 +1,5 @@
 from taichi.lang.kernel_impl import KernelTemplateMapper
+
 import taichi as ti
 
 
