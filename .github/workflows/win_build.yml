@@ -41,9 +41,6 @@ jobs:
           echo $env:TAICHI_REPO_DIR
           echo $env:PYTHONPATH
           echo $env:PATH
-          cd C:\taichi_llvm\bin
-          cd
-          ls
           clang --version
           cd D:\a\test_actions\test_actions
           python -m pip install numpy
@@ -56,5 +53,8 @@ jobs:
           cd ..
           python -c "import taichi"
           python examples/laplace.py
-          bin/taichi diagnose
-          bin/taichi test -Cvr2 -t2
+          cd bin
+          cd
+          ls
+          taichi.exe diagnose
+          taichi.exe test -Cvr2 -t2
