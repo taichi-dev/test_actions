@@ -42,13 +42,13 @@ jobs:
           cd /d D:\a\test_actions\test_actions
           python -m pip install numpy
           python -m pip install pybind11
-          "%PYTHON% misc\\ci_setup.py ci"
+          "%PYTHON% misc/ci_setup.py ci"
           mkdir build
           cd build
           cmake .. -G"Visual Studio 16 2019" -A x64 -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm" 
           msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
           cd ..
-          "%PYTHON% -c 'import taichi'"
-          "%PYTHON% examples\\laplace.py"
-          "%PYTHON% bin\\taichi diagnose"
-          "%PYTHON% bin\\taichi test -Cvr2 -t2"
+          '%PYTHON% -c "import taichi"'
+          "%PYTHON% examples/laplace.py"
+          "%PYTHON% bin/taichi diagnose"
+          "%PYTHON% bin/taichi test -Cvr2 -t2"
