@@ -28,6 +28,7 @@ jobs:
         shell: powershell
         run: |
           $env:TAICHI_REPO_DIR = "D:\a\test_actions\test_actions"
+          cd C:\
           Remove-item alias:curl
           curl --retry 10 --retry-delay 5 https://github.com/taichi-dev/taichi_assets/releases/download/llvm10/taichi-llvm-10.0.0-msvc2019.zip -LO
           7z x taichi-llvm-10.0.0-msvc2019.zip -otaichi_llvm
