@@ -25,7 +25,7 @@ jobs:
           architecture: x64
 
       - name: Build
-        shell: cmd
+        shell: powershell
         run: |
           set PYTHON=%RUNNER_TOOL_CACHE%\Python\3.6.8\x64\python.exe
           cd /d %RUNNER_TOOL_CACHE%\Python\3.6.8\x64
@@ -45,13 +45,13 @@ jobs:
           cd /d D:\a\test_actions\test_actions
           python -m pip install numpy
           python -m pip install pybind11
-          "%PYTHON% misc/ci_setup.py ci"
+          python misc/ci_setup.py ci
           mkdir build
           cd build
           cmake .. -G"Visual Studio 16 2019" -A x64 -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm" 
           msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
           cd ..
-          '%PYTHON% -c "import taichi"'
-          "%PYTHON% examples/laplace.py"
-          "%PYTHON% bin/taichi diagnose"
-          "%PYTHON% bin/taichi test -Cvr2 -t2"
+          python -c "import taichi"
+          python examples/laplace.py
+          python bin/taichi diagnose
+          python bin/taichi test -Cvr2 -t2
