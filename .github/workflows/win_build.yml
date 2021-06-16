@@ -53,8 +53,5 @@ jobs:
           cd ..
           python -c "import taichi"
           python examples/laplace.py
-          cd bin
-          cd
-          ls
-          taichi.exe diagnose
-          taichi.exe test -Cvr2 -t2
+          bin/ti.exe diagnose
+          bin/ti.exe test -Cvr2 -t2
