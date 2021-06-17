@@ -53,5 +53,9 @@ jobs:
           cd ..
           python -c "import taichi"
           python examples/laplace.py
+          type bin/ti.exe
+          type bin/taichi
+          type bin/ti
+          type bin/ti.pdb
           bin/ti.exe diagnose
           bin/ti.exe test -Cvr2 -t2
