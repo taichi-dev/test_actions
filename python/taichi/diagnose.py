@@ -44,6 +44,7 @@ def main():
         except Exception as e:
             print(f'{tag}: ERROR {e}')
 
+    print(executable)
     print('')
     try_print('import', 'ti')
     print('')
