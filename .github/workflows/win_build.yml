@@ -19,11 +19,6 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-          architecture: x64
-
       - name: Build
         shell: powershell
         run: |
