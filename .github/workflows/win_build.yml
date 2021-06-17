@@ -47,4 +47,4 @@ jobs:
           python -c "import taichi"
           python examples/laplace.py
           python bin/taichi diagnose
-          ##python bin/taichi test -Cvr2 -t2
+          python bin/taichi test -Cvr2 -t2
