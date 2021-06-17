@@ -22,6 +22,7 @@ jobs:
       - name: Build
         shell: powershell
         run: |
+          $env:PYTHON = "C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe"
           $env:TAICHI_REPO_DIR = "D:\a\test_actions\test_actions"
           cd C:\
           Remove-item alias:curl
@@ -43,7 +44,7 @@ jobs:
           python misc/ci_setup.py ci
           mkdir build
           cd build
-          cmake .. -G"Visual Studio 16 2019" -A x64 -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm" 
+          cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE="$env:PYTHON" -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm" 
           msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
           cd ..
           python -c "import taichi"
@@ -51,6 +52,5 @@ jobs:
           type bin/ti.exe
           type bin/taichi
           type bin/ti
-          type bin/ti.pdb
           bin/ti.exe diagnose
           bin/ti.exe test -Cvr2 -t2
