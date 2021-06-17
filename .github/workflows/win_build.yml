@@ -34,9 +34,6 @@ jobs:
           $env:PATH += ";C:\taichi_clang\bin"
           $env:PYTHONPATH = "$env:TAICHI_REPO_DIR\python"
           $env:PATH += ";$env:TAICHI_REPO_DIR\bin"
-          echo $env:TAICHI_REPO_DIR
-          echo $env:PYTHONPATH
-          echo $env:PATH
           clang --version
           cd D:\a\test_actions\test_actions
           python -m pip install numpy
