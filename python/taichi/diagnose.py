@@ -38,13 +38,14 @@ def main():
     def try_print(tag, expr):
         try:
             cmd = f'import taichi as ti; print("===="); print({expr}, end="")'
+            print(cmd)
             ret = subprocess.check_output([executable, '-c', cmd]).decode()
+            print(ret)
             ret = ret.split('====\n', maxsplit=1)[1]
             print(f'{tag}: {ret}')
         except Exception as e:
             print(f'{tag}: ERROR {e}')
 
-    print(executable)
     print('')
     try_print('import', 'ti')
     print('')
