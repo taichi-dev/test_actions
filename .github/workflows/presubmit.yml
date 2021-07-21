@@ -119,6 +119,7 @@ jobs:
       - name: Build
         run: |
           git --version
+          export TAICHI_REPO_DIR=`pwd`
           export PATH=/home/github/taichi-llvm/bin/:$PATH
           export CXX=clang++-8
           export PYTHON=/usr/bin/python3
