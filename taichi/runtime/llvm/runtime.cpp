@@ -1083,19 +1083,19 @@ i32 op_xor_i32(i32 a, i32 b) {
   return a ^ b;
 }
 
-#define DEFINE_REDUCTION(op, dtype)                                   \
-  dtype warp_reduce_##op##_##dtype(dtype val) {                       \
-    for (int offset = 16; offset > 0; offset /= 2)                    \
-      val = op_##op##_##dtype(                                        \
-          val, cuda_shfl_down_sync_i32(0xFFFFFFFF, val, offset, 31)); \
-    return val;                                                       \
-  }                                                                   \
-  dtype reduce_##op##_##dtype(dtype *result, dtype val) {             \
-    dtype warp_result = warp_reduce_##op##_##dtype(val);              \
-    if ((thread_idx() & (warp_size() - 1)) == 0) {                    \
-      atomic_##op##_##dtype(result, warp_result);                     \
-    }                                                                 \
-    return val;                                                       \
+#define DEFINE_REDUCTION(op, dtype)                                       \
+  dtype warp_reduce_##op##_##dtype(dtype val) {                           \
+    for (int offset = 16; offset > 0; offset /= 2)                        \
+      val = op_##op##_##dtype(                                            \
+          val, cuda_shfl_down_sync_##dtype(0xFFFFFFFF, val, offset, 31)); \
+    return val;                                                           \
+  }                                                                       \
+  dtype reduce_##op##_##dtype(dtype *result, dtype val) {                 \
+    dtype warp_result = warp_reduce_##op##_##dtype(val);                  \
+    if ((thread_idx() & (warp_size() - 1)) == 0) {                        \
+      atomic_##op##_##dtype(result, warp_result);                         \
+    }                                                                     \
+    return val;                                                           \
   }
 
 DEFINE_REDUCTION(add, i32);
@@ -1750,6 +1750,14 @@ i32 wasm_materialize(Context *context) {
   context->runtime->roots[0] =
       (Ptr)((size_t)context->runtime->rand_states + sizeof(RandState));
   return (i32)(size_t)context->runtime->roots[0];
+}
+
+void wasm_set_kernel_parameter_i32(Context *context, int index, i32 value) {
+  *(i32 *)(&context->args[index]) = value;
+}
+
+void wasm_set_kernel_parameter_f32(Context *context, int index, f32 value) {
+  *(f32 *)(&context->args[index]) = value;
 }
 }
 

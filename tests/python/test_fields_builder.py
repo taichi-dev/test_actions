@@ -13,18 +13,31 @@ def test_fields_with_shape():
     def func():
         for i in range(n):
             x[i] = i
-        for i in range(n):
-            assert x[i] == i
-
-        for i in range(n):
-            x[i] = i * 2
-        for i in range(n):
-            assert x[i] == i * 2
 
     func()
 
-    with pytest.raises(InvalidOperationError, match='FieldsBuilder finalized'):
-        y = ti.field(ti.f32, [n])
+    for i in range(n):
+        assert x[i] == i
+
+    y = ti.field(ti.f32, [n])
+
+    @ti.kernel
+    def func2():
+        for i in range(n):
+            y[i] = i * 2
+        for i in range(n):
+            x[i] = i * 3
+
+    func2()
+
+    for i in range(n):
+        assert x[i] == i * 3
+        assert y[i] == i * 2
+
+    func()
+
+    for i in range(n):
+        assert x[i] == i
 
 
 @ti.test(arch=[ti.cpu, ti.cuda])
@@ -72,7 +85,7 @@ def test_fields_builder_dense():
         assert x[i] == i * 3
 
 
-@ti.test(arch=[ti.cpu, ti.cuda])
+@ti.test(arch=[ti.cpu, ti.cuda], use_unified_memory=True)
 def test_fields_builder_pointer():
     n = 5
 
