@@ -171,7 +171,7 @@ void compile_runtime_bitcode(Arch arch) {
 #else
     bool src_exists = !access(src_runtime_bc.c_str(), F_OK);
 #endif
-    if (do_cache && src_exists) {
+    if (/*do_cache && */src_exists) {
       TI_TRACE("Restoring cached runtime module bitcode [{}]...",
                src_runtime_bc);
 #ifdef _WIN32
