@@ -154,7 +154,7 @@ std::string get_runtime_dir() {
 }
 
 void compile_runtime_bitcode(Arch arch) {
-  if (is_release())
+  //if (is_release())
     return;
   TI_AUTO_PROF;
   bool do_cache = get_environ_config("TI_CACHE_RUNTIME_BITCODE", 0);
