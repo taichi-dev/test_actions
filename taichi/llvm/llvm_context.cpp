@@ -159,6 +159,7 @@ void compile_runtime_bitcode(Arch arch) {
   TI_AUTO_PROF;
   bool do_cache = get_environ_config("TI_CACHE_RUNTIME_BITCODE", 0);
   static std::set<int> runtime_compiled;
+  bool ok = false;
   if (runtime_compiled.find((int)arch) == runtime_compiled.end()) {
     auto runtime_src_folder = get_runtime_src_dir();
     auto runtime_folder = get_runtime_dir();
@@ -188,7 +189,8 @@ void compile_runtime_bitcode(Arch arch) {
       } else {
         TI_TRACE("Runtime module bitcode loaded.");
         runtime_compiled.insert((int)arch);
-        return;
+	ok = true;
+//        return;
       }
     }
     auto clang = find_existing_command(
@@ -207,6 +209,7 @@ void compile_runtime_bitcode(Arch arch) {
     if (ret) {
       TI_ERROR("LLVMRuntime compilation failed.");
     }
+    if (ok) return;
     //cmd = fmt::format("llvm-as \"{}runtime.ll\" -o \"{}\"", runtime_folder,
     //                  dst_runtime_bc);
     //std::system(cmd.c_str());
