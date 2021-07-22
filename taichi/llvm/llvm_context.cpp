@@ -192,7 +192,7 @@ void compile_runtime_bitcode(Arch arch) {
       }
     }
     auto clang = find_existing_command(
-        {"clang-7", "clang-8", "clang-9", "clang-10", "clang"});
+        {"clang", "clang-7", "clang-8", "clang-9", "clang-10"});
     TI_ASSERT(command_exist("llvm-as"));
     TI_TRACE("Compiling runtime module bitcode...");
 
@@ -200,16 +200,16 @@ void compile_runtime_bitcode(Arch arch) {
 
     std::string arch_macro = fmt::format(" -D ARCH_{}", arch_name(arch));
     auto cmd = fmt::format(
-        "{} -S \"{}runtime.cpp\" -o \"{}runtime.ll\" -fno-exceptions "
+        "{} -S \"{}runtime.cpp\" -o \"{}runtime1.ll\" -fno-exceptions "
         "-emit-llvm -std=c++17 {} -I \"{}\"",
-        clang, runtime_src_folder, runtime_folder, arch_macro, get_repo_dir());
-    /*int ret = std::system(cmd.c_str());
+        clang, runtime_src_folder, runtime_src_folder, arch_macro, get_repo_dir());
+    int ret = std::system(cmd.c_str());
     if (ret) {
       TI_ERROR("LLVMRuntime compilation failed.");
     }
-    cmd = fmt::format("llvm-as \"{}runtime.ll\" -o \"{}\"", runtime_folder,
-                      dst_runtime_bc);
-    std::system(cmd.c_str());*/
+    //cmd = fmt::format("llvm-as \"{}runtime.ll\" -o \"{}\"", runtime_folder,
+    //                  dst_runtime_bc);
+    //std::system(cmd.c_str());
     TI_TRACE("Runtime module bitcode compiled.");
     runtime_compiled.insert((int)arch);
     if (do_cache) {
