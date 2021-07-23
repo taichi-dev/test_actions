@@ -127,7 +127,8 @@ class CMakeBuild(build_ext):
         cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
 
         # Assuming Makefiles
-        build_args += ['--', f'-j{multiprocessing.cpu_count()}']
+        if get_os_name() != 'win':
+            build_args += ['--', f'-j{multiprocessing.cpu_count()}']
 
         self.build_args = build_args
 
