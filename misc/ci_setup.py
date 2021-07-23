@@ -265,7 +265,7 @@ class Installer:
                 )
             else:
                 execute_command(
-                    {sys.executable} setup.py install --user'
+                    f'{sys.executable} setup.py install --user'
                 )
         return
         if test_installation():
