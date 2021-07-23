@@ -23,7 +23,7 @@ jobs:
       - name: Build
         shell: powershell
         run: |
-          $env:TAICHI_REPO_DIR = "D:\a\taichi\taichi"
+          $env:TAICHI_REPO_DIR = "D:\a\test_actions\test_actions"
           $env:PYTHONPATH = "$env:TAICHI_REPO_DIR\python"
           cd C:\
           Remove-item alias:curl
@@ -35,16 +35,7 @@ jobs:
           $env:PATH += ";C:\taichi_clang\bin"
           $env:PATH += ";$env:TAICHI_REPO_DIR\bin"
           clang --version
-          cd D:\
-          cd
-          dir
-          cd a\
-          cd
-          dir
-          cd taichi\
-          cd
-          dir
-          cd D:\a\taichi\taichi
+          cd D:\a\test_actions\test_actions
           python -m pip install numpy
           python -m pip install pybind11
           python setup.py develop
@@ -60,7 +51,7 @@ jobs:
       - name: Test
         shell: powershell
         run: |
-          $env:TAICHI_REPO_DIR = "D:\a\taichi\taichi"
+          $env:TAICHI_REPO_DIR = "D:\a\test_actions\test_actions"
           $env:PYTHONPATH = "$env:TAICHI_REPO_DIR\python"
           $env:PATH += ";C:\taichi_llvm\bin"
           $env:PATH += ";C:\taichi_clang\bin"
