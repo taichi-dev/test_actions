@@ -36,8 +36,7 @@ jobs:
           $env:PATH += ";$env:TAICHI_REPO_DIR\bin"
           clang --version
           cd D:\a\test_actions\test_actions
-          python -m pip install numpy
-          python -m pip install pybind11
+          python -m pip install --user numpy pybind11 gitpython
           python setup.py develop
           #python misc/ci_setup.py ci
           #mkdir build
