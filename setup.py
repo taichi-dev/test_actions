@@ -165,7 +165,7 @@ class CMakeBuild(build_ext):
                     os.path.join(self.build_temp, 'libtaichi_core.dylib'),
                     os.path.join(target, 'taichi_core.so'))
             else:
-                shutil.copy('../runtimes/Release/taichi_core.dll',
+                shutil.copy('runtimes/Release/taichi_core.dll',
                             os.path.join(target, 'taichi_core.pyd'))
 
             if get_os_name() != 'osx':
