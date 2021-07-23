@@ -35,6 +35,15 @@ jobs:
           $env:PATH += ";C:\taichi_clang\bin"
           $env:PATH += ";$env:TAICHI_REPO_DIR\bin"
           clang --version
+          cd D:\
+          cd
+          dir
+          cd a\
+          cd
+          dir
+          cd taichi\
+          cd
+          dir
           cd D:\a\taichi\taichi
           python -m pip install numpy
           python -m pip install pybind11
