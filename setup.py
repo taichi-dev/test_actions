@@ -113,6 +113,7 @@ class CMakeBuild(build_ext):
 
         cmake_args = self.parse_cmake_args_from_env()
         print(cmake_args)
+        cmake_args += '-G"Visual Studio 16 2019"'
 
         cmake_args += [
             f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}',
@@ -138,7 +139,6 @@ class CMakeBuild(build_ext):
         env = os.environ.copy()
         os.makedirs(self.build_temp, exist_ok=True)
 
-        print(env)
         print('-' * 10, 'Running CMake prepare', '-' * 40)
         subprocess.check_call(['cmake', cmake_list_dir] + cmake_args,
                               cwd=self.build_temp,

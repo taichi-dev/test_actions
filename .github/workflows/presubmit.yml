@@ -35,7 +35,7 @@ jobs:
           cd D:\a\test_actions\test_actions
           python -m pip install --user numpy pybind11 gitpython
           #python setup.py install --user
-          $env:CI_SETUP_CMAKE_ARGS = '-G "Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE="$env:PYTHON" -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm"'
+          $env:CI_SETUP_CMAKE_ARGS = '-A x64 -DPYTHON_EXECUTABLE="$env:PYTHON" -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm"'
           python misc/ci_setup.py ci
           #mkdir build
           #cd build
