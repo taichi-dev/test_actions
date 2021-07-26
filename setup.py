@@ -112,7 +112,6 @@ class CMakeBuild(build_ext):
         build_directory = os.path.abspath(self.build_temp)
 
         cmake_args = self.parse_cmake_args_from_env()
-        print(cmake_args)
 
         cmake_args += [
             f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}',
@@ -121,13 +120,11 @@ class CMakeBuild(build_ext):
             f'-DTI_VERSION_MINOR={TI_VERSION_MINOR}',
             f'-DTI_VERSION_PATCH={TI_VERSION_PATCH}',
         ]
-        print(cmake_args)
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
 
         cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-        print(cmake_args)
 
         # Assuming Makefiles
         if get_os_name() != 'win':

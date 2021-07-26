@@ -34,13 +34,8 @@ jobs:
           clang --version
           cd D:\a\test_actions\test_actions
           python -m pip install --user numpy pybind11 gitpython
-          #python setup.py install --user
           python misc/ci_setup.py ci
-          #mkdir build
-          #cd build
           #cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE="$env:PYTHON" -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm"
-          #msbuild /p:Configuration=RelWithDebInfo /p:Platform=x64 /m taichi.sln
-          #cd ..
         env:
           PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
           CI_SETUP_CMAKE_ARGS: -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
