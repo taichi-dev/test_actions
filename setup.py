@@ -138,6 +138,7 @@ class CMakeBuild(build_ext):
         env = os.environ.copy()
         os.makedirs(self.build_temp, exist_ok=True)
 
+        print(env)
         print('-' * 10, 'Running CMake prepare', '-' * 40)
         subprocess.check_call(['cmake', cmake_list_dir] + cmake_args,
                               cwd=self.build_temp,
