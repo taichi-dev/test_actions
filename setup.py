@@ -96,7 +96,6 @@ class CMakeBuild(build_ext):
         import shlex
         # Source: TAICHI_CMAKE_ARGS=... python setup.py ...
         cmake_args = os.getenv('TAICHI_CMAKE_ARGS', '')
-        print(cmake_args)
         return shlex.split(cmake_args.strip())
 
     def run(self):
@@ -114,7 +113,6 @@ class CMakeBuild(build_ext):
         build_directory = os.path.abspath(self.build_temp)
 
         cmake_args = self.parse_cmake_args_from_env()
-        print(cmake_args)
 
         cmake_args += [
             f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}',
