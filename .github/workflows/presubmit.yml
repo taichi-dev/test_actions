@@ -38,7 +38,7 @@ jobs:
           #cmake .. -G"Visual Studio 16 2019" -A x64 -DPYTHON_EXECUTABLE="$env:PYTHON" -DLLVM_DIR="C:\taichi_llvm\lib\cmake\llvm"
         env:
           PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
-          CI_SETUP_CMAKE_ARGS: -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
+          CI_SETUP_CMAKE_ARGS: -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
 
       - name: Test
         shell: powershell

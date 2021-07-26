@@ -111,7 +111,8 @@ class CMakeBuild(build_ext):
 
         build_directory = os.path.abspath(self.build_temp)
 
-        cmake_args = self.parse_cmake_args_from_env()
+        cmake_args = ['-G"Visual Studio 16 2019"', '-A', 'X64']
+        cmake_args += self.parse_cmake_args_from_env()
 
         cmake_args += [
             f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}',
