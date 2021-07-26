@@ -93,10 +93,11 @@ class BuildPy(build_py):
 
 class CMakeBuild(build_ext):
     def parse_cmake_args_from_env(self):
+        import shlex
         # Source: TAICHI_CMAKE_ARGS=... python setup.py ...
         cmake_args = os.getenv('TAICHI_CMAKE_ARGS', '')
         print(cmake_args)
-        return cmake_args.strip().split()
+        return shlex.split(cmake_args.strip())
 
     def run(self):
         try:
@@ -112,8 +113,8 @@ class CMakeBuild(build_ext):
 
         build_directory = os.path.abspath(self.build_temp)
 
-        cmake_args = ['-G', 'Visual Studio 16 2019', '-A', 'X64']
-        cmake_args += self.parse_cmake_args_from_env()
+        cmake_args = self.parse_cmake_args_from_env()
+        print(cmake_args)
 
         cmake_args += [
             f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}',
