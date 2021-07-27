@@ -52,7 +52,7 @@ build_script:
   - set PATH=C:\taichi_clang\bin;%PATH%
   - clang --version
   - cd C:\taichi
-  - set CI_SETUP_CMAKE_ARGS='-G "Visual Studio 16 2019" -A x64 -DLLVM-DIR=C:\taichi-llvm\lib\cmake\llvm'
+  - set CI_SETUP_CMAKE_ARGS=-G "Visual Studio 16 2019" -A x64 -DLLVM-DIR=C:\taichi-llvm\lib\cmake\llvm
   - "%PYTHON% misc/ci_setup.py ci"
   - '%PYTHON% -c "import taichi"'
   - "%PYTHON% examples/algorithm/laplace.py"
