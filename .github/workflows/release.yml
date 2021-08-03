@@ -1,8 +1,11 @@
 name: Publishing Release
 on:
-  release:
-    # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
-    types: [published]
+  #release:
+  #  # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
+  #  types: [published]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 
 jobs:
   build_and_test_cpu:
@@ -38,31 +41,27 @@ jobs:
         env:
           CI_PLATFORM: ${{ matrix.os }}
 
-      - name: Build
+      - name: Create Python Wheel
         run: |
-          export TAICHI_REPO_DIR=`pwd`
+          TAICHI_REPO_DIR=`pwd`
           export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
           export CXX=clang++
+          # Install taichi since we need to make changelog when building the wheel.
           python misc/ci_setup.py ci
+          cd python
+          python build.py build
+          pip uninstall taichi -y
 
-      - name: Test
+      - name: Install Wheel and Test
         run: |
-          export TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/bin:$PATH
+          TAICHI_REPO_DIR=`pwd`
           export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export PYTHONPATH=$TAICHI_REPO_DIR/python
+          NUM_WHL=`ls dist/*.whl | wc -l`
+          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.'; fi
+          pip install dist/*.whl
           python examples/algorithm/laplace.py
           ti diagnose
           ti test -vr2 -t2
-
-      - name: Create Python Wheel
-        run: |
-          export TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/bin:$PATH
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export PYTHONPATH=$TAICHI_REPO_DIR/python
-          cd python
-          python build.py build
 
       - name: Archive Wheel Artifacts
         # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
@@ -71,16 +70,15 @@ jobs:
           # While ${{ github.ref }} does provide the release tag, it is of
           # format `refs/tags/<tag_name>`, which isn't a valid file path.
           name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
-          path: python/dist/*.whl
+          path: dist/*.whl
 
-      - name: Upload PyPI
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: ${{ secrets.PYPI_PWD }}
-        run: |
-          export TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/bin:$PATH
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export PYTHONPATH=$TAICHI_REPO_DIR/python
-          cd python
-          python build.py try_upload --skip_build && bash <(curl -s https://codecov.io/bash)
+      #- name: Upload PyPI
+      #  env:
+      #    # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
+      #    PYPI_PWD: ${{ secrets.PYPI_PWD }}
+      #  run: |
+      #    TAICHI_REPO_DIR=`pwd`
+      #    export PATH=$TAICHI_REPO_DIR/bin:$PATH
+      #    export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+      #    cd python
+      #    python build.py try_upload --skip_build && bash <(curl -s https://codecov.io/bash)
