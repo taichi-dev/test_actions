@@ -76,7 +76,7 @@ jobs:
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: ${{ secrets.PYPI_PWD }}
+          PYPI_PWD: "sjaaeriguhbnaeikd"
         run: |
           TAICHI_REPO_DIR=`pwd`
           export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
@@ -144,19 +144,12 @@ jobs:
           python bin/taichi diagnose
           python bin/taichi test -Cvr2 -t2
 
-      - name: Archive Wheel Artifacts
-        # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          # While ${{ github.ref }} does provide the release tag, it is of
-          # format `refs/tags/<tag_name>`, which isn't a valid file path.
-          name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
-          path: dist/*.whl
-
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: ${{ secrets.PYPI_PWD }}
+          PYPI_PWD: "asdfasdjggaelkri"
         run: |
           cd python
-          python build.py try_upload --skip_build && bash <(curl -s https://codecov.io/bash)
+          python build.py try_upload
+          cd ..
+          bash <(curl -s https://codecov.io/bash)
