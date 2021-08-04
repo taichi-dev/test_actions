@@ -91,15 +91,15 @@ jobs:
           - os: windows-latest
             python: 3.6
             with_cc: OFF
-          - os: windows-latest
-            python: 3.7
-            with_cc: OFF
-          - os: windows-latest
-            python: 3.8
-            with_cc: OFF
-          - os: windows-latest
-            python: 3.9
-            with_cc: OFF
+            # - os: windows-latest
+            #   python: 3.7
+            #   with_cc: OFF
+            # - os: windows-latest
+            #   python: 3.8
+            #   with_cc: OFF
+            # - os: windows-latest
+            #   python: 3.9
+            #   with_cc: OFF
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install 7Zip PowerShell
@@ -126,7 +126,7 @@ jobs:
           $env:PATH += ";C:\taichi_llvm\bin"
           $env:PATH += ";C:\taichi_clang\bin"
           clang --version
-          cd D:\a\taichi\taichi
+          cd D:\a\test_actions\test_actions
           python -m pip install --user numpy pybind11 gitpython
           python misc/ci_setup.py ci
           cd python
