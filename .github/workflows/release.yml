@@ -131,7 +131,6 @@ jobs:
           python misc/ci_setup.py ci
           cd python
           python build.py build
-          python -m pip uninstall taichi -y
         env:
           CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
 
