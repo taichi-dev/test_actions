@@ -128,7 +128,7 @@ jobs:
           $env:PATH += ";C:\taichi_clang\bin"
           clang --version
           cd D:\a\test_actions\test_actions
-          python -m pip install --user numpy pybind11 gitpython
+          python -m pip install --user numpy pybind11 gitpython pytest
           python setup.py develop
         env:
           CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
