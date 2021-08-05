@@ -47,37 +47,35 @@ jobs:
           export CXX=clang++
           # TODO: making changelog shouldn't depend on taichi.
           # We currently install taichi to make changelog when building the wheel.
-          python misc/ci_setup.py ci
+          python setup.py develop
 
-      - name: Install Wheel and Test
-        run: |
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          NUM_WHL=`ls dist/*.whl | wc -l`
-          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1 ; fi
-          pip install dist/*.whl
-          python examples/algorithm/laplace.py
-          ti diagnose
-          ti test -vr2 -t2
-          
-      - name: Archive Wheel Artifacts
-        # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          # While ${{ github.ref }} does provide the release tag, it is of
-          # format `refs/tags/<tag_name>`, which isn't a valid file path.
-          name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
-          path: dist/*.whl
+          #- name: Install Wheel and Test
+          #  run: |
+          #    TAICHI_REPO_DIR=`pwd`
+          #    export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+          #    NUM_WHL=`ls dist/*.whl | wc -l`
+          #    if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1 ; fi
+          #    pip install dist/*.whl
+          #    python examples/algorithm/laplace.py
+          #    ti diagnose
+          #    ti test -vr2 -t2
+          #    
+          #- name: Archive Wheel Artifacts
+          #  # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
+          #  uses: actions/upload-artifact@v2
+          #  with:
+          #    # While ${{ github.ref }} does provide the release tag, it is of
+          #    # format `refs/tags/<tag_name>`, which isn't a valid file path.
+          #    name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
+          #    path: dist/*.whl
 
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PYPI_PWD: "sjaaeriguhbnaeikd"
         run: |
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
           cd python
-          python build.py try_upload && bash <(curl -s https://codecov.io/bash)
+          python build.py upload
 
   build_and_test_windows:
     name: Build and Test (windows only)
@@ -124,7 +122,7 @@ jobs:
           clang --version
           cd D:\a\test_actions\test_actions
           python -m pip install --user numpy pybind11 gitpython
-          python misc/ci_setup.py ci
+          python setup.py develop
         env:
           CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
 
@@ -143,4 +141,5 @@ jobs:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PYPI_PWD: "asdfasdjggaelkri"
         run: |
-          python build.py try_upload
+          cd python
+          python build.py upload
