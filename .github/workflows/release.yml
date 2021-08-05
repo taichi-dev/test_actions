@@ -47,6 +47,7 @@ jobs:
           export CXX=clang++
           # TODO: making changelog shouldn't depend on taichi.
           # We currently install taichi to make changelog when building the wheel.
+          python -m pip install --user numpy pybind11 gitpython
           python setup.py develop
 
           #- name: Install Wheel and Test
