@@ -6,6 +6,7 @@ on:
     - cron: "*/5 * * * *"
 
 jobs:
+  name: schedule test
   runs-on: ubuntu-latest
   steps:
     - name: test
