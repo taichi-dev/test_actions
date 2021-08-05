@@ -58,7 +58,6 @@ jobs:
           python examples/algorithm/laplace.py
           ti diagnose
           ti test -t2
-          echo "${{ github.event.action }}"
 
           #    
           #- name: Archive Wheel Artifacts
@@ -139,7 +138,6 @@ jobs:
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
           python bin/taichi test
-          echo "${{ github.event.action }}"
 
       - name: Upload PyPI
         shell: powershell
