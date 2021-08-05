@@ -1,7 +1,5 @@
 name: Test Schedule
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   schedule:
     - cron: "*/5 * * * *"
 

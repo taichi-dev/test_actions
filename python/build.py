@@ -110,7 +110,7 @@ def main():
     elif mode == 'upload':
         dist_repo = '../dist/*'
         if get_os_name() == 'win':
-            dist_repo = '/dist/*'
+            dist_repo = '../../dist/*'
         os.system('{} -m twine upload {} {} --verbose -u {}'.format(
             get_python_executable(), pypi_repo, dist_repo, pypi_user))
     elif mode == 'test':

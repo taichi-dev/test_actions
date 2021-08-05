@@ -146,8 +146,8 @@ jobs:
           PYPI_PWD: "asdfasdjggaelkri"
         run: |
           pwd
-          cd
+          dir
           cd python
           pwd
-          cd
+          dir
           python build.py upload
