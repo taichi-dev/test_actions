@@ -42,10 +42,12 @@ def build(project_name):
             f'cd ..; PROJECT_NAME={project_name} {get_python_executable()} setup.py bdist_wheel -p manylinux1_x86_64'
         )
     else:
+        print("Starting to build wheel")
         os.environ['PROJECT_NAME'] = f'{project_name}'
         os.system(
-            f'cd ..; {get_python_executable()} setup.py bdist_wheel'
+            f'cd .. && {get_python_executable()} setup.py bdist_wheel'
         )
+        print("Finishing build wheel")
 
     try:
         os.remove('taichi/CHANGELOG.md')
@@ -111,7 +113,7 @@ def main():
     elif mode == 'upload':
         dist_repo = '../dist/*'
         if get_os_name() == 'win':
-            dist_repo = '../../dist/*'
+            dist_repo = '../dist/*'
         os.system('{} -m twine upload {} {} --verbose -u {}'.format(
             get_python_executable(), pypi_repo, dist_repo, pypi_user))
     elif mode == 'test':
