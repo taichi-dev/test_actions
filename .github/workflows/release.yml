@@ -50,14 +50,14 @@ jobs:
           export CXX=clang++
           # TODO: making changelog shouldn't depend on taichi.
           # We currently install taichi to make changelog when building the wheel.
-          python -m pip install --user numpy pybind11 gitpython
+          python -m pip install --user numpy pybind11 gitpython pytest
           python setup.py develop
 
       - name: Test
         run: |
           python examples/algorithm/laplace.py
           ti diagnose
-          ti test -t2
+          ti test -Cvr2 -t2
           echo "${{ github.event.action }}"
 
           #    
@@ -138,7 +138,7 @@ jobs:
           python -c "import taichi"
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
-          python bin/taichi test -t2
+          python bin/taichi test -Cvr2 -t2
           echo "${{ github.event.action }}"
 
       - name: Upload PyPI
