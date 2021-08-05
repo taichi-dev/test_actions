@@ -57,7 +57,7 @@ jobs:
         run: |
           python examples/algorithm/laplace.py
           ti diagnose
-          ti test -Cvr2 -t2
+          ti test -t2
           echo "${{ github.event.action }}"
 
           #    
@@ -138,10 +138,11 @@ jobs:
           python -c "import taichi"
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
-          python bin/taichi test -Cvr2 -t2
+          python bin/taichi test
           echo "${{ github.event.action }}"
 
       - name: Upload PyPI
+        shell: powershell
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PYPI_PWD: "asdfasdjggaelkri"
