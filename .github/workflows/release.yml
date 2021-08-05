@@ -7,75 +7,75 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build_and_test_mac:
-    name: Build and Test (macOS only)
-    strategy:
-      matrix:
-        include:
-          - os: macos-latest
-            python: 3.6
-            with_cc: OFF
-            # - os: macos-latest
-            #   python: 3.7
-            #   with_cc: OFF
-            # - os: macos-latest
-            #   python: 3.8
-            #   with_cc: OFF
-            # - os: macos-latest
-            #   python: 3.9
-            #   with_cc: OFF
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
-
-      - name: Create Python Wheel
-        run: |
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export CXX=clang++
-          # TODO: making changelog shouldn't depend on taichi.
-          # We currently install taichi to make changelog when building the wheel.
-          python -m pip install --user numpy pybind11 gitpython pytest
-          python setup.py develop
-
-      - name: Test
-        run: |
-          python examples/algorithm/laplace.py
-          ti diagnose
-          ti test -cvr2 -t2
-
-          #    
-          #- name: Archive Wheel Artifacts
-          #  # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
-          #  uses: actions/upload-artifact@v2
-          #  with:
-          #    # While ${{ github.ref }} does provide the release tag, it is of
-          #    # format `refs/tags/<tag_name>`, which isn't a valid file path.
-          #    name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
-          #    path: dist/*.whl
-
-      - name: Upload PyPI
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: "sjaaeriguhbnaeikd"
-        run: |
-          cd python
-          python build.py upload
+  #  build_and_test_mac:
+  #    name: Build and Test (macOS only)
+  #    strategy:
+  #      matrix:
+  #        include:
+  #          - os: macos-latest
+  #            python: 3.6
+  #            with_cc: OFF
+  #            # - os: macos-latest
+  #            #   python: 3.7
+  #            #   with_cc: OFF
+  #            # - os: macos-latest
+  #            #   python: 3.8
+  #            #   with_cc: OFF
+  #            # - os: macos-latest
+  #            #   python: 3.9
+  #            #   with_cc: OFF
+  #    runs-on: ${{ matrix.os }}
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #        with:
+  #          submodules: 'recursive'
+  #
+  #      - uses: actions/setup-python@v2
+  #        with:
+  #          python-version: ${{ matrix.python }}
+  #
+  #      - name: Download Pre-Built LLVM 10.0.0
+  #        run: |
+  #          python misc/ci_download.py
+  #          mkdir taichi-llvm
+  #          cd taichi-llvm
+  #          unzip ../taichi-llvm.zip
+  #        env:
+  #          CI_PLATFORM: ${{ matrix.os }}
+  #
+  #      - name: Create Python Wheel
+  #        run: |
+  #          TAICHI_REPO_DIR=`pwd`
+  #          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
+  #          export CXX=clang++
+  #          # TODO: making changelog shouldn't depend on taichi.
+  #          # We currently install taichi to make changelog when building the wheel.
+  #          python -m pip install --user numpy pybind11 gitpython pytest
+  #          python setup.py develop
+  #
+  #      - name: Test
+  #        run: |
+  #          python examples/algorithm/laplace.py
+  #          ti diagnose
+  #          ti test -cvr2 -t2
+  #
+  #          #    
+  #          #- name: Archive Wheel Artifacts
+  #          #  # https://docs.github.com/en/actions/guides/storing-workflow-data-as-artifacts#uploading-build-and-test-artifacts
+  #          #  uses: actions/upload-artifact@v2
+  #          #  with:
+  #          #    # While ${{ github.ref }} does provide the release tag, it is of
+  #          #    # format `refs/tags/<tag_name>`, which isn't a valid file path.
+  #          #    name: taichi-py${{ matrix.python }}-${{ matrix.os }}.whl
+  #          #    path: dist/*.whl
+  #
+  #      - name: Upload PyPI
+  #        env:
+  #          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
+  #          PYPI_PWD: "sjaaeriguhbnaeikd"
+  #        run: |
+  #          cd python
+  #          python build.py upload
 
   build_and_test_windows:
     name: Build and Test (windows only)
@@ -145,5 +145,9 @@ jobs:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PYPI_PWD: "asdfasdjggaelkri"
         run: |
+          pwd
+          cd
           cd python
+          pwd
+          cd
           python build.py upload

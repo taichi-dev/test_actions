@@ -108,8 +108,11 @@ def main():
     if mode == 'build':
         return
     elif mode == 'upload':
-        os.system('{} -m twine upload {} ../dist/* --verbose -u {}'.format(
-            get_python_executable(), pypi_repo, pypi_user))
+        dist_repo = '../dist/*'
+        if get_os_name() == 'win':
+            dist_repo = '/dist/*'
+        os.system('{} -m twine upload {} {} --verbose -u {}'.format(
+            get_python_executable(), pypi_repo, dist_repo, pypi_user))
     elif mode == 'test':
         print('Uninstalling old taichi packages...')
         os.system(
