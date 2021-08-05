@@ -6,7 +6,7 @@ on:
     - cron: "*/5 * * * *"
 
 jobs:
-  runs-on: macos
+  runs-on: ubuntu-latest
   steps:
     - name: test
       run: |

@@ -57,7 +57,7 @@ jobs:
         run: |
           python examples/algorithm/laplace.py
           ti diagnose
-          ti test -t2
+          ti test -cvr2 -t2
 
           #    
           #- name: Archive Wheel Artifacts
@@ -137,7 +137,7 @@ jobs:
           python -c "import taichi"
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
-          python bin/taichi test
+          python bin/taichi test -cvr2 -t2
 
       - name: Upload PyPI
         shell: powershell
