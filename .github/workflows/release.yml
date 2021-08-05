@@ -48,10 +48,6 @@ jobs:
           # TODO: making changelog shouldn't depend on taichi.
           # We currently install taichi to make changelog when building the wheel.
           python misc/ci_setup.py ci
-          cd python
-          python build.py build
-          # Uninstall taichi to make sure we test the wheel.
-          pip uninstall taichi -y
 
       - name: Install Wheel and Test
         run: |
@@ -81,7 +77,7 @@ jobs:
           TAICHI_REPO_DIR=`pwd`
           export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
           cd python
-          python build.py try_upload --skip_build && bash <(curl -s https://codecov.io/bash)
+          python build.py try_upload && bash <(curl -s https://codecov.io/bash)
 
   build_and_test_windows:
     name: Build and Test (windows only)
@@ -129,8 +125,6 @@ jobs:
           cd D:\a\test_actions\test_actions
           python -m pip install --user numpy pybind11 gitpython
           python misc/ci_setup.py ci
-          cd python
-          python build.py build
         env:
           CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
 
