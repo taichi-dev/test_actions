@@ -149,7 +149,4 @@ jobs:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PYPI_PWD: "asdfasdjggaelkri"
         run: |
-          cd python
           python build.py try_upload
-          cd ..
-          bash <(curl -s https://codecov.io/bash)
