@@ -27,10 +27,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-          submodules: 'recursive'
 
       - name: Download Pre-Built LLVM 10.0.0
         run: |
@@ -103,10 +105,12 @@ jobs:
         run: Install-Module 7Zip4PowerShell -Force -Verbose
 
       - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+          
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-          submodules: 'recursive'
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
