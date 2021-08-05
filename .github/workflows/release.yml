@@ -55,11 +55,6 @@ jobs:
 
       - name: Test
         run: |
-        #    TAICHI_REPO_DIR=`pwd`
-        #    export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-        #    NUM_WHL=`ls dist/*.whl | wc -l`
-        #    if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1 ; fi
-        #    pip install dist/*.whl
           python examples/algorithm/laplace.py
           ti diagnose
           ti test -t2
