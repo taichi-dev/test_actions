@@ -2,9 +2,8 @@ name: Presubmit Checks
 on:
   release:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
-    types: [published]
-    # pull_request:
-    # types: [opened, synchronize, reopened]
+    pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   title_format:

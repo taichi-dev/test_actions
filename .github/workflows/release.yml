@@ -1,10 +1,8 @@
 name: Publishing Release
 on:
-  # release:
-  #   # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
-  #   types: [published]
-  pull_request:
-    types: [opened, synchronize, reopened]
+  release:
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
+    types: [published]
 
 jobs:
   build_and_test_mac:
