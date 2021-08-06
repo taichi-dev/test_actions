@@ -1,5 +1,7 @@
 name: Test Schedule
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   schedule:
     - cron: "*/5 * * * *"
 
@@ -11,4 +13,5 @@ jobs:
       - name: test
         run: |
           echo "${{ github.event.action }}"
+          echo "${{ github.event }}"
           echo "Triggered every 5 minites!"
