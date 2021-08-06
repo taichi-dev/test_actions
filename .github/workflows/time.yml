@@ -18,9 +18,9 @@ jobs:
         run: |
           echo "${{ github.event.action }}"
           echo "Triggered every 5 minites!"
-          if ([string]::IsNullOrEmpty(${{ github.event.action }})) {$env:RELEASE = "$NIGHT_PWD"}
-          if ([string]::IsNullOrEmpty(${{ github.event.action }})) {echo "running nightly"}
-          if ( -not [string]::IsNullOrEmpty(${{ github.event.action }})) {$env:RELEASE = "$PROD_PWD"}
-          if ( -not [string]::IsNullOrEmpty(${{ github.event.action }})) {echo "running production"}
+          if ([string]::IsNullOrEmpty("${{ github.event.action }}")) {$env:RELEASE = "$NIGHT_PWD"}
+          if ([string]::IsNullOrEmpty("${{ github.event.action }}")) {echo "running nightly"}
+          if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {$env:RELEASE = "$PROD_PWD"}
+          if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {echo "running production"}
           echo $RELEASE
 
