@@ -14,9 +14,9 @@ jobs:
         run: |
           echo "${{ github.event.action }}"
           echo "Triggered every 5 minites!"
-          [ -z "${{ github.event.action }}" ] && $RELEASE="perform nightly release"
+          [ -z "${{ github.event.action }}" ] && export RELEASE="perform nightly release"
           [ -z "${{ github.event.action }}" ] && ls
-          [ -z "${{ github.event.action }}" ] || $RELEASE="perform production release"
+          [ -z "${{ github.event.action }}" ] || export RELEASE="perform production release"
           [ -z "${{ github.event.action }}" ] || pwd
           echo $RELEASE
 
