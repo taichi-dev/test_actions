@@ -45,6 +45,8 @@ jobs:
   
       - name: Create Python Wheel
         run: |
+          TAICHI_REPO_DIR=`pwd`
+          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
           export CXX=clang++
           python -m pip install --user numpy pybind11 gitpython pytest
           python setup.py develop
