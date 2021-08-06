@@ -45,6 +45,7 @@ jobs:
   
       - name: Create Python Wheel
         run: |
+          export CXX=clang++
           python -m pip install --user numpy pybind11 gitpython pytest
           python setup.py develop
   
