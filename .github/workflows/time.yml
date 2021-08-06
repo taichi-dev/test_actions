@@ -22,5 +22,5 @@ jobs:
           if ([string]::IsNullOrEmpty("${{ github.event.action }}")) {echo "running nightly"}
           if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {$env:RELEASE = "$PROD_PWD"}
           if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {echo "running production"}
-          echo $env:RELEASE
+          echo "$env:RELEASE"
 
