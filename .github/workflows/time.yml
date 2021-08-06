@@ -2,8 +2,8 @@ name: Test Schedule
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  schedule:
-    - cron: "*/5 * * * *"
+    #schedule:
+    #  - cron: "*/5 * * * *"
 
 jobs:
   test_schedule:
