@@ -8,10 +8,15 @@ on:
 jobs:
   test_schedule:
     name: schedule test
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: test
         run: |
           echo "${{ github.event.action }}"
-          echo "${{ github.event }}"
           echo "Triggered every 5 minites!"
+          [ -z "${{ github.event.action }}" ] && $RELEASE="perform nightly release"
+          [ -z "${{ github.event.action }}" ] && ls
+          [ -z "${{ github.event.action }}" ] || $RELEASE="perform production release"
+          [ -z "${{ github.event.action }}" ] || pwd
+          echo $RELEASE
+
