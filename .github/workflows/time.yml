@@ -1,0 +1,17 @@
+name: Test Schedule
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  test_schedule:
+    name: schedule test
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          echo "${{ github.event.action }}"
+          echo "${{ github.event }}"
+          echo "Triggered every 5 minites!"

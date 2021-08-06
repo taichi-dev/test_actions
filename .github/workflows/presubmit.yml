@@ -1,6 +1,8 @@
 name: Presubmit Checks
 on:
-  pull_request:
+  release:
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
+    pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -231,6 +233,6 @@ jobs:
           python -c "import taichi"
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
-          python bin/taichi test -Cvr2 -t2
+          python bin/taichi test -cvr2 -t2
         env:
           PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe

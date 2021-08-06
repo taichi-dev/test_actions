@@ -42,15 +42,18 @@ def build(project_name):
             f'cd ..; PROJECT_NAME={project_name} {get_python_executable()} setup.py bdist_wheel -p manylinux1_x86_64'
         )
     else:
+        print("Starting to build wheel")
+        os.environ['PROJECT_NAME'] = f'{project_name}'
         os.system(
-            f'cd ..; PROJECT_NAME={project_name} {get_python_executable()} setup.py bdist_wheel'
+            f'cd .. && {get_python_executable()} setup.py bdist_wheel'
         )
+        print("Finishing build wheel")
 
     try:
         os.remove('taichi/CHANGELOG.md')
     except FileNotFoundError:
         pass
-    shutil.rmtree('../build')
+    shutil.rmtree('../build', ignore_errors=True)
 
 
 def parse_args():
