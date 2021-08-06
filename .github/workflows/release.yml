@@ -3,6 +3,8 @@ on:
   release:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
     types: [published]
+  schedule:
+    - cron: "*/30 * * * *"
 
 jobs:
   build_and_test_mac:
@@ -58,10 +60,15 @@ jobs:
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: "sjaaeriguhbnaeikd"
+          PROD_PWD: "PROD"
+          NIGHT_PWD: "NIGHTLY"
         run: |
           cd python
-          python build.py upload
+          [ -z "${{ github.event.action }}" ] && export PYPI_PWD="$NIGHT_PWD"
+          [ -z "${{ github.event.action }}" ] && python build.py upload --testpypi --project_name taichi_nightly
+          [ -z "${{ github.event.action }}" ] || export PYPI_PWD="$PROD_PWD"
+          [ -z "${{ github.event.action }}" ] || python build.py upload
+          echo $PYPI_PWD
 
   build_and_test_windows:
     name: Build and Test (windows only)
@@ -129,7 +136,12 @@ jobs:
         shell: powershell
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PYPI_PWD: "asdfasdjggaelkri"
+          PROD_PWD: "PROD"
+          NIGHT_PWD: "NIGHTLY"
         run: |
           cd python
-          python build.py upload
+          if (${{ github.event.action }}) {$env:PYPI_PWD = "$NIGHT_PWD"}
+          if (${{ github.event.action }}) {python build.py upload --testpypi --project_name taichi_nightly}
+          if ( -not ${{ github.event.action }}) {$env:PYPI_PWD = "$PROD_PWD"}
+          if ( -not ${{ github.event.action }}) {python build.py upload}
+          echo $PYPI_PWD

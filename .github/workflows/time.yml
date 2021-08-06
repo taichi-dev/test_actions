@@ -8,15 +8,19 @@ on:
 jobs:
   test_schedule:
     name: schedule test
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
       - name: test
+        shell: powershell
+        env:
+          PROD_PWD: "PROD"
+          NIGHT_PWD: "NIGHTLY"
         run: |
           echo "${{ github.event.action }}"
           echo "Triggered every 5 minites!"
-          [ -z "${{ github.event.action }}" ] && export RELEASE="perform nightly release"
-          [ -z "${{ github.event.action }}" ] && ls
-          [ -z "${{ github.event.action }}" ] || export RELEASE="perform production release"
-          [ -z "${{ github.event.action }}" ] || pwd
+          if (${{ github.event.action }}) {$env:RELEASE = "$NIGHT_PWD"}
+          if (${{ github.event.action }}) {echo "running nightly"}
+          if ( -not ${{ github.event.action }}) {$env:RELEASE = "$PROD_PWD"}
+          if ( -not ${{ github.event.action }}) {echo "running production"}
           echo $RELEASE
 
