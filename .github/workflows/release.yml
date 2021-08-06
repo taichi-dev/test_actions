@@ -4,7 +4,7 @@ on:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
     types: [published]
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/10 * * * *"
 
 jobs:
   build_and_test_mac:
@@ -15,15 +15,15 @@ jobs:
           - os: macos-latest
             python: 3.6
             with_cc: OFF
-          - os: macos-latest
-            python: 3.7
-            with_cc: OFF
-          - os: macos-latest
-            python: 3.8
-            with_cc: OFF
-          - os: macos-latest
-            python: 3.9
-            with_cc: OFF
+            #- os: macos-latest
+            #  python: 3.7
+            #  with_cc: OFF
+            #- os: macos-latest
+            #  python: 3.8
+            #  with_cc: OFF
+            #- os: macos-latest
+            #  python: 3.9
+            #  with_cc: OFF
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -78,15 +78,15 @@ jobs:
           - os: windows-latest
             python: 3.6
             with_cc: OFF
-          - os: windows-latest
-            python: 3.7
-            with_cc: OFF
-          - os: windows-latest
-            python: 3.8
-            with_cc: OFF
-          - os: windows-latest
-            python: 3.9
-            with_cc: OFF
+            #- os: windows-latest
+            #  python: 3.7
+            #  with_cc: OFF
+            #- os: windows-latest
+            #  python: 3.8
+            #  with_cc: OFF
+            #- os: windows-latest
+            #  python: 3.9
+            #  with_cc: OFF
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install 7Zip PowerShell
@@ -140,8 +140,8 @@ jobs:
           NIGHT_PWD: "NIGHTLY"
         run: |
           cd python
-          if (${{ github.event.action }}) {$env:PYPI_PWD = "$NIGHT_PWD"}
-          if (${{ github.event.action }}) {python build.py upload --testpypi --project_name taichi_nightly}
-          if ( -not ${{ github.event.action }}) {$env:PYPI_PWD = "$PROD_PWD"}
-          if ( -not ${{ github.event.action }}) {python build.py upload}
-          echo $PYPI_PWD
+          if ([string]::IsNullOrEmpty("${{ github.event.action }}")) {$env:PYPI_PWD = "$env:NIGHT_PWD"}
+          if ([string]::IsNullOrEmpty("${{ github.event.action }}")) {python build.py upload --testpypi --project_name taichi_nightly}
+          if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {$env:PYPI_PWD = "$env:PROD_PWD"}
+          if ( -not [string]::IsNullOrEmpty("${{ github.event.action }}")) {python build.py upload}
+          echo "$env:PYPI_PWD"
