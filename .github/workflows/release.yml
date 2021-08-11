@@ -69,7 +69,7 @@ jobs:
           PYPI_PWD: asdigouhaewr
         run: |
           cd python
-          python build.py upload --skip-build
+          python build.py upload --skip_build
 
   build_and_upload_windows:
     name: Build and Upload (Windows only)
@@ -146,4 +146,4 @@ jobs:
           PYPI_PWD: ageasirlug
         run: |
           cd python
-          python build.py upload --skip-build
+          python build.py upload --skip_build
