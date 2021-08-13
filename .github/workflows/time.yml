@@ -1,0 +1,28 @@
+name: Time Test
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  mac:
+    name: test mac
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: get github sha
+        run: |
+          export COMMIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          echo $COMMIT_HASH
+
+  windows:
+    name: test windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: get github sha
+        shell: powershell
+        run: |
+          $env:COMMIT_HASH = $(git rev-parse --short "$GITHUB_SHA")
+          echo $env:COMMIT_HASH
