@@ -5,6 +5,8 @@ on:
     types: [published]
   schedule:
     - cron: "0 0 * * *"
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build_and_upload_mac:
