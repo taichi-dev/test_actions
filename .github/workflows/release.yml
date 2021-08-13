@@ -39,6 +39,8 @@ jobs:
           mkdir taichi-llvm
           cd taichi-llvm
           unzip ../taichi-llvm.zip
+          export COMMIT_SHA=$(git rev-parse --short "$GITHUB_SHA")
+          echo $COMMIT_SHA
         env:
           CI_PLATFORM: ${{ matrix.os }}
 
@@ -118,6 +120,8 @@ jobs:
       - name: Build Python Wheel
         shell: powershell
         run: |
+          $env:COMMIT_SHA = $(git rev-parse --short "$GITHUB_SHA")
+          echo $env:COMMIT_SHA
           echo $env:COMMIT_SHA
           echo $env:DATE
           cd C:\
