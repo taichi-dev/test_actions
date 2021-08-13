@@ -33,9 +33,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Set current date as env varible
-        run: echo "DATE::$(date + '%Y-%m-%d')" >> $GITHUB_ENV
-
       - name: Download Pre-Built LLVM 10.0.0
         run: |
           python misc/ci_download.py
@@ -65,7 +62,6 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           COMMIT_SHA: $GITHUB_SHA
-          DATE: $DATE
 
       - name: Test
         run: |
@@ -119,9 +115,6 @@ jobs:
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - name: Set current date as env varible
-        run: echo "DATE::$(date + '%Y-%m-%d')" >> $GITHUB_ENV
-
       - name: Build Python Wheel
         shell: powershell
         run: |
@@ -149,7 +142,6 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
           COMMIT_SHA: $GITHUB_SHA
-          DATE: $DATE
 
       - name: Test
         shell: powershell
