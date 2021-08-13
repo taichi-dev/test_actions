@@ -1,12 +1,9 @@
 name: Publishing Release
 on:
-  release:
-    # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
-    types: [published]
-  schedule:
-    - cron: "0 0 * * *"
   pull_request:
     types: [opened, synchronize, reopened]
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   build_and_upload_mac:
