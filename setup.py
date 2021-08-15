@@ -36,7 +36,7 @@ print(data_files)
 packages = find_packages('python')
 print(packages)
 
-# OKAY Our python package root dir is python/
+# Our python package root dir is python/
 package_dir = 'python'
 
 
