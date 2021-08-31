@@ -1,7 +1,7 @@
 name: Presubmit Checks
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  release:
+    types: [published]
 
 jobs:
   title_format:
