@@ -42,6 +42,10 @@ jobs:
 
       - name: Build
         run: |
+          export PATH=/Users/github/miniconda/envs/3.6/bin:$PATH
+          export PATH=/Users/github/miniconda/envs/3.7/bin:$PATH
+          export PATH=/Users/github/miniconda/envs/3.8/bin:$PATH
+          export PATH=/Users/github/miniconda/envs/3.9/bin:$PATH
           which conda
           which python3
           conda activate $PYTHON
