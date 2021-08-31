@@ -15,7 +15,6 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          # For nightly release, we only run on python 3.8
           [ -z "${{ github.event.action }}" ] && matrix="[{\"name\":\"taichi-nightly\",\"python\":\"3.8\"}]"
           # For production release, we run on four python versions.
           [ -z "${{ github.event.action }}" ] || matrix="[{\"name\":\"taichi\",\"python\":\"3.6\"},{\"name\":\"taichi\",\"python\":\"3.7\"},{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
