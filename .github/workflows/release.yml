@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, m1]
     defaults:
       run:
-        shell: bash -l {0}
+        shell: /usr/bin/arch -arch arm64e /bin/bash -l {0}
     steps:
       - uses: actions/checkout@v2
         with:
