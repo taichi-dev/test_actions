@@ -42,10 +42,8 @@ jobs:
 
       - name: Build
         run: |
-          conda env list
-          echo $PYTHON
-          echo $PATH
           conda activate $PYTHON
+          python3 --version
           python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
@@ -70,6 +68,6 @@ jobs:
           PROJECT_NAME: ${{ matrix.name }}
         run: |
           cd python
-          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
-          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python build.py upload --skip_build; fi
+          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
+          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
           conda deactivate
