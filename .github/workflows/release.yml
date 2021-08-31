@@ -43,23 +43,15 @@ jobs:
       - name: Build
         run: |
           export PATH=/Users/github/miniconda/envs/$PYTHON/bin:$PATH
-          which conda
-          which python3
           conda activate $PYTHON
-          conda env list
-          which python3
-          which python
-          python --version
-          echo $PYTHON
-          python3 --version
           python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
-          #python3 -m pip install -r requirements_dev.txt
+          python3 -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
           export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          #python3 build.py build --project_name $PROJECT_NAME
+          python3 build.py build --project_name $PROJECT_NAME
           cd ..
           export NUM_WHL=`ls dist/*.whl | wc -l`
           if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
