@@ -33,6 +33,7 @@ jobs:
 
       - name: Build
         run: |
+          conda init zsh
           conda activate $PYTHON
           python3 -m pip uninstall taichi -y
           git --version
