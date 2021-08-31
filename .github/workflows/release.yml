@@ -42,6 +42,8 @@ jobs:
 
       - name: Build
         run: |
+          which conda
+          echo $PYTHON
           conda activate $PYTHON
           python3 --version
           python3 -m pip uninstall taichi -y
