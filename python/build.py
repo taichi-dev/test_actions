@@ -36,8 +36,8 @@ def build(project_name):
             get_python_executable()))
 
     os.system(
-        f'{get_python_executable()} ../misc/make_changelog.py origin/master ../ True'
-    )
+        '{} ../misc/make_changelog.py origin/master ../ True'.format(
+            get_python_executable()))
 
     # This env var is used in setup.py below.
     os.environ['PROJECT_NAME'] = project_name
