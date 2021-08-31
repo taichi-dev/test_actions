@@ -36,9 +36,9 @@ jobs:
 
       - name: Build
         run: |
-          export MACOSX_DEPLOYMENT_TARGET=11
-          export PATH=/Users/github/miniconda/envs/$PYTHON/bin:$PATH
           conda activate $PYTHON
+          arch -arm64 python3 -m pip uninstall taichi -y
+          export PATH=/Users/github/miniconda/envs/$PYTHON/bin:$PATH
           arch -arm64 python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
