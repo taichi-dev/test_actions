@@ -54,7 +54,6 @@ jobs:
 
       - name: Upload PyPI
         env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
           PROD_PWD: asdf
           NIGHT_PWD: zxcv
           PROJECT_NAME: ${{ matrix.name }}
