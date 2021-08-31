@@ -42,9 +42,10 @@ jobs:
 
       - name: Build
         run: |
-          source ~/.bash_profile
           which conda
+          which python3
           conda activate $PYTHON
+          conda env list
           which python3
           echo $PYTHON
           python3 --version
