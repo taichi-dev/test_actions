@@ -42,15 +42,15 @@ jobs:
           python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
-          #python3 -m pip install -r requirements_dev.txt
+          python3 -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
           export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          #python3 build.py build --project_name $PROJECT_NAME
+          python3 build.py build --project_name $PROJECT_NAME
           cd ..
           export NUM_WHL=`ls dist/*.whl | wc -l`
           if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          #python3 -m pip install dist/*.whl
+          python3 -m pip install dist/*.whl
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_TESTS:BOOL=ON
           PROJECT_NAME: ${{ matrix.name }}
