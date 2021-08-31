@@ -47,6 +47,8 @@ jobs:
           conda activate $PYTHON
           conda env list
           which python3
+          which python
+          python --version
           echo $PYTHON
           python3 --version
           python3 -m pip uninstall taichi -y
