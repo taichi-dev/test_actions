@@ -31,9 +31,14 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: ${{ matrix.python }}
+          python-version: ${{ matrix.python }}
+          channels: conda-forge
+
       - name: Build
         run: |
-          conda activate $PYTHON
           python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
@@ -49,7 +54,6 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_TESTS:BOOL=ON
           PROJECT_NAME: ${{ matrix.name }}
-          PYTHON: ${{ matrix.python }}
 
       - name: Upload PyPI
         env:
@@ -60,4 +64,3 @@ jobs:
           cd python
           if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
           elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python build.py upload --skip_build; fi
-          conda deactivate
