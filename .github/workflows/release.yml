@@ -40,6 +40,7 @@ jobs:
       - name: Build
         run: |
           export PATH=/Users/github/miniforge3/bin:$PATH
+          conda init bash
           conda activate $PYTHON
           which python3
           exit 1
