@@ -40,11 +40,8 @@ jobs:
       - name: Build
         run: |
           conda activate $PYTHON
-          which python3
           export PATH=/Users/github/miniforge3/envs/$PYTHON/bin:$PATH
-          which python3
           arch -arm64 python3 -m pip uninstall taichi -y
-          exit 1
           git --version
           export CXX=clang++
           arch -arm64 python3 -m pip install -r requirements_dev.txt
