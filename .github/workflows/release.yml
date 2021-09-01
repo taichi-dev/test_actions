@@ -31,7 +31,7 @@ jobs:
     runs-on: [self-hosted, m1]
     defaults:
       run:
-        shell: /bin/bash -l {0}
+        shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
     steps:
       - uses: actions/checkout@v2
         with:
@@ -39,20 +39,22 @@ jobs:
 
       - name: Build
         run: |
+          export PATH=/Users/github/miniforge3/bin:$PATH
           conda activate $PYTHON
-          export PATH=/Users/github/miniforge3/envs/$PYTHON/bin:$PATH
-          arch -arm64 python3 -m pip uninstall taichi -y
+          which python3
+          exit 1
+          python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
-          arch -arm64 python3 -m pip install -r requirements_dev.txt
+          python3 -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
           export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          arch -arm64 python3 build.py build --project_name $PROJECT_NAME
+          python3 build.py build --project_name $PROJECT_NAME
           cd ..
           export NUM_WHL=`ls dist/*.whl | wc -l`
           if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          arch -arm64 python3 -m pip install dist/*.whl
+          python3 -m pip install dist/*.whl
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_TESTS:BOOL=ON
           PROJECT_NAME: ${{ matrix.name }}
