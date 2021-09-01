@@ -38,7 +38,7 @@ jobs:
         run: |
           conda activate $PYTHON
           arch -arm64 python3 -m pip uninstall taichi -y
-          export PATH=/Users/github/miniconda/envs/$PYTHON/bin:$PATH
+          export PATH=/Users/github/miniconda/envs/3.9/bin:$PATH
           arch -arm64 python3 -m pip uninstall taichi -y
           git --version
           export CXX=clang++
