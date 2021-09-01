@@ -16,9 +16,11 @@ jobs:
       - id: set-matrix
         run: |
           [ -z "${{ github.event.action }}" ] && matrix="[{\"name\":\"taichi-nightly\",\"python\":\"3.8\"}]"
-          # For production release, we run on four python versions.
           [ -z "${{ github.event.action }}" ] || matrix="[{\"name\":\"taichi\",\"python\":\"3.6\"},{\"name\":\"taichi\",\"python\":\"3.7\"},{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
           echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
+          [ -z "${{ github.event.action }}" ] && matrix_osx="[{\"name\":\"taichi-nightly\",\"python\":\"3.8\"}]"
+          [ -z "${{ github.event.action }}" ] || matrix_osx="[{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
+          echo ::set-output name=matrix_osx::{\"include\":$(echo $matrix_osx)}\"
 
   build_and_upload_m1:
     name: Build and Upload (Apple M1)
@@ -40,8 +42,8 @@ jobs:
           which python3
           export PATH=/Users/github/miniforge3/envs/$PYTHON/bin:$PATH
           which python3
-          exit 1
           arch -arm64 python3 -m pip uninstall taichi -y
+          exit 1
           git --version
           export CXX=clang++
           arch -arm64 python3 -m pip install -r requirements_dev.txt
