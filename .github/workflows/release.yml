@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix_osx: ${{ steps.set-matrix.outputs.matrix_osx }}
     steps:
       - id: set-matrix
         run: |
