@@ -244,7 +244,7 @@ jobs:
 
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.6
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
@@ -283,7 +283,7 @@ jobs:
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
           python bin/taichi changelog
-          python bin/taichi test -vr2 -t2
+          python bin/taichi test -vr2 -t2 -s
         env:
           PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
 
