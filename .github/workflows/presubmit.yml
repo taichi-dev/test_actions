@@ -223,6 +223,7 @@ jobs:
           ti changelog
           ti test -vr2 -t4 -k "not ndarray"
           ti test -vr2 -t1 -k "ndarray"
+          ti test -vr2 -t2 -k "not ndarray"
 
           #  build_and_test_windows:
           #    name: Build and Test (Windows)
