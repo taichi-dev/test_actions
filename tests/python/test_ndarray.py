@@ -113,6 +113,18 @@ def test_ndarray_2d():
             assert b[i, j] == i * j + (i + j + 1) * 2
 
 
+@pytest.mark.skipif(not ti.has_pytorch(), reason='Pytorch not installed.')
+@ti.test(exclude=ti.opengl)
+def test_ndarray_numpy_io():
+    n = 7
+    m = 4
+    a = ti.ndarray(ti.i32, shape=(n, m))
+    a.fill(2)
+    b = ti.ndarray(ti.i32, shape=(n, m))
+    b.from_numpy(np.ones((n, m), dtype=np.int32) * 2)
+    assert (a.to_numpy() == b.to_numpy()).all()
+
+
 @pytest.mark.parametrize('layout', layouts)
 @pytest.mark.skipif(not ti.has_pytorch(), reason='Pytorch not installed.')
 @ti.test(exclude=ti.opengl)
@@ -135,6 +147,25 @@ def test_matrix_ndarray_taichi_scope(layout):
     @ti.kernel
     def func(a: ti.any_arr(element_shape=(2, 2), layout=layout)):
         for i in range(5):
+            for j, k in ti.ndrange(2, 2):
+                a[i][j, k] = j * j + k * k
+
+    m = ti.Matrix.ndarray(2, 2, ti.i32, 5, layout=layout)
+    func(m)
+    assert m[0][0, 0] == 0
+    assert m[1][0, 1] == 1
+    assert m[2][1, 0] == 1
+    assert m[3][1, 1] == 2
+    assert m[4][0, 1] == 1
+
+
+@pytest.mark.parametrize('layout', layouts)
+@pytest.mark.skipif(not ti.has_pytorch(), reason='Pytorch not installed.')
+@ti.test(exclude=ti.opengl)
+def test_matrix_ndarray_taichi_scope_struct_for(layout):
+    @ti.kernel
+    def func(a: ti.any_arr(element_shape=(2, 2), layout=layout)):
+        for i in a:
             for j, k in ti.ndrange(2, 2):
                 a[i][j, k] = j * j + k * k
 
