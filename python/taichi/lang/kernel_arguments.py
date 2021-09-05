@@ -1,42 +1,30 @@
 from taichi.core.primitive_types import u64
 from taichi.core.util import ti_core as _ti_core
+from taichi.lang.any_array import AnyArray
 from taichi.lang.enums import Layout
 from taichi.lang.expr import Expr
-from taichi.lang.ext_array import AnyArray, ExtArray
 from taichi.lang.snode import SNode
 from taichi.lang.sparse_matrix import SparseMatrixBuilder
 from taichi.lang.util import cook_dtype, to_taichi_type
 
 
-class ArgExtArray:
+def ext_arr():
     """Type annotation for external arrays.
 
-    External array is formally defined as the data from other Python frameworks.
+    External arrays are formally defined as the data from other Python frameworks.
     For now, Taichi supports numpy and pytorch.
 
-    Args:
-        dim (int, optional): must be 1.
+    Example::
+
+        >>> @ti.kernel
+        >>> def to_numpy(arr: ti.ext_arr()):
+        >>>     for i in x:
+        >>>         arr[i] = x[i]
+        >>>
+        >>> arr = numpy.zeros(...)
+        >>> to_numpy(arr)  # `arr` will be filled with `x`'s data.
     """
-    def __init__(self, dim=1):
-        assert dim == 1
-
-    def extract(self, x):
-        return to_taichi_type(x.dtype), len(x.shape)
-
-
-ext_arr = ArgExtArray
-"""Alias for :class:`~taichi.lang.kernel_arguments.ArgExtArray`.
-
-Example::
-
-    >>> @ti.kernel
-    >>> def to_numpy(arr: ti.ext_arr()):
-    >>>     for i in x:
-    >>>         arr[i] = x[i]
-    >>>
-    >>> arr = numpy.zeros(...)
-    >>> to_numpy(arr)  # `arr` will be filled with `x`'s data.
-"""
+    return ArgAnyArray()
 
 
 class ArgAnyArray:
@@ -176,12 +164,6 @@ def decl_scalar_arg(dtype):
     return Expr(_ti_core.make_arg_load_expr(arg_id, dtype))
 
 
-def decl_ext_arr_arg(dtype, dim):
-    dtype = cook_dtype(dtype)
-    arg_id = _ti_core.decl_arg(dtype, True)
-    return ExtArray(_ti_core.make_external_tensor_expr(dtype, dim, arg_id))
-
-
 def decl_sparse_matrix():
     ptr_type = cook_dtype(u64)
     # Treat the sparse matrix argument as a scalar since we only need to pass in the base pointer
@@ -192,8 +174,12 @@ def decl_sparse_matrix():
 def decl_any_arr_arg(dtype, dim, element_shape, layout):
     dtype = cook_dtype(dtype)
     arg_id = _ti_core.decl_arg(dtype, True)
-    return AnyArray(_ti_core.make_external_tensor_expr(dtype, dim, arg_id),
-                    element_shape, layout)
+    element_dim = len(element_shape)
+    if layout == Layout.AOS:
+        element_dim = -element_dim
+    return AnyArray(
+        _ti_core.make_external_tensor_expr(dtype, dim, arg_id, element_dim),
+        element_shape, layout)
 
 
 def decl_scalar_ret(dtype):
