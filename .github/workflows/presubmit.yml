@@ -171,4 +171,4 @@ jobs:
           python examples/algorithm/laplace.py
           python bin/taichi diagnose
           python bin/taichi changelog
-          python bin/taichi test -vr2 -t2 -s
+          python bin/taichi test -vr2 -t2
