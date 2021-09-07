@@ -1,5 +1,10 @@
 name: Publishing Release
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
   release:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
     types: [published]
@@ -175,7 +180,8 @@ jobs:
           $env:PATH += ";C:\taichi_llvm\bin"
           $env:PATH += ";C:\taichi_clang\bin"
           clang --version
-          cd D:\a\taichi\taichi
+          mkdir D:\a\taichi\test_actions
+          cd D:\a\taichi\test_actions
           python -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
