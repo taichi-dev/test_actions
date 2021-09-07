@@ -180,8 +180,7 @@ jobs:
           $env:PATH += ";C:\taichi_llvm\bin"
           $env:PATH += ";C:\taichi_clang\bin"
           clang --version
-          mkdir D:\a\taichi\test_actions
-          cd D:\a\taichi\test_actions
+          cd D:\a\test_actions\test_actions
           python -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
