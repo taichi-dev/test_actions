@@ -49,67 +49,6 @@ jobs:
           # exit with 1 if there were differences:
           git diff _fake_squash _enforced_format --exit-code
 
-  build_and_test_cpu_required:
-    # This job will be required to pass before merging to master branch.
-    name: Required Build and Test (CPU)
-    needs: check_code_format
-    timeout-minutes: 60
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            python: 3.6
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
-
-      - name: Build & Install
-        run: |
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export CXX=clang++
-          python -m pip install -r requirements_dev.txt
-          cd python
-          git fetch origin master
-          TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS python build.py build
-          cd ..
-          export NUM_WHL=`ls dist/*.whl | wc -l`
-          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          pip install dist/*.whl
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
-
-      - name: Test
-        run: |
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          # Note we only need this since we cannot write into system python package.
-          export PATH=$PATH:$HOME/.local/bin
-          hash -r
-          python examples/algorithm/laplace.py
-          ti diagnose
-          ti changelog
-          # taichi_cpp_tests requires passing in TI_LIB_DIR manually.
-          TI_LIB_DIR=`python -c "import taichi;print(taichi.__path__[0])" | tail -1`
-          TI_LIB_DIR="$TI_LIB_DIR/lib" ./build/taichi_cpp_tests
-          ti test -vr2 -t2
-
-
   build_and_test_windows:
     name: Build and Test (Windows)
     needs: check_code_format
