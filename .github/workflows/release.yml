@@ -44,6 +44,7 @@ jobs:
 
       - name: Create Python Wheel
         run: |
+          ls /home/buildbot/miniconda3/envs/$PYTHON/bin
           export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
           which python3
           TAICHI_REPO_DIR=`pwd`
