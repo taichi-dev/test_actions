@@ -45,6 +45,7 @@ jobs:
       - name: Create Python Wheel
         run: |
           export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
+          which python3
           TAICHI_REPO_DIR=`pwd`
           export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
           export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
@@ -68,9 +69,10 @@ jobs:
 
       - name: Test
         run: |
+          export PATH=$PATH:$HOME/.local/bin
           python3 examples/algorithm/laplace.py
-          python3 -m ti diagnose
-          python3 -m ti test -vr2 -t2
+          ti diagnose
+          ti test -vr2 -t2
         env:
           PYTHON: ${{ matrix.python }}
 
