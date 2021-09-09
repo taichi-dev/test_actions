@@ -69,7 +69,9 @@ jobs:
 
       - name: Test
         run: |
-          export PATH=$PATH:$HOME/.local/bin
+          which python3
+          export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
+          which python3
           python3 examples/algorithm/laplace.py
           ti diagnose
           ti test -vr2 -t2
@@ -83,6 +85,7 @@ jobs:
           NIGHT_PWD: aldskfjg
           PROJECT_NAME: ${{ matrix.name }}
         run: |
+          which python3
           cd python
-          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
-          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python build.py upload --skip_build; fi
+          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
+          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
