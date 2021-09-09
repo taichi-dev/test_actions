@@ -31,12 +31,12 @@ jobs:
           [ -z "${{ github.event.action }}" ] || matrix_osx="[{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
           echo ::set-output name=matrix_osx::{\"include\":$(echo $matrix_osx)}\"
 
-  build_and_upload_mac:
-    name: Build and Upload (macOS only)
+  build_and_upload_linux:
+    name: Build and Upload (linux only)
     needs: matrix_prep
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
-    runs-on: macos-latest
+    runs-on: [self-hosted, cuda, vulkan, cn]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -45,15 +45,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: macos-latest
 
       - name: Create Python Wheel
         run: |
@@ -82,138 +73,10 @@ jobs:
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
-          NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
+          PROD_PWD: asdf
+          NIGHT_PWD: aldskfjg
           PROJECT_NAME: ${{ matrix.name }}
         run: |
           cd python
           if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
           elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python build.py upload --skip_build; fi
-
-  build_and_upload_m1:
-    name: Build and Upload (Apple M1)
-    needs: matrix_prep
-    strategy:
-      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix_osx) }}
-    runs-on: [self-hosted, m1]
-    defaults:
-      run:
-        shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - name: Build
-        run: |
-          # We hacked here because conda activate in CI won't update python PATH
-          # automatically. So we don't activate and use desired python version
-          # directly.
-          export PATH=/Users/github/miniforge3/envs/$PYTHON/bin:$PATH
-          python3 -m pip uninstall taichi -y
-          git --version
-          export CXX=clang++
-          python3 -m pip install -r requirements_dev.txt
-          cd python
-          git fetch origin master
-          export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          python3 build.py build --project_name $PROJECT_NAME
-          cd ..
-          export NUM_WHL=`ls dist/*.whl | wc -l`
-          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          python3 -m pip install dist/*.whl
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_TESTS:BOOL=ON
-          PROJECT_NAME: ${{ matrix.name }}
-          PYTHON: ${{ matrix.python }}
-
-      - name: Upload PyPI
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
-          NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
-          PROJECT_NAME: ${{ matrix.name }}
-        run: |
-          cd python
-          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
-          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
-
-  build_and_upload_windows:
-    name: Build and Upload (Windows only)
-    needs: matrix_prep
-    strategy:
-      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
-    runs-on: windows-latest
-    steps:
-      - name: Install 7Zip PowerShell
-        shell: powershell
-        run: Install-Module 7Zip4PowerShell -Force -Verbose
-
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-          
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-
-      - name: Download And Install Vulkan
-        shell: powershell
-        run: |
-          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.2.189.0/windows/VulkanSDK-1.2.189.0-Installer.exe" -OutFile VulkanSDK.exe
-          $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("/S");
-          $installer.WaitForExit();
-
-      - name: Build Python Wheel
-        shell: powershell
-        run: |
-          $env:Path += ";C:/VulkanSDK/1.2.189.0/Bin"
-          cd C:\
-          Remove-item alias:curl
-          curl --retry 10 --retry-delay 5 https://github.com/taichi-dev/taichi_assets/releases/download/llvm10/taichi-llvm-10.0.0-msvc2019.zip -LO
-          7z x taichi-llvm-10.0.0-msvc2019.zip -otaichi_llvm
-          curl --retry 10 --retry-delay 5 https://github.com/taichi-dev/taichi_assets/releases/download/llvm10/clang-10.0.0-win.zip -LO
-          7z x clang-10.0.0-win.zip -otaichi_clang
-          $env:PATH += ";C:\taichi_llvm\bin"
-          $env:PATH += ";C:\taichi_clang\bin"
-          clang --version
-          cd D:\a\test_actions\test_actions
-          python -m pip install -r requirements_dev.txt
-          cd python
-          git fetch origin master
-          $env:TAICHI_CMAKE_ARGS = $env:CI_SETUP_CMAKE_ARGS
-          python build.py build --project_name $env:PROJECT_NAME
-          cd ..\dist
-          $env:WHL = $(dir *.whl)
-          python -m pip install $env:WHL
-        env:
-          CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm
-          PROJECT_NAME: ${{ matrix.name }}
-          VULKAN_SDK: C:/VulkanSDK/1.2.189.0
-
-      - name: Test
-        shell: powershell
-        run: |
-          $env:PATH += ";C:\taichi_llvm\bin"
-          $env:PATH += ";C:\taichi_clang\bin"
-          python -c "import taichi"
-          python examples/algorithm/laplace.py
-          python bin/taichi diagnose
-          python bin/taichi test -vr2 -t2
-
-      - name: Upload PyPI
-        shell: powershell
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
-          NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
-          PROJECT_NAME: ${{ matrix.name }}
-        run: |
-          cd python
-          if ( $env:PROJECT_NAME -eq "taichi-nightly" ) {$env:PYPI_PWD = "$env:NIGHT_PWD"}
-          if ( $env:PROJECT_NAME -eq "taichi-nightly" ) {python build.py upload --skip_build --testpypi --project_name $env:PROJECT_NAME}
-          if ( $env:PROJECT_NAME -eq "taichi" ) {$env:PYPI_PWD = "$env:PROD_PWD"}
-          if ( $env:PROJECT_NAME -eq "taichi" ) {python build.py upload --skip_build}
