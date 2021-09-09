@@ -42,12 +42,9 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
       - name: Create Python Wheel
         run: |
+          conda activate $PYTHON
           TAICHI_REPO_DIR=`pwd`
           export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
           export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
@@ -67,6 +64,7 @@ jobs:
           BUILD_NUM_THREADS: 8
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           PROJECT_NAME: ${{ matrix.name }}
+          PYTHON: ${{ matrix.python }}
 
       - name: Test
         run: |
