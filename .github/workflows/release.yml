@@ -37,7 +37,6 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     runs-on: [self-hosted, cuda, vulkan, cn]
-    default:
     steps:
       - uses: actions/checkout@v2
         with:
