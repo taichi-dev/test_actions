@@ -37,6 +37,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
     runs-on: [self-hosted, cuda, vulkan, cn]
+    default:
     steps:
       - uses: actions/checkout@v2
         with:
@@ -44,7 +45,7 @@ jobs:
 
       - name: Create Python Wheel
         run: |
-          conda activate $PYTHON
+          export PATH=/home/buildbot/miniconda/envs/$PYTHON/bin:$PATH
           TAICHI_REPO_DIR=`pwd`
           export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
           export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
