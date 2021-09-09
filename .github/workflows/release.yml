@@ -50,7 +50,8 @@ jobs:
         run: |
           TAICHI_REPO_DIR=`pwd`
           export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export CXX=clang++
+          export CC=clang-10
+          export CXX=clang++-10
           python -m pip install -r requirements_dev.txt
           cd python
           git fetch origin master
@@ -63,8 +64,6 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           PROJECT_NAME: ${{ matrix.name }}
-          CC: "clang-10"
-          CXX: "clang++-10"
 
       - name: Test
         run: |
