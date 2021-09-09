@@ -49,25 +49,28 @@ jobs:
       - name: Create Python Wheel
         run: |
           TAICHI_REPO_DIR=`pwd`
-          export PATH=$TAICHI_REPO_DIR/taichi-llvm/bin/:$PATH
-          export CC=clang-10
-          export CXX=clang++-10
-          python -m pip install -r requirements_dev.txt
+          export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
+          export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
+          export CXX=clang++-8
+          python3 -m pip install -r --user requirements_dev.txt
+          python3 -m pip install --user twine
           cd python
           git fetch origin master
           export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          python build.py build --project_name $PROJECT_NAME
+          python3 build.py build --project_name $PROJECT_NAME
           cd ..
           NUM_WHL=`ls dist/*.whl | wc -l`
           if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
           pip install dist/*.whl
         env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
+          LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
+          BUILD_NUM_THREADS: 8
+          CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           PROJECT_NAME: ${{ matrix.name }}
 
       - name: Test
         run: |
-          python examples/algorithm/laplace.py
+          python3 examples/algorithm/laplace.py
           ti diagnose
           ti test -vr2 -t2
 
