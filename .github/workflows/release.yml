@@ -58,7 +58,7 @@ jobs:
           cd ..
           NUM_WHL=`ls dist/*.whl | wc -l`
           if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          pip install dist/*.whl
+          python3 -m pip install dist/*.whl
         env:
           LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
           BUILD_NUM_THREADS: 8
