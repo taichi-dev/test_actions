@@ -68,9 +68,12 @@ jobs:
 
       - name: Test
         run: |
+          export PATH=/home/buildbot/miniconda/envs/$PYTHON/bin:$PATH
           python3 examples/algorithm/laplace.py
           python3 -m ti diagnose
           python3 -m ti test -vr2 -t2
+        env:
+          PYTHON: ${{ matrix.python }}
 
       - name: Upload PyPI
         env:
