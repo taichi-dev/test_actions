@@ -1,5 +1,7 @@
 name: Publishing Release
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   release:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release
     types: [published]
