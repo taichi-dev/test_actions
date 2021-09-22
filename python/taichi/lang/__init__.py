@@ -227,6 +227,7 @@ class _EnvironmentConfigurator:
         if len(value):
             self[key] = cast(value)
             if key in self.kwargs:
+                print('AILING', 'overridden')
                 _ti_core.warn(
                     f'ti.init argument "{key}" overridden by environment variable {name}={value}'
                 )
