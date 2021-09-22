@@ -91,6 +91,8 @@ jobs:
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
         timeout-minutes: 180
+        with:
+          sudo: false
 
       - name: Upload PyPI
         env:
