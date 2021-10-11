@@ -191,7 +191,7 @@ jobs:
           # automatically. So we don't activate and use desired python version
           # directly.
           export PATH=/Users/github/miniforge3/envs/$PYTHON/bin:$PATH
-          python3 -m pip uninstall taichi -y
+          python3 -m pip uninstall taichi taichi-nightly -y
           git --version
           export CXX=clang++
           python3 -m pip install -r requirements_dev.txt
@@ -245,7 +245,9 @@ jobs:
           # automatically. So we don't activate and use desired python version
           # directly.
           export PATH=/Users/buildbot6/miniconda3/envs/$PYTHON/bin:$PATH
-          python3 -m pip uninstall taichi -y
+          export LLVM_DIR=/Users/buildbot6/taichi-llvm-10.0.0-macos
+          export PATH=$LLVM_DIR/bin:$PATH
+          python3 -m pip uninstall taichi taichi-nightly -y
           git --version
           export CXX=clang++
           python3 -m pip install -r requirements_dev.txt
@@ -274,6 +276,8 @@ jobs:
           python examples/algorithm/laplace.py
           ti diagnose
           ti test -vr2 -t2 -a cpu
+        env:
+          PYTHON: ${{ matrix.python }}
 
       - name: Upload PyPI
         env:
