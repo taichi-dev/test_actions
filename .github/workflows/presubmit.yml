@@ -106,6 +106,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
           CXX: clang++
+          PROJECT_NAME: taichi
 
       - name: Test
         run: .github/workflows/scripts/unix_test.sh
@@ -153,6 +154,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           CXX: clang++
+          PROJECT_NAME: taichi
       # [DEBUG] Copy this step around to enable debugging inside Github Action instances.
       #- name: Setup tmate session
       #  uses: mxschmitt/action-tmate@v3
@@ -185,6 +187,7 @@ jobs:
           LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
           LLVM_DIR: /opt/taichi-llvm-10.0.0/lib/cmake/llvm
           CXX: clang++-8
+          PROJECT_NAME: taichi
 
       - name: Test
         run: .github/workflows/scripts/unix_test.sh
@@ -285,6 +288,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
           CXX: clang++
+          PROJECT_NAME: taichi
 
       - name: Test
         run: |

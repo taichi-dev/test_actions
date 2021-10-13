@@ -47,25 +47,15 @@ jobs:
           # automatically. So we don't activate and use desired python version
           # directly.
           export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
-          TAICHI_REPO_DIR=`pwd`
-          export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
-          export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
-          export CXX=clang++-8
-          python3 -m pip uninstall taichi taichi-nightly -y
-          python3 -m pip install -r requirements_dev.txt
-          python3 -m pip install twine
-          cd python
-          git fetch origin master
-          export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
-          python3 build.py build --project_name $PROJECT_NAME
-          cd ..
-          NUM_WHL=`ls dist/*.whl | wc -l`
-          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
-          python3 -m pip install dist/*.whl
+          export PATH=/usr/local/cuda/bin:$PATH
+          .github/workflows/scripts/unix_build.sh
         env:
           LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
+          LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
+          LLVM_DIR: /opt/taichi-llvm-10.0.0/lib/cmake/llvm
           BUILD_NUM_THREADS: 8
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
+          CXX: clang++-8
           PROJECT_NAME: ${{ matrix.name }}
           PYTHON: ${{ matrix.python }}
 
@@ -78,18 +68,11 @@ jobs:
       - name: Test
         run: |
           export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
-          python3 examples/algorithm/laplace.py
-          export DISPLAY=:1
-          hash -r
-          glewinfo
-          ti diagnose
-          ti changelog
-          ti test -vr2 -t2 -k "not ndarray and not torch"
-          # ndarray test might OOM if run with -t2.
-          # FIXME: unify this with presubmit.yml to avoid further divergence
-          ti test -vr2 -t1 -k "ndarray or torch"
+          .github/workflows/scripts/unix_test.sh
         env:
           PYTHON: ${{ matrix.python }}
+          DISPLAY: :1
+          GPU_TEST: ON
 
       - name: Upload PyPI
         env:
@@ -100,6 +83,7 @@ jobs:
           PYTHON: ${{ matrix.python }}
         run: |
           export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
+          python3 -m pip install twine
           cd python
           if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
           elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
