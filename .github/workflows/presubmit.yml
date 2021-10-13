@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-          
+
       - name: Setup git & clang-format
         run: |
           git config user.email "taichigardener@gmail.com"
@@ -41,19 +41,19 @@ jobs:
           git fetch upstream master
           sudo apt install clang-format-10
 
-      - name: Cache PIP 
+      - name: Cache PIP
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ hashFiles('setup.py') }}-${{ hashFiles('requirements_lint.txt') }}
+          key: ${{ hashFiles('setup.py') }}-${{ hashFiles('requirements_dev.txt') }}
 
-      - name: Install requirements 
+      - name: Install requirements
         run: |
-          python3 -m pip install --user -r requirements_lint.txt
-      
+          python3 -m pip install --user -r requirements_dev.txt
+
       - name: Check code format
         run: |
-          python3 python/taichi/code_format.py
+          python3 misc/code_format.py
           git checkout -b _enforced_format
           git commit -am "enforce code format" || true
           # exit with 1 if there were differences:
@@ -106,6 +106,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
           CXX: clang++
+          PROJECT_NAME: taichi
 
       - name: Test
         run: .github/workflows/scripts/unix_test.sh
@@ -153,6 +154,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
           CXX: clang++
+          PROJECT_NAME: taichi
       # [DEBUG] Copy this step around to enable debugging inside Github Action instances.
       #- name: Setup tmate session
       #  uses: mxschmitt/action-tmate@v3
@@ -185,6 +187,7 @@ jobs:
           LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
           LLVM_DIR: /opt/taichi-llvm-10.0.0/lib/cmake/llvm
           CXX: clang++-8
+          PROJECT_NAME: taichi
 
       - name: Test
         run: .github/workflows/scripts/unix_test.sh
@@ -285,6 +288,7 @@ jobs:
         env:
           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
           CXX: clang++
+          PROJECT_NAME: taichi
 
       - name: Test
         run: |
