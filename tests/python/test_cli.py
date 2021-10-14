@@ -31,7 +31,7 @@ def test_cli_exit_one_with_no_command_provided():
 def test_cli_exit_one_with_bogus_command_provided():
     with patch_sys_argv_helper(["ti", "bogus-command-not-registered-yet"]):
         cli = TaichiMain(test_mode=True)
-        assert cli() == 1
+        assert cl == 1
 
 
 def test_cli_can_dispatch_commands_to_methods_correctly():
