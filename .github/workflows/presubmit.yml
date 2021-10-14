@@ -2,298 +2,98 @@ name: Presubmit Checks
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
-  title_format:
-    name: Check PR Title
-    if: ${{ github.event.pull_request }}
+  matrix_prep:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix_osx: ${{ steps.set-matrix.outputs.matrix_osx }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Run PR Title Checker
+      - id: set-matrix
         run: |
-          pip install semver GitPython
-          python misc/ci_check_pr_title.py "$PR_TITLE"
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-
-  check_code_format:
-    name: Check Code Format
-    runs-on: ubuntu-latest
-    # This job will be required to pass before merging to master branch.
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Setup git & clang-format
-        run: |
-          git config user.email "taichigardener@gmail.com"
-          git config user.name "Taichi Gardener"
-          git checkout -b _fake_squash
-          git remote add upstream https://github.com/taichi-dev/taichi.git
-          git fetch upstream master
-          sudo apt install clang-format-10
-
-      - name: Cache PIP
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ hashFiles('setup.py') }}-${{ hashFiles('requirements_dev.txt') }}
-
-      - name: Install requirements
-        run: |
-          python3 -m pip install --user -r requirements_dev.txt
-
-      - name: Check code format
-        run: |
-          python3 misc/code_format.py
-          git checkout -b _enforced_format
-          git commit -am "enforce code format" || true
-          # exit with 1 if there were differences:
-          git diff _fake_squash _enforced_format --exit-code
-
-      - name: Pylint
-        run: |
-          # Make sure pylint doesn't regress
-          pylint python/taichi/ --disable=all --enable=C0415
-          if [ $? -eq 0 ]
-          then
-            echo "PASSED: pylint is happy"
-            exit 0
-          else
-            echo "FAILED: please run the pylint command above and make sure it passes"
-            exit 1
-          fi
-
-  build_and_test_cpu_required:
-    # This job will be required to pass before merging to master branch.
-    name: Required Build and Test (CPU)
-    needs: check_code_format
-    timeout-minutes: 60
+          # For nightly release, we only run on python 3.8
+          [ -z "${{ github.event.action }}" ] && matrix="[{\"name\":\"taichi-nightly\",\"python\":\"3.8\"}]"
+          # For production release, we run on four python versions.
+          [ -z "${{ github.event.action }}" ] || matrix="[{\"name\":\"taichi\",\"python\":\"3.6\"},{\"name\":\"taichi\",\"python\":\"3.7\"},{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
+          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
+          # M1 only supports py38 and py39(conda), so change matrix.
+          [ -z "${{ github.event.action }}" ] && matrix_osx="[{\"name\":\"taichi-nightly\",\"python\":\"3.8\"}]"
+          [ -z "${{ github.event.action }}" ] || matrix_osx="[{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
+          echo ::set-output name=matrix_osx::{\"include\":$(echo $matrix_osx)}\"
+  build_and_upload_linux:
+    name: Build and Upload (linux only)
+    needs: matrix_prep
     strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            python: 3.6
-    runs-on: ${{ matrix.os }}
+      fail-fast: false
+      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
+    runs-on: [self-hosted, cuda, vulkan, cn, release]
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: 'recursive'
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
+      - name: Create Python Wheel
         run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
-
-      - name: Build & Install
-        run: .github/workflows/scripts/unix_build.sh
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
-          CXX: clang++
-          PROJECT_NAME: taichi
-
-      - name: Test
-        run: .github/workflows/scripts/unix_test.sh
-
-  build_and_test_cpu:
-    name: Build and Test (CPU)
-    needs: build_and_test_cpu_required
-    timeout-minutes: 60
-    strategy:
-      matrix:
-        include:
-          - os: macos-latest
-            python: 3.7
-            with_cc: OFF
-            with_cpp_tests: ON
-          - os: ubuntu-latest
-            python: 3.9
-            with_cc: OFF
-            with_cpp_tests: OFF
-          - os: ubuntu-latest
-            python: 3.8
-            with_cc: ON
-            with_cpp_tests: OFF
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          python misc/ci_download.py
-          mkdir taichi-llvm
-          cd taichi-llvm
-          unzip ../taichi-llvm.zip
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
-
-      - name: Build & Install
-        run: .github/workflows/scripts/unix_build.sh
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
-          CXX: clang++
-          PROJECT_NAME: taichi
-      # [DEBUG] Copy this step around to enable debugging inside Github Action instances.
-      #- name: Setup tmate session
-      #  uses: mxschmitt/action-tmate@v3
-      #  with:
-      #    limit-access-to-actor: true
-
-      - name: Test
-        run: .github/workflows/scripts/unix_test.sh
-        env:
-          RUN_CPP_TESTS: ${{ matrix.with_cpp_tests }}
-
-  build_and_test_gpu_linux:
-    name: Build and Test (GPU)
-    needs: check_code_format
-    runs-on: [self-hosted, cuda, vulkan, cn]
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - name: Build
-        run: |
-          export PATH=$PATH:/usr/local/cuda/bin
-          .github/workflows/scripts/unix_build.sh
-        env:
-          LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON
-          BUILD_NUM_THREADS: 8
-          LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
-          LLVM_DIR: /opt/taichi-llvm-10.0.0/lib/cmake/llvm
-          CXX: clang++-8
-          PROJECT_NAME: taichi
-
-      - name: Test
-        run: .github/workflows/scripts/unix_test.sh
-        env:
-          DISPLAY: :1
-          GPU_TEST: ON
-
-  build_and_test_windows:
-    name: Build and Test (Windows)
-    needs: check_code_format
-    runs-on: windows-latest
-    timeout-minutes: 90
-    steps:
-
-      - name: Install 7Zip PowerShell
-        shell: powershell
-        run: Install-Module 7Zip4PowerShell -Force -Verbose
-
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'recursive'
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
-
-      - name: Download And Install Vulkan
-        shell: powershell
-        run: |
-          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/1.2.189.0/windows/VulkanSDK-1.2.189.0-Installer.exe" -OutFile VulkanSDK.exe
-          $installer = Start-Process -FilePath VulkanSDK.exe -Wait -PassThru -ArgumentList @("/S");
-          $installer.WaitForExit();
-
-      - name: Build
-        shell: powershell
-        run: |
-          $env:Path += ";C:/VulkanSDK/1.2.189.0/Bin"
-          cd C:\
-          Remove-item alias:curl
-          curl --retry 10 --retry-delay 5 https://github.com/taichi-dev/taichi_assets/releases/download/llvm10/taichi-llvm-10.0.0-msvc2019.zip -LO
-          7z x taichi-llvm-10.0.0-msvc2019.zip -otaichi_llvm
-          curl --retry 10 --retry-delay 5 https://github.com/taichi-dev/taichi_assets/releases/download/llvm10/clang-10.0.0-win.zip -LO
-          7z x clang-10.0.0-win.zip -otaichi_clang
-          $env:PATH = ";C:\taichi_llvm\bin;C:\taichi_clang\bin;" + $env:PATH
-          clang --version
-          cd D:\a\taichi\taichi
-          python -m pip install -r requirements_dev.txt
+          # We hacked here because conda activate in CI won't update python PATH
+          # automatically. So we don't activate and use desired python version
+          # directly.
+          export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
+          TAICHI_REPO_DIR=`pwd`
+          export PATH=$LLVM_LIB_ROOT_DIR/bin:/usr/local/cuda/bin:$PATH
+          export LLVM_DIR=$LLVM_LIB_ROOT_DIR/lib/cmake/llvm
+          export CXX=clang++-8
+          python3 -m pip uninstall taichi taichi-nightly -y
+          python3 -m pip install -r requirements_dev.txt
+          python3 -m pip install twine
           cd python
           git fetch origin master
-          $env:TAICHI_CMAKE_ARGS = $env:CI_SETUP_CMAKE_ARGS
-          python build.py build
-          cd ..\dist
-          $env:WHL = $(dir *.whl)
-          python -m pip install $env:WHL
+          export TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS
+          python3 build.py build --project_name $PROJECT_NAME
+          cd ..
+          NUM_WHL=`ls dist/*.whl | wc -l`
+          if [ $NUM_WHL -ne 1 ]; then echo 'ERROR: created more than 1 whl.' && exit 1; fi
+          python3 -m pip install dist/*.whl
         env:
-          PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
-          CI_SETUP_CMAKE_ARGS: -G "Visual Studio 16 2019" -A x64 -DLLVM_DIR=C:\taichi_llvm\lib\cmake\llvm -DTI_WITH_VULKAN:BOOL=ON
-          VULKAN_SDK: C:/VulkanSDK/1.2.189.0
+          LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
+          BUILD_NUM_THREADS: 8
+          CI_SETUP_CMAKE_ARGS: -DTI_WITH_VULKAN:BOOL=ON -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }}
+          PROJECT_NAME: ${{ matrix.name }}
+          PYTHON: ${{ matrix.python }}
 
-      - name: Test
-        shell: powershell
-        run: |
-          $env:PATH = ";C:\taichi_llvm\bin;C:\taichi_clang\bin;" + $env:PATH
-          python -c "import taichi"
-          python examples/algorithm/laplace.py
-          python bin/taichi diagnose
-          python bin/taichi changelog
-          python bin/taichi test -vr2 -t2
-        env:
-          PYTHON: C:\hostedtoolcache\windows\Python\3.7.9\x64\python.exe
-
-  build_and_test_m1:
-    name: Build and Test (Apple M1)
-    needs: check_code_format
-    timeout-minutes: 60
-    strategy:
-      matrix:
-        include:
-          - os: macos-latest
-            python: 3.8
-    defaults:
-      run:
-        # https://github.com/actions/runner/issues/805#issuecomment-844426478
-        shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
-    runs-on: [self-hosted, m1]
-    steps:
-      - uses: actions/checkout@v2
+      - name: Archive Wheel Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          submodules: 'recursive'
-
-      - name: Build
-        run: |
-          rm -rf $HOME/Library/Python/3.8/lib/python/site-packages/taichi
-          .github/workflows/scripts/unix_build.sh
-        env:
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON
-          CXX: clang++
-          PROJECT_NAME: taichi
+          name: ${{ matrix.name }}-py${{ matrix.python }}-linux.whl
+          path: dist/*.whl
 
       - name: Test
         run: |
-          export PATH=$PATH:$HOME/Library/Python/3.8/bin
+          export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
           python3 examples/algorithm/laplace.py
-          TI_LIB_DIR=`python3 -c "import taichi;print(taichi.__path__[0])" | tail -1`
-          TI_LIB_DIR="$TI_LIB_DIR/lib" ./build/taichi_cpp_tests
-          ti test -vr2 -t4 -x
+          export DISPLAY=:1
+          hash -r
+          glewinfo
+          ti diagnose
+          ti changelog
+          ti test -vr2 -t2 -k "not ndarray and not torch"
+          # ndarray test might OOM if run with -t2.
+          # FIXME: unify this with presubmit.yml to avoid further divergence
+          ti test -vr2 -t1 -k "ndarray or torch"
+        env:
+          PYTHON: ${{ matrix.python }}
+
+      - name: Upload PyPI
+        env:
+          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
+          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
+          NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
+          PROJECT_NAME: ${{ matrix.name }}
+          PYTHON: ${{ matrix.python }}
+        run: |
+          export PATH=/home/buildbot/miniconda3/envs/$PYTHON/bin:$PATH
+          cd python
+          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
+          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
+
