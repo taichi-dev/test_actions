@@ -26,7 +26,6 @@ class PerformanceMonitoring:
         commit_hash = _ti_core.get_commit_hash()[:8]
         filename = f'perfresult_{current_time}_{commit_hash}.md'
         #format like perfresult_20211013d20h46m03s_581fdac8.md
-        #TODO: get pr id and add to file name perfresult_pr3104_20211013d20h46m03s_581fdac8.md
         with open(path + filename, 'w') as f:
             for arch in test_archs:
                 for s in self.suites:
