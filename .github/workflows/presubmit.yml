@@ -300,7 +300,7 @@ jobs:
     timeout-minutes: 60
     runs-on: [self-hosted, x64, cuda, linux, ubuntu20.04, rtx2060, benchmark]
     steps:
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           submodules: 'recursive'
 
