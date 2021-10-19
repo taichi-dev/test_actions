@@ -12,6 +12,7 @@ jobs:
         ti test -vr2
 
   docker_gpu_build:
+    name: GPU docker test
     runs-on: [self-hosted, cuda, vulkan]
     container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
     steps:
