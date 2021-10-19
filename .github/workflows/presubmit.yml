@@ -4,6 +4,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+
   docker_cpu_test:
     runs-on: [self-hosted, cn, cuda, vulkan]
     steps:
@@ -16,6 +17,16 @@ jobs:
           registry: registry.taichigraphics.com
           username: admin
           password: 3550489
+
+      - uses: addnab/docker-run-action@v3
+        with:
+          username: admin
+          password: 3550489
+          registry: registry.taichigraphics.com
+          image: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
+          options: --user dev -it -d --name container-name --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
+          run: |
+            ti test
 
           #- uses: docker://registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
 
