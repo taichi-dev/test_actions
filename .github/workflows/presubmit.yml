@@ -14,7 +14,7 @@ jobs:
 
       - run: |
           docker login registry.taichigraphics.com -u admin -p 3550489
-          docker pull registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
+          #docker pull registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
           nvidia-docker run --user dev -it -d --name registry.taichigraphics.com/taichidev-ubuntu20.04-test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
 
       ##- uses: addnab/docker-run-action@v3
