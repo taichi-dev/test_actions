@@ -6,7 +6,6 @@ on:
 jobs:
   docker_cpu_test:
     runs-on: ubuntu-latest
-    container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
     steps:
       - uses: actions/checkout@v2
         with:
