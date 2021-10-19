@@ -9,11 +9,11 @@ jobs:
     container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
     steps:
       - run: |
-        ti test
+        ti test -vr2
 
   docker_gpu_build:
     runs-on: [self-hosted, cuda, vulkan]
     container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
     steps:
       - run: |
-        ti test
+        ti test -vr2
