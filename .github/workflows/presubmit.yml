@@ -8,11 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
     steps:
-      - run: ti test
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - uses: docker://registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
 
   build_and_test_cpu_required:
     # This job will be required to pass before merging to master branch.
     name: Required Build and Test (CPU)
+    needs: docker_cpu_test
     timeout-minutes: 60
     strategy:
       matrix:
@@ -49,6 +54,7 @@ jobs:
 
   build_and_test_cpu:
     name: Build and Test (CPU)
+    needs: docker_cpu_test
     timeout-minutes: 60
     strategy:
       matrix:
@@ -129,6 +135,7 @@ jobs:
 
   build_and_test_windows:
     name: Build and Test (Windows)
+    needs: docker_cpu_test
     runs-on: windows-latest
     timeout-minutes: 90
     steps:
@@ -195,6 +202,7 @@ jobs:
 
   build_and_test_m1:
     name: Build and Test (Apple M1)
+    needs: docker_cpu_test
     timeout-minutes: 60
     strategy:
       matrix:
