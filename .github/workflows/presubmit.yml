@@ -7,7 +7,6 @@ jobs:
   build_and_test_cpu_required:
     # This job will be required to pass before merging to master branch.
     name: Required Build and Test (CPU)
-    needs: check_code_format
     timeout-minutes: 60
     strategy:
       matrix:
@@ -44,7 +43,6 @@ jobs:
 
   build_and_test_cpu:
     name: Build and Test (CPU)
-    needs: build_and_test_cpu_required
     timeout-minutes: 60
     strategy:
       matrix:
@@ -98,7 +96,6 @@ jobs:
 
   build_and_test_gpu_linux:
     name: Build and Test (GPU)
-    needs: check_code_format
     runs-on: [self-hosted, cuda, vulkan, cn]
     timeout-minutes: 60
     steps:
@@ -126,7 +123,6 @@ jobs:
 
   build_and_test_windows:
     name: Build and Test (Windows)
-    needs: check_code_format
     runs-on: windows-latest
     timeout-minutes: 90
     steps:
@@ -193,7 +189,6 @@ jobs:
 
   build_and_test_m1:
     name: Build and Test (Apple M1)
-    needs: check_code_format
     timeout-minutes: 60
     strategy:
       matrix:
