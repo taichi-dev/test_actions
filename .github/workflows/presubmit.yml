@@ -12,21 +12,26 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - uses: docker/login-action@v1
-        with:
-          registry: registry.taichigraphics.com
-          username: admin
-          password: 3550489
+      - run: |
+          docker login registry.taichigraphics.com -u admin -p 3550489
+          docker pull registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
+          nvidia-docker run --user dev -it -d --name registry.taichigraphics.com/taichidev-ubuntu20.04-test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
 
-      - uses: addnab/docker-run-action@v3
-        with:
-          username: admin
-          password: 3550489
-          registry: registry.taichigraphics.com
-          image: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
-          options: --user dev -it -d --name container-name --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
-          run: |
-            ti test
+      ##- uses: addnab/docker-run-action@v3
+      ##  with:
+      ##    username: admin
+      ##    password: 3550489
+      ##    registry: registry.taichigraphics.com
+      ##    image: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
+      ##    options: --user dev -it -d --name container-name --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
+      ##    run: |
+      ##      ti test
+
+          #- uses: docker/login-action@v1
+          #  with:
+          #    registry: registry.taichigraphics.com
+          #    username: admin
+          #    password: 3550489
 
           #- uses: docker://registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
 
