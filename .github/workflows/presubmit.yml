@@ -4,6 +4,12 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  docker_cpu_test:
+    runs-on: ubuntu-latest
+    container: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
+    steps:
+      - run: ti test
+
   build_and_test_cpu_required:
     # This job will be required to pass before merging to master branch.
     name: Required Build and Test (CPU)
