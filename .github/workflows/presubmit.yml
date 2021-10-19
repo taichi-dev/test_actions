@@ -5,7 +5,7 @@ on:
 
 jobs:
   docker_cpu_test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, cn, cuda, vulkan]
     steps:
       - uses: actions/checkout@v2
         with:
