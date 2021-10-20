@@ -13,7 +13,7 @@ jobs:
           submodules: 'recursive'
 
       - run: |
-          docker run --user dev -d --name taichi_ci --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1 /bin/bash
+          docker run --user dev -d --name taichi_ci --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1 sleep 10
           docker exec --user dev taichi_ci /home/dev/scripts/ubuntu_build_test.sh $SHA $PY
         env:
           SHA: HEAD
