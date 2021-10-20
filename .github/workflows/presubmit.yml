@@ -13,9 +13,13 @@ jobs:
           submodules: 'recursive'
 
       - run: |
-          docker login registry.taichigraphics.com -u admin -p 3550489
+        #docker login registry.taichigraphics.com -u admin -p 3550489
           #docker pull registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
-          nvidia-docker run --user dev -it -d --name registry.taichigraphics.com/taichidev-ubuntu20.04-test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
+          docker run --user dev -it -d --name container-name --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1 /bin/bash
+          docker exec --user dev -it container-name /home/dev/scripts/ubuntu_build_test.sh $SHA $PY
+        with:
+          SHA: HEAD
+          PY: py38
 
       ##- uses: addnab/docker-run-action@v3
       ##  with:
