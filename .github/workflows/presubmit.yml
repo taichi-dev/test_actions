@@ -13,7 +13,7 @@ jobs:
           submodules: 'recursive'
 
       - run: |
-          docker run --user dev --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix taichidev-ubuntu18.04:v0.1 /home/dev/scripts/ubuntu_build_test_source.sh $SHA $PY
+          docker run --user dev --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix taichidev-ubuntu20.04:v0.1 /home/dev/scripts/ubuntu_build_test_source.sh $SHA $PY
         env:
           SHA: HEAD
           PY: py38
