@@ -14,7 +14,7 @@ jobs:
 
       - run: |
           docker create --user dev --name taichi --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu20.04:v0.1 /home/dev/scripts/ubuntu_build_test.sh $SHA $PY
-          docker cp ./taichi taichi:/home/dev/taichi
+          # docker cp ./taichi taichi:/home/dev/taichi
           docker start -a taichi
         env:
           SHA: HEAD
