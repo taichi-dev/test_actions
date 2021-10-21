@@ -4,6 +4,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+
   title_format:
     name: Check PR Title
     if: ${{ github.event.pull_request }}
