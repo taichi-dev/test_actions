@@ -15,7 +15,7 @@ jobs:
       - run: |
           docker create --user dev --name taichi --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu20.04:v0.1 /home/dev/scripts/ubuntu_build_test.sh $SHA $PY
           docker cp ./taichi taichi:/home/dev/taichi
-          docker start taichi
+          docker start -a taichi
         env:
           SHA: HEAD
           PY: py38
@@ -27,18 +27,6 @@ jobs:
       ##- uses: addnab/docker-run-action@v3
       ##  with:
       ##    username: admin
-      ##    password: 3550489
-      ##    registry: registry.taichigraphics.com
-      ##    image: registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
-      ##    options: --user dev -it -d --name container-name --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix name:tag /bin/bash
-      ##    run: |
-      ##      ti test
-
-          #- uses: docker/login-action@v1
-          #  with:
-          #    registry: registry.taichigraphics.com
-          #    username: admin
-          #    password: 3550489
 
           #- uses: docker://registry.taichigraphics.com/taichidev-ubuntu20.04-test:v0.1
 
