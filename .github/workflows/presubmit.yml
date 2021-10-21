@@ -83,3 +83,4 @@ jobs:
       - name: Run benchmark
         run: |
           python3 benchmarks/misc/run.py /home/benchmarkbot/benchmark/
+
