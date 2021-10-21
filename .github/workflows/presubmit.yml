@@ -56,18 +56,6 @@ jobs:
           git commit -am "enforce code format" || true
           # exit with 1 if there were differences:
           git diff _fake_squash _enforced_format --exit-code
-      - name: Pylint
-        run: |
-          # Make sure pylint doesn't regress
-          pylint python/taichi/ --disable=all --enable=C0121,C0415
-          if [ $? -eq 0 ]
-          then
-            echo "PASSED: pylint is happy"
-            exit 0
-          else
-            echo "FAILED: please run the pylint command above and make sure it passes"
-            exit 1
-          fi
 
   performance_monitoring:
     name: Performance monitoring (NVGPU)
