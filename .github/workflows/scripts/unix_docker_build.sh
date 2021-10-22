@@ -3,8 +3,8 @@
 set -ex
 
 # Parse ARGs
-CI_SETUP_CMAKE_ARGS=$1
-PY=$2
+PY=$1
+CI_SETUP_CMAKE_ARGS=$2
 echo $CI_SETUP_CMAKE_ARGS
 
 source /home/dev/miniconda/etc/profile.d/conda.sh
