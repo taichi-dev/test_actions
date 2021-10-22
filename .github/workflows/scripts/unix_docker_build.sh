@@ -8,7 +8,7 @@ do
     KEY=$(echo $ARGUMENT | cut -f1 -d=)
     VALUE=$(echo $ARGUMENT | cut -f2 -d=)
     case "$KEY" in
-            CI_SETUP_CMAKE_ARGS)              SHA=${VALUE} ;;
+            CI_SETUP_CMAKE_ARGS)              CI_SETUP_CMAKE_ARGS=${VALUE} ;;
             PY)               PY=${VALUE} ;;
             *)
     esac
