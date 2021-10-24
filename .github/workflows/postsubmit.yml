@@ -125,7 +125,7 @@ jobs:
 
   build_and_test_windows:
     name: Build and Test (Windows)
-    runs-on: windows-latest
+    runs-on: windows-2019
     timeout-minutes: 60
     steps:
 
