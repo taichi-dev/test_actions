@@ -12,9 +12,10 @@ jobs:
         with:
           submodules: 'recursive'
 
+      # TESTING
       - run: |
-          docker create --user dev --name taichi --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu20.04:v0.1.0 /home/dev/taichi/.github/workflows/scripts/unix_docker_build.sh CI_SETUP_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS PY=$PY
-          docker cp ./taichi taichi:/home/dev/taichi
+          docker create --user dev --name taichi --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu20.04:v0.1.0 /home/dev/taichi/.github/workflows/scripts/unix_docker_build.sh $PY "$CI_SETUP_CMAKE_ARGS"
+          docker cp ../${{ github.event.repository.name }} taichi:/home/dev/taichi
           docker start -a taichi
         env:
           DISPLAY: :1
