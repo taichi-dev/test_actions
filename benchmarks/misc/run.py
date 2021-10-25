@@ -89,7 +89,7 @@ def main():
     os.makedirs(benchmark_dir)
 
     pull_request_id = os.environ.get('PULL_REQUEST_NUMBER')
-    print(f'==========={pull_request_id}=============')
+    print(f'pull_request_id = {pull_request_id}')
     commit_hash = _ti_core.get_commit_hash()  #[:8]
     info = BenchmarkInfo(pull_request_id, commit_hash)
     info.datetime.append(datatime_with_format())  #start time

@@ -73,6 +73,8 @@ jobs:
         run: |
           export PATH=$PATH:/usr/local/cuda/bin
           .github/workflows/scripts/unix_build.sh
+          export BENCHMARK_CODE_DIR=`pwd`/benchmarks/misc/
+          cd ..
         env:
           LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
           LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
@@ -82,17 +84,21 @@ jobs:
           BUILD_NUM_THREADS: 8
           CXX: clang++-10
 
-      - name: Run benchmark
+      - name: Clone repo performance-monitoring
         run: |
-          export PULL_REQUEST_NUMBER=${{github.event.number}}
-          # in Taichi dir
-          export BENCHMARK_CODE_DIR=`pwd`/benchmarks/misc/
-          cd ..
-          # pull repo : performance-monitoring
           rm -rf perf_monitoring
           git clone git@github.com:yolo2themoon/perf_monitoring.git
           cd perf_monitoring
-          # update benchmark code
+
+      - name: Update repo (benchmarks code)
+        run: |
           cp -r $BENCHMARK_CODE_DIR/* ./benchmarks/
-          # run benchmark
+
+      - name: Run benchmark & store result
+        run: |
+          export PULL_REQUEST_NUMBER=${{github.event.number}}
           ./run.sh
+
+      - name: Update repo (git push reslut)
+        run: |
+          ./scripts/push.sh
