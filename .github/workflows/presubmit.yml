@@ -84,10 +84,7 @@ jobs:
 
       - name: Run benchmark
         run: |
-          export PULL_REQUEST_NUMBER=${{github.event.issue.number}}
-          echo $PULL_REQUEST_NUMBER
-          export X_NUMBER=${{github.event.number}}
-          echo $X_NUMBER
+          export PULL_REQUEST_NUMBER=${{github.event.number}}
           # in Taichi dir
           export BENCHMARK_CODE_DIR=`pwd`/benchmarks/misc/
           cd ..
