@@ -91,7 +91,7 @@ jobs:
           echo $BENCHMARK_CODE_DIR
           cd ..
           # update benchmark code
-          git cloen git@github.com:yolo2themoon/perf_monitoring.git
+          git clone git@github.com:yolo2themoon/perf_monitoring.git
           cd perf_monitoring
           export PERF_MONITORING_REPO_DIR=`pwd`
           echo $PERF_MONITORING_REPO_DIR
