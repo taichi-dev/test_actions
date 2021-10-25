@@ -7,9 +7,7 @@ from utils import arch_name, datatime_with_format, dump2json
 import taichi as ti
 
 benchmark_suites = [MemoryBound]
-benchmark_archs = [ti.cpu]  #, ti.cuda]
-
-#PR/id/1234
+benchmark_archs = [ti.cpu, ti.cuda]
 
 
 class BenchmarkInfo:
