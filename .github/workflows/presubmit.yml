@@ -84,15 +84,18 @@ jobs:
 
       - name: Run benchmark
         run: |
+          export PULL_REQUEST_NUMBER=${{github.event.issue.number}}
+          echo $PULL_REQUEST_NUMBER
+          export X_NUMBER=${{github.event.number}}
+          echo $X_NUMBER
           # in Taichi dir
           export BENCHMARK_CODE_DIR=`pwd`/benchmarks/misc/
           cd ..
           # pull repo : performance-monitoring
+          rm -rf perf_monitoring
           git clone git@github.com:yolo2themoon/perf_monitoring.git
           cd perf_monitoring
           # update benchmark code
           cp -r $BENCHMARK_CODE_DIR/* ./benchmarks/
           # run benchmark
-          export PULL_REQUEST_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-          echo $PULL_REQUEST_NUMBER
           ./run.sh
