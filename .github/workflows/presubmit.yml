@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Install 7Zip PowerShell
         shell: powershell
-        run: Install-Module  -Scope CurrentUser 7Zip4PowerShell -Force -Verbose
+        run: Install-Module  -Scope C urrentUser 7Zip4PowerShell -Force -Verbose
 
       - uses: actions/checkout@v2
         with:
