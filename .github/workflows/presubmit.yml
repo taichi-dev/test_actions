@@ -6,7 +6,7 @@ on:
 jobs:
   build_and_test_windows:
     name: Build and Test (Windows)
-    runs-on: buildbot7
+    runs-on: windows-server2019
     timeout-minutes: 90
     steps:
       - name: Install 7Zip PowerShell
