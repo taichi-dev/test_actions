@@ -9,8 +9,9 @@ def main():
     github_info_dict = {}
     github_info_dict = json.loads(github_context)
     pr_number = re.sub("\D","",github_info_dict["ref"])
-    os.system(f'export PULL_REQUEST_NUMBER={pr_number}')
-    print(f'pr_number = {pr_number}')
+    set_pr_num_str = f'export PULL_REQUEST_NUMBER={pr_number}'
+    print(set_pr_num_str)
+    os.system(set_pr_num_str)
 
 if __name__ == '__main__':
     main()
