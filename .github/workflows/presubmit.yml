@@ -62,7 +62,6 @@ jobs:
   
   performance_monitoring:
     name: Performance monitoring (NVGPU)
-    needs: title_format
     timeout-minutes: 60
     runs-on: [self-hosted, x64, cuda, linux, benchmark]
     steps:
@@ -70,7 +69,21 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: Build & Install
+        run: |
+          export PATH=$PATH:/usr/local/cuda/bin
+          .github/workflows/scripts/unix_build.sh
+        env:
+          LLVM_LIB_ROOT_DIR: /opt/taichi-llvm-10.0.0
+          LLVM_PATH: /opt/taichi-llvm-10.0.0/bin
+          LLVM_DIR: /opt/taichi-llvm-10.0.0/lib/cmake/llvm
+          CUDA_TOOLKIT_ROOT_DIR: /usr/local/cuda/
+          CI_SETUP_CMAKE_ARGS: -DTI_WITH_CUDA_TOOLKIT:BOOL=ON
+          BUILD_NUM_THREADS: 8
+          CXX: clang++-10
+
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        run: |
+          python3 benchmarks/misc/test.py
