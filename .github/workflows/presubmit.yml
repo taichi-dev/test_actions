@@ -87,3 +87,4 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           python3 benchmarks/misc/test.py
+          python3 benchmarks/misc/print.py
