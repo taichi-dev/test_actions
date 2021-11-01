@@ -69,7 +69,7 @@ jobs:
           docker cp wheel/*.whl taichi_test:/home/dev/
           docker start -a taichi_test
         env:
-          PY: py38
+          PY: ${{ matrix.conda_python }}
           GPU_TEST: ON
           DISPLAY: :1
 
