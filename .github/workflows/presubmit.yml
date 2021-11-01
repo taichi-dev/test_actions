@@ -62,7 +62,7 @@ jobs:
   
   performance_monitoring:
     name: Performance monitoring (NVGPU)
-    needs: check_code_format
+    needs: title_format
     timeout-minutes: 60
     runs-on: [self-hosted, x64, cuda, linux, benchmark]
     steps:
