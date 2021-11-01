@@ -6,10 +6,6 @@ import jsbeautifier
 import datetime
 import re
 
-perf_monitoring_dir = os.environ.get('PERF_MONITORING_DIR')
-if perf_monitoring_dir is None:
-    raise RuntimeError('Missing environment variable PERF_MONITORING_DIR')
-
 def dump2json(obj):
     if type(obj) is dict:
         obj2dict = obj
