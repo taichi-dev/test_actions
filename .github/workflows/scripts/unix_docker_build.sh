@@ -13,7 +13,7 @@ conda activate $PY
 
 python3 -m pip uninstall taichi taichi-nightly -y
 
-cd taichi
+cd test_actions
 
 if [[ $GPU_BUILD == "OFF" ]]
 then 
