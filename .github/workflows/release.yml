@@ -29,68 +29,68 @@ jobs:
           [ -z "${{ github.event.action }}" ] || matrix_osx="[{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
           echo ::set-output name=matrix_osx::{\"include\":$(echo $matrix_osx)}\"
 
-  build_and_upload_linux:
-    name: Build and Upload (linux only)
-    needs: matrix_prep
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
-    runs-on: [self-hosted, cuda, vulkan, cn, release]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
+#   build_and_upload_linux:
+#     name: Build and Upload (linux only)
+#     needs: matrix_prep
+#     strategy:
+#       fail-fast: false
+#       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
+#     runs-on: [self-hosted, cuda, vulkan, cn, release]
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           submodules: "recursive"
 
-      - name: Build
-        run: |
-          mkdir -m777 wheel
+#       - name: Build
+#         run: |
+#           mkdir -m777 wheel
 
-          docker create -v `pwd`/wheel:/wheel --user dev --name taichi_build --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/test_actions/.github/workflows/scripts/unix_docker_build.sh $PY $GPU_BUILD $PROJECT_NAME "$CI_SETUP_CMAKE_ARGS"
-          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner dev --group dev | docker cp - taichi_build:/home/dev/
-          docker start -a taichi_build
-        env:
-          PY: ${{ matrix.conda_python }}
-          GPU_BUILD: ON
-          CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON
-          PROJECT_NAME: ${{ matrix.name }}
-          DISPLAY: :1
+#           docker create -v `pwd`/wheel:/wheel --user dev --name taichi_build --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/test_actions/.github/workflows/scripts/unix_docker_build.sh $PY $GPU_BUILD $PROJECT_NAME "$CI_SETUP_CMAKE_ARGS"
+#           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner dev --group dev | docker cp - taichi_build:/home/dev/
+#           docker start -a taichi_build
+#         env:
+#           PY: ${{ matrix.conda_python }}
+#           GPU_BUILD: ON
+#           CI_SETUP_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON
+#           PROJECT_NAME: ${{ matrix.name }}
+#           DISPLAY: :1
 
-      - name: Archive Wheel Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.name }}-py${{ matrix.python }}-linux.whl
-          path: wheel/*.whl
-          retention-days: 20
+#       - name: Archive Wheel Artifacts
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ${{ matrix.name }}-py${{ matrix.python }}-linux.whl
+#           path: wheel/*.whl
+#           retention-days: 20
 
-      - name: Test
-        run: |
-          docker create --user dev --name taichi_test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/unix_docker_test.sh $PY $GPU_TEST
-          docker cp .github/workflows/scripts/unix_docker_test.sh taichi_test:/home/dev/unix_docker_test.sh
-          docker cp wheel/*.whl taichi_test:/home/dev/
-          docker start -a taichi_test
-        env:
-          PY: ${{ matrix.conda_python }}
-          GPU_TEST: ON
-          DISPLAY: :1
+#       - name: Test
+#         run: |
+#           docker create --user dev --name taichi_test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/unix_docker_test.sh $PY $GPU_TEST
+#           docker cp .github/workflows/scripts/unix_docker_test.sh taichi_test:/home/dev/unix_docker_test.sh
+#           docker cp wheel/*.whl taichi_test:/home/dev/
+#           docker start -a taichi_test
+#         env:
+#           PY: ${{ matrix.conda_python }}
+#           GPU_TEST: ON
+#           DISPLAY: :1
 
-      - name: Upload PyPI
-        env:
-          # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
-          NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
-          PROJECT_NAME: ${{ matrix.name }}
-          PYTHON: ${{ matrix.python }}
-        run: |
-          mkdir dist
-          cp wheel/*.whl dist/
-          cd python
-          if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
-          elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
+#       - name: Upload PyPI
+#         env:
+#           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
+#           PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
+#           NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
+#           PROJECT_NAME: ${{ matrix.name }}
+#           PYTHON: ${{ matrix.python }}
+#         run: |
+#           mkdir dist
+#           cp wheel/*.whl dist/
+#           cd python
+#           if [ $PROJECT_NAME == "taichi-nightly" ]; then export PYPI_PWD="$NIGHT_PWD" && python3 build.py upload --skip_build --testpypi --project_name $PROJECT_NAME
+#           elif [ $PROJECT_NAME == "taichi" ]; then export PYPI_PWD="$PROD_PWD" && python3 build.py upload --skip_build; fi
 
-      - name: clean docker container
-        if: always()
-        run: |
-          docker rm taichi_build taichi_test -f
+#       - name: clean docker container
+#         if: always()
+#         run: |
+#           docker rm taichi_build taichi_test -f
 
 #   build_and_upload_mac:
 #     name: Build and Upload (macOS only)
