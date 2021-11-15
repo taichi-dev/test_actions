@@ -70,7 +70,7 @@ jobs:
         env:
           PY: ${{ matrix.conda_python }}
           GPU_TEST: ON
-          DISPLAY: :1
+          DISPLAY: ":1"
 
       - name: Upload PyPI
         env:
