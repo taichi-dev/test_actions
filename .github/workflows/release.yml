@@ -31,6 +31,7 @@ jobs:
 
   add_version_to_database:
     name: Add version to database
+    needs: matrix_prep
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -40,7 +41,8 @@ jobs:
         run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
 
       - name: Save new version
-        run: [ -z "${{ github.event.action }}" ] || python3 misc/save_new_version.py
+        run: |
+          [ -z "${{ github.event.action }}" ] || python3 misc/save_new_version.py
         env:
           RELEASE_VERSION: ${{ steps.tag.outputs.version }}
           USERNAME: ${{ secrets.METADATA_USERNAME }}
@@ -48,7 +50,7 @@ jobs:
 
   build_and_upload_linux:
     name: Build and Upload (linux only)
-    needs: add_version_to_database, matrix_prep
+    needs: add_version_to_database
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
