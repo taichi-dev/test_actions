@@ -10,9 +10,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  add_version_to_database:
+    name: Add version to database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: set tag
+        id: tag
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
+
+      - name: Save new version
+        run: |
+          [ -z "${{ github.event.action }}" ] || python3 misc/save_new_version.py
+        env:
+          RELEASE_VERSION: ${{ steps.tag.outputs.version }}
+          USERNAME: ${{ secrets.METADATA_USERNAME }}
+          PASSWORD: ${{ secrets.METADATA_PASSWORD }}
+          
   # This job set environment matrix with respect to production release and nightly release.
   matrix_prep:
     runs-on: ubuntu-latest
+    needs: add_version_to_database
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       matrix_osx: ${{ steps.set-matrix.outputs.matrix_osx }}
@@ -29,28 +48,9 @@ jobs:
           [ -z "${{ github.event.action }}" ] || matrix_osx="[{\"name\":\"taichi\",\"python\":\"3.8\"},{\"name\":\"taichi\",\"python\":\"3.9\"}]"
           echo ::set-output name=matrix_osx::{\"include\":$(echo $matrix_osx)}\"
 
-  add_version_to_database:
-    name: Add version to database
-    needs: matrix_prep
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: set tag
-        id: tag
-        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
-
-      - name: Save new version
-        run: |
-          [ -z "${{ github.event.action }}" ] || python3 misc/save_new_version.py
-        env:
-          RELEASE_VERSION: ${{ steps.tag.outputs.version }}
-          USERNAME: ${{ secrets.METADATA_USERNAME }}
-          PASSWORD: ${{ secrets.METADATA_PASSWORD }}
-
   build_and_upload_linux:
     name: Build and Upload (linux only)
-    needs: add_version_to_database
+    needs: matrix_prep
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
