@@ -35,11 +35,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: set tag
+        id: tag
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
+
       - name: Save new version
         run: |
           python3 misc/save_new_version.py
         env:
-          RELEASE_VERSION: ${{ GITHUB_REF#refs/*/ }}
+          RELEASE_VERSION: ${{ steps.tag.outputs.version }}
           USERNAME: ${{ secrets.METADATA_USERNAME }}
           PASSWORD: ${{ secrets.METADATA_PASSWORD }}
 
