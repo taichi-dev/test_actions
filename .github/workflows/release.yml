@@ -94,10 +94,12 @@ jobs:
       - name: Upload PyPI
         env:
           # https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets#using-encrypted-secrets-in-a-workflow
-          PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
+          PROD_PWD: 'asdfasdf'
           NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
           PROJECT_NAME: ${{ matrix.name }}
           PYTHON: ${{ matrix.python }}
+          USERNAME: ${{ secrets.METADATA_USERNAME }}
+          PASSWORD: ${{ secrets.METADATA_PASSWORD }}
         run: |
           mkdir dist
           cp wheel/*.whl dist/
