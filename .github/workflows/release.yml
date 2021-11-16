@@ -39,9 +39,9 @@ jobs:
         run: |
           python3 misc/save_new_version.py
         env:
-          RELEASE_VERSION: ${GITHUB_REF#refs/*/}
-          USERNAME: ${ secrets.METADATA_USERNAME }
-          PASSWORD: ${ secrets.METADATA_PASSWORD }
+          RELEASE_VERSION: ${{ GITHUB_REF#refs/*/ }}
+          USERNAME: ${{ secrets.METADATA_USERNAME }}
+          PASSWORD: ${{ secrets.METADATA_PASSWORD }}
 
 
           #build_and_upload_linux:
