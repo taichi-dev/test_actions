@@ -33,15 +33,13 @@ jobs:
     name: Add version to database
     runs-on: ubuntu-latest
     steps:
-      - name: Set tag
+      - name: Save new version
         run: |
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}"
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
-      - name: Test
-        run: |
-          echo ${{ github.ref_name }}
-          echo $RELEASE_VERSION
+          python3 misc/save_new_version.py
+        env:
+          RELEASE_VERSION: ${GITHUB_REF#refs/*/}
+          USERNAME: ${ secrets.METADATA_USERNAME }
+          PASSWORD: ${ secrets.METADATA_PASSWORD }
 
           #build_and_upload_linux:
           #  name: Build and Upload (linux only)
