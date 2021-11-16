@@ -33,6 +33,8 @@ jobs:
     name: Add version to database
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Save new version
         run: |
           python3 misc/save_new_version.py
