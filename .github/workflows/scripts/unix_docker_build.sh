@@ -29,7 +29,7 @@ fi
 if [[ $OSTYPE == "linux-"* ]]; then
     EXTRA_ARGS="-p manylinux1_x86_64"
 fi
-python3 misc/make_changelog.py origin/master ./ True
+python3 misc/make_changelog.py origin/master ./ True || true
 TAICHI_CMAKE_ARGS=$CI_SETUP_CMAKE_ARGS PROJECT_NAME=$PROJECT_NAME python3 setup.py $PROJECT_TAGS bdist_wheel $EXTRA_ARGS
 # Run basic cpp tests
 
