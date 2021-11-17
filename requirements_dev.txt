@@ -10,3 +10,5 @@ astor
 sourceinspect
 isort
 pylint
+twine
+wheel
