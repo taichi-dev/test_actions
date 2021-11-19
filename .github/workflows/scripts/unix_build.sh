@@ -1,4 +1,7 @@
 #!/bin/bash
+
+if [[ $OSTYPE == 'darwin'* ]]; then brew install molten-vk; fi
+
 python3 -m pip uninstall taichi taichi-nightly -y
 python3 -m pip install -r requirements_dev.txt
 python3 -m pip install -r requirements_test.txt
