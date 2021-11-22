@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
 
 env:
-  PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
-  NIGHT_PWD: ${{ secrets.PYPI_PWD_NIGHTLY }}
+  PROD_PWD: asdf
+  NIGHT_PWD: ghjk
   METADATA_USERNAME: ${{ secrets.METADATA_USERNAME }}
   METADATA_PASSWORD: ${{ secrets.METADATA_PASSWORD }}
-  METADATA_URL: ${{ secrets.METADATA_URL }}
+  METADATA_URL: llll
 
 jobs:
   add_version_to_database:
@@ -69,7 +69,7 @@ jobs:
       - name: Build
         run: |
           mkdir -m777 wheel
-          docker create -v `pwd`/wheel:/wheel --user dev --name taichi_build --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/taichi/.github/workflows/scripts/unix_docker_build.sh $PY $GPU_BUILD $PROJECT_NAME "$CI_SETUP_CMAKE_ARGS"
+          docker create -v `pwd`/wheel:/wheel --user dev --name taichi_build --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/test_actions/.github/workflows/scripts/unix_docker_build.sh $PY $GPU_BUILD $PROJECT_NAME "$CI_SETUP_CMAKE_ARGS"
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner dev --group dev | docker cp - taichi_build:/home/dev/
           docker start -a taichi_build
         env:
@@ -91,6 +91,7 @@ jobs:
           docker create --user dev --name taichi_test --gpus all -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 /home/dev/unix_docker_test.sh $PY $GPU_TEST
           docker cp .github/workflows/scripts/unix_docker_test.sh taichi_test:/home/dev/unix_docker_test.sh
           docker cp wheel/*.whl taichi_test:/home/dev/
+          docker cp ./requirements_test.txt taichi_test:/home/dev/requirements_test.txt
           docker cp tests/ taichi_test:/home/dev/
           docker start -a taichi_test
         env:
@@ -105,7 +106,7 @@ jobs:
           mkdir dist
           cp wheel/*.whl dist/
           pip install twine requests==2.26
-          python misc/upload_release.py
+          python3 misc/upload_release.py
 
       - name: clean docker container
         if: always()
