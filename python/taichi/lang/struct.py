@@ -1,4 +1,3 @@
-import copy
 import numbers
 
 from taichi.lang import expr, impl
@@ -186,21 +185,6 @@ class Struct(TaichiOperations):
 
         return self.element_wise_writeback_binary(assign_renamed, val)
 
-    def empty_copy(self):
-        """
-        Nested structs and matrices need to be recursively handled.
-        """
-        struct = Struct.empty(self.keys)
-        for k, v in self.items:
-            if isinstance(v, (Struct, Matrix)):
-                struct.entries[k] = v.empty_copy()
-        return struct
-
-    def copy(self):
-        ret = self.empty_copy()
-        ret.entries = copy.copy(self.entries)
-        return ret
-
     def __len__(self):
         """Get the number of entries in a custom struct"""
         return len(self.entries)
@@ -229,18 +213,6 @@ class Struct(TaichiOperations):
             Dict: The result dictionary.
         """
         return self.entries
-
-    @classmethod
-    def empty(cls, entries):
-        """Clear the struct and fill None.
-
-        Args:
-            members (Dict[str, DataType]): the names and data types for struct members.
-        Returns:
-            :class:`~taichi.lang.struct.Struct`: A :class:`~taichi.lang.struct.Struct` instance filled with None.
-
-        """
-        return cls({k: None for k in entries})
 
     @classmethod
     @python_scope
@@ -302,8 +274,8 @@ class Struct(TaichiOperations):
         return StructField(field_dict, name=name)
 
 
-class IntermediateStruct(Struct):
-    """The Struct type class for compiler internal use only.
+class _IntermediateStruct(Struct):
+    """Intermediate struct class for compiler internal use only.
 
     Args:
         entries (Dict[str, Union[Expr, Matrix, Struct]]): keys and values for struct members.

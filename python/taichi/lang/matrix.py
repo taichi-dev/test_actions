@@ -1,4 +1,3 @@
-import copy
 import numbers
 from collections.abc import Iterable
 
@@ -13,7 +12,6 @@ from taichi.lang.common_ops import TaichiOperations
 from taichi.lang.enums import Layout
 from taichi.lang.exception import TaichiSyntaxError
 from taichi.lang.field import Field, ScalarField, SNodeHostAccess
-from taichi.lang.ops import cast
 from taichi.lang.types import CompoundType
 from taichi.lang.util import (cook_dtype, in_python_scope, python_scope,
                               taichi_scope, to_numpy_type, to_pytorch_type)
@@ -26,20 +24,13 @@ class Matrix(TaichiOperations):
     """The matrix class.
 
     Args:
-        n (int): the first dimension of a matrix.
+        n (Union[int, list, tuple, np.ndarray]): the first dimension of a matrix.
         m (int): the second dimension of a matrix.
-        dt (DataType): the elmement data type.
-        keep_raw (Bool, optional): Keep the contents in `n` as is.
+        dt (DataType): the element data type.
     """
     is_taichi_class = True
 
-    def __init__(self,
-                 n=1,
-                 m=1,
-                 dt=None,
-                 keep_raw=False,
-                 disable_local_tensor=False,
-                 suppress_warning=False):
+    def __init__(self, n=1, m=1, dt=None, suppress_warning=False):
         self.local_tensor_proxy = None
         self.any_array_access = None
         self.grad = None
@@ -51,10 +42,9 @@ class Matrix(TaichiOperations):
                 raise Exception(
                     'cols/rows required when using list of vectors')
             elif not isinstance(n[0], Iterable):  # now init a Vector
-                if in_python_scope() or keep_raw:
+                if in_python_scope():
                     mat = [[x] for x in n]
-                elif disable_local_tensor or not ti.current_cfg(
-                ).dynamic_index:
+                elif not ti.current_cfg().dynamic_index:
                     mat = [[impl.expr_init(x)] for x in n]
                 else:
                     if not ti.is_extension_supported(
@@ -90,10 +80,9 @@ class Matrix(TaichiOperations):
                                     (len(n), ))
                             ]))
             else:  # now init a Matrix
-                if in_python_scope() or keep_raw:
+                if in_python_scope():
                     mat = [list(row) for row in n]
-                elif disable_local_tensor or not ti.current_cfg(
-                ).dynamic_index:
+                elif not ti.current_cfg().dynamic_index:
                     mat = [[impl.expr_init(x) for x in row] for row in n]
                 else:
                     if not ti.is_extension_supported(
@@ -145,8 +134,8 @@ class Matrix(TaichiOperations):
                 self.m = m
             else:
                 raise ValueError(
-                    "Declaring matrix fields using `ti.Matrix(n, m, dt, shape)` is no longer supported. Use `ti.Matrix.field(n, m, dtype, shape)` instead."
-                )
+                    "Declaring matrix fields using `ti.Matrix(n, m, dt, shape)` is no longer supported. "
+                    "Use `ti.Matrix.field(n, m, dtype, shape)` instead.")
 
         if self.n * self.m > 32 and not suppress_warning:
             warning(
@@ -356,16 +345,8 @@ class Matrix(TaichiOperations):
     @property
     @python_scope
     def value(self):
-        if isinstance(self.entries[0], SNodeHostAccess):
-            # fetch values from SNodeHostAccessor
-            ret = self.empty_copy()
-            for i in range(self.n):
-                for j in range(self.m):
-                    ret.entries[i * self.m + j] = self(i, j)
-        else:
-            # is local python-scope matrix
-            ret = self.entries
-        return ret
+        return Matrix([[self(i, j) for j in range(self.m)]
+                       for i in range(self.n)])
 
     # host access & python scope operation
     @python_scope
@@ -420,14 +401,6 @@ class Matrix(TaichiOperations):
             for j in range(self.m):
                 self[i, j] = value[i][j]
 
-    def empty_copy(self):
-        return Matrix.empty(self.n, self.m)
-
-    def copy(self):
-        ret = self.empty_copy()
-        ret.entries = copy.copy(self.entries)
-        return ret
-
     @taichi_scope
     def cast(self, dtype):
         """Cast the matrix element data type.
@@ -440,10 +413,9 @@ class Matrix(TaichiOperations):
 
         """
         _taichi_skip_traceback = 1
-        ret = self.copy()
-        for i, entry in enumerate(ret.entries):
-            ret.entries[i] = ops_mod.cast(entry, dtype)
-        return ret
+        return Matrix(
+            [[ops_mod.cast(self(i, j), dtype) for j in range(self.m)]
+             for i in range(self.n)])
 
     def trace(self):
         """The sum of a matrix diagonal elements.
@@ -606,7 +578,7 @@ class Matrix(TaichiOperations):
 
         Args:
             dim (int): the dimension of a square matrix.
-            val (TypeVar): the diagonal elment value.
+            val (TypeVar): the diagonal element value.
 
         Returns:
             The constructed diagonal square matrix.
@@ -673,7 +645,7 @@ class Matrix(TaichiOperations):
 
     @kern_mod.pyfunc
     def min(self):
-        """Return the minumum element value."""
+        """Return the minimum element value."""
         return ops_mod.ti_min(*self.entries)
 
     def any(self):
@@ -989,7 +961,7 @@ class Matrix(TaichiOperations):
 
     @staticmethod
     def rows(rows):
-        """Construct a Matrix instance by concactinating Vectors/lists row by row.
+        """Construct a Matrix instance by concatenating Vectors/lists row by row.
 
         Args:
             rows (List): A list of Vector (1-D Matrix) or a list of list.
@@ -1022,7 +994,7 @@ class Matrix(TaichiOperations):
 
     @staticmethod
     def cols(cols):
-        """Construct a Matrix instance by concactinating Vectors/lists column by column.
+        """Construct a Matrix instance by concatenating Vectors/lists column by column.
 
         Args:
             cols (List): A list of Vector (1-D Matrix) or a list of list.
@@ -1032,37 +1004,6 @@ class Matrix(TaichiOperations):
 
         """
         return Matrix.rows(cols).transpose()
-
-    @classmethod
-    def empty(cls, n, m):
-        """Clear the matrix and fill None.
-
-        Args:
-            n (int): The number of the row of the matrix.
-            m (int): The number of the column of the matrix.
-
-        Returns:
-            :class:`~taichi.lang.matrix.Matrix`: A :class:`~taichi.lang.matrix.Matrix` instance filled with None.
-
-        """
-        return cls([[None] * m for _ in range(n)], disable_local_tensor=True)
-
-    @classmethod
-    def with_entries(cls, n, m, entries):
-        """Construct a Matrix instance by giving all entries.
-
-        Args:
-            n (int): Number of rows of the matrix.
-            m (int): Number of columns of the matrix.
-            entries (List[Any]): Given entries.
-
-        Returns:
-            Matrix: A :class:`~taichi.lang.matrix.Matrix` instance filled with given entries.
-        """
-        assert n * m == len(entries), "Number of entries doesn't match n * m"
-        mat = cls.empty(n, m)
-        mat.entries = entries
-        return mat
 
     def __hash__(self):
         # TODO: refactor KernelTemplateMapper
@@ -1143,7 +1084,7 @@ def Vector(n, dt=None, **kwargs):
     """Construct a `Vector` instance i.e. 1-D Matrix.
 
     Args:
-        n (int): The desired number of entries of the Vector.
+        n (Union[int, list, tuple], np.ndarray): The desired number of entries of the Vector.
         dt (DataType, optional): The desired data type of the Vector.
 
     Returns:
@@ -1163,6 +1104,25 @@ Vector.cross = Matrix.cross
 Vector.outer_product = Matrix.outer_product
 Vector.unit = Matrix.unit
 Vector.normalized = Matrix.normalized
+
+
+class _IntermediateMatrix(Matrix):
+    """Intermediate matrix class for compiler internal use only.
+
+    Args:
+        n (int): Number of rows of the matrix.
+        m (int): Number of columns of the matrix.
+        entries (List[Expr]): All entries of the matrix.
+    """
+    def __init__(self, n, m, entries):
+        assert isinstance(entries, list)
+        assert n * m == len(entries), "Number of entries doesn't match n * m"
+        self.n = n
+        self.m = m
+        self.entries = entries
+        self.local_tensor_proxy = None
+        self.any_array_access = None
+        self.grad = None
 
 
 class MatrixField(Field):
@@ -1300,7 +1260,9 @@ class MatrixField(Field):
     def __getitem__(self, key):
         self.initialize_host_accessors()
         key = self.pad_key(key)
-        return Matrix.with_entries(self.n, self.m, self.host_access(key))
+        host_access = self.host_access(key)
+        return Matrix([[host_access[i * self.m + j] for j in range(self.m)]
+                       for i in range(self.n)])
 
     def __repr__(self):
         # make interactive shell happy, prevent materialization
@@ -1352,8 +1314,7 @@ class MatrixType(CompoundType):
                 int(mat(i, j)) if self.dtype in ti.integer_types else float(
                     mat(i, j)) for j in range(self.m)
             ] for i in range(self.n)])
-        return Matrix([[cast(mat(i, j), self.dtype) for j in range(self.m)]
-                       for i in range(self.n)])
+        return mat.cast(self.dtype)
 
     def filled_with_scalar(self, value):
         return Matrix([[value for _ in range(self.m)] for _ in range(self.n)])
@@ -1409,10 +1370,21 @@ class MatrixNdarray(Ndarray):
     def __getitem__(self, key):
         key = () if key is None else (
             key, ) if isinstance(key, numbers.Number) else tuple(key)
-        return Matrix.with_entries(self.n, self.m, [
-            NdarrayHostAccess(self, key, (i, j)) for i in range(self.n)
-            for j in range(self.m)
-        ])
+        return Matrix(
+            [[NdarrayHostAccess(self, key, (i, j)) for j in range(self.m)]
+             for i in range(self.n)])
+
+    @python_scope
+    def fill(self, val):
+        self.ndarray_fill(val, taichi.lang.meta.fill_ndarray_matrix)
+
+    @python_scope
+    def to_numpy(self):
+        return self.ndarray_matrix_to_numpy(as_vector=0)
+
+    @python_scope
+    def from_numpy(self, arr):
+        self.ndarray_matrix_from_numpy(arr, as_vector=0)
 
     def __deepcopy__(self, memo=None):
         ret_arr = MatrixNdarray(self.n, self.m, self.dtype, self.shape,
@@ -1463,9 +1435,20 @@ class VectorNdarray(Ndarray):
     def __getitem__(self, key):
         key = () if key is None else (
             key, ) if isinstance(key, numbers.Number) else tuple(key)
-        return Matrix.with_entries(
-            self.n, 1,
+        return Vector(
             [NdarrayHostAccess(self, key, (i, )) for i in range(self.n)])
+
+    @python_scope
+    def fill(self, val):
+        self.ndarray_fill(val, taichi.lang.meta.fill_ndarray_matrix)
+
+    @python_scope
+    def to_numpy(self):
+        return self.ndarray_matrix_to_numpy(as_vector=1)
+
+    @python_scope
+    def from_numpy(self, arr):
+        self.ndarray_matrix_from_numpy(arr, as_vector=1)
 
     def __deepcopy__(self, memo=None):
         ret_arr = VectorNdarray(self.n, self.dtype, self.shape, self.layout)

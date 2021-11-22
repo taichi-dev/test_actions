@@ -286,14 +286,14 @@ class TaichiCallableTemplateMapper:
             shape = tuple(arg.shape)
             if len(shape) < element_dim:
                 raise ValueError(
-                    f"Invalid argument into ti.any_arr() - required element_dim={element_dim}, but the argument has only {len(shape)} dimensions"
-                )
+                    f"Invalid argument into ti.any_arr() - required element_dim={element_dim}, "
+                    f"but the argument has only {len(shape)} dimensions")
             element_shape = (
             ) if element_dim == 0 else shape[:
                                              element_dim] if layout == Layout.SOA else shape[
                                                  -element_dim:]
             return to_taichi_type(arg.dtype), len(shape), element_shape, layout
-        return (type(arg).__name__, )
+        return type(arg).__name__,
 
     def extract(self, args):
         extracted = []
@@ -451,8 +451,10 @@ class Kernel:
             _taichi_skip_traceback = 1
             if self.runtime.inside_kernel:
                 raise TaichiSyntaxError(
-                    "Kernels cannot call other kernels. I.e., nested kernels are not allowed. Please check if you have direct/indirect invocation of kernels within kernels. Note that some methods provided by the Taichi standard library may invoke kernels, and please move their invocations to Python-scope."
-                )
+                    "Kernels cannot call other kernels. I.e., nested kernels are not allowed. "
+                    "Please check if you have direct/indirect invocation of kernels within kernels. "
+                    "Note that some methods provided by the Taichi standard library may invoke kernels, "
+                    "and please move their invocations to Python-scope.")
             self.runtime.inside_kernel = True
             self.runtime.current_kernel = self
             try:
@@ -535,6 +537,14 @@ class Kernel:
                         assert isinstance(v, torch.Tensor)
                         tmp = v
                         taichi_arch = self.runtime.prog.config.arch
+                        # Ndarray means its memory is allocated on the specified taichi arch.
+                        # Since torch only supports CPU & CUDA, torch-base ndarray only supports
+                        # taichi cpu/cuda backend as well.
+                        # Note I put x64/arm64/cuda here to be more specific.
+                        assert not is_ndarray or taichi_arch in (
+                            _ti_core.Arch.cuda, _ti_core.Arch.x64,
+                            _ti_core.Arch.arm64
+                        ), "Torch-based ndarray is only supported on taichi x64/arm64/cuda backend."
 
                         if str(v.device).startswith('cuda'):
                             # External tensor on cuda
