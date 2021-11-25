@@ -22,7 +22,7 @@ jobs:
           git diff --name-only @^
 
           chore_files=( LICENSE CONTRIBUTING.md README.md netlify.toml )
-          chore_dirs=( docs )
+          chore_dirs=( docs .github )
           run_job=false
 
           for file in $(git diff --name-only @^); do
@@ -359,3 +359,14 @@ jobs:
           python3 tests/run_tests.py -vr2 -t4 -x
         env:
           TI_WANTED_ARCHS: "metal,cpu"
+
+  get_results:
+    name: Get and Check the Results
+    needs: [check_files]
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          echo $RESULTS
+        env:
+          RESULTS: ${{ needs.check_files }}
