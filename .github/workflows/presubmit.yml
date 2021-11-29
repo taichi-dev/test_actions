@@ -312,6 +312,7 @@ jobs:
           . venv\Scripts\activate.ps1
           python -c "import taichi"
           ti example laplace
+          ti example marching_squares
           ti diagnose
           ti changelog
           echo wanted arch: $env:TI_WANTED_ARCHS
@@ -353,6 +354,7 @@ jobs:
           export PATH=$PATH:$HOME/Library/Python/3.8/bin
           python3 -m pip install -r requirements_test.txt
           ti example laplace
+          ti example marching_squares
           TI_LIB_DIR=`python3 -c "import taichi;print(taichi.__path__[0])" | tail -1`
           TI_LIB_DIR="$TI_LIB_DIR/lib" ./build/taichi_cpp_tests
           echo wanted archs: $TI_WANTED_ARCHS
