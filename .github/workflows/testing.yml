@@ -66,6 +66,7 @@ jobs:
         run: |
           git config user.email "taichigardener@gmail.com"
           git config user.name "Taichi Gardener"
+          git config http.postBuffer 524288000
           git checkout -b _fake_squash
           git remote add upstream https://github.com/taichi-dev/taichi.git
           git fetch upstream master
