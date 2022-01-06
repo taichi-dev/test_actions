@@ -43,8 +43,8 @@ class Ndarray {
   DeviceAllocation ndarray_alloc_{kDeviceNullAllocation};
   // Invariant:
   //   data_ptr_ is not nullptr iff arch is a llvm backend
-  uint64_t *data_ptr_{nullptr};
-  std::size_t nelement_{1};
+  uint64_t *data_ptr{nullptr};
+  std::size_t nelement{1};
   std::size_t element_size_{1};
   // Ndarrays manage their own |DeviceAllocation| so this must be shared with
   // |OpenGlRuntime|. Without the ownership, when the program exits |device_|
