@@ -232,7 +232,7 @@ jobs:
       matrix:
         include:
           - os: macos-11
-            python: 3.8
+            python: 3.7
             with_cc: OFF
             with_cpp_tests: ON
             wanted_archs: "cpu"
@@ -253,14 +253,6 @@ jobs:
       #     key: sccache-mac-${{ github.sha }}
       #     restore-keys: |
       #       sccache-mac-
-      - name: Install Clang-11
-        run: |
-          clang++ --version
-          brew install llvm@11
-          echo 'export PATH="/usr/local/opt/llvm@11/bin:$PATH"' >> /Users/runner/.bash_profile
-          export CXX=/usr/local/opt/llvm@11/bin/clang++
-          clang++ --version
-
 
       - name: Download Pre-Built LLVM 10.0.0
         run: |
@@ -273,10 +265,15 @@ jobs:
 
       - name: Build & Install
         run: |
+          python3 --version
+          brew install llvm@11
+          echo '---'
           clang++ --version
           export CXX=/usr/local/opt/llvm@11/bin/clang++
+          clang++ --version
           echo 'export PATH="/usr/local/opt/llvm@11/bin:$PATH"' >> /Users/runner/.bash_profile
           clang++ --version
+          echo '---'
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
@@ -445,8 +442,6 @@ jobs:
 
       - name: Build
         run: |
-          clang++ --version
-          cmake --version
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
