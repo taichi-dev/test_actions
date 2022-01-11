@@ -246,13 +246,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      # - name: Get sccache cache
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: sccache_cache
-      #     key: sccache-mac-${{ github.sha }}
-      #     restore-keys: |
-      #       sccache-mac-
+      - name: Get sccache cache
+        uses: actions/cache@v2
+        with:
+          path: sccache_cache
+          key: sccache-mac-${{ github.sha }}
+          restore-keys: |
+            sccache-mac-
 
       - name: Download Pre-Built LLVM 10.0.0
         run: |
@@ -265,7 +265,10 @@ jobs:
 
       - name: Build & Install
         run: |
+          sw_vers
+          system_profiler SPHardwareDataType
           python3 --version
+          python3 -m pip debug --verbose
           brew install llvm@11
           echo '---'
           clang++ --version
