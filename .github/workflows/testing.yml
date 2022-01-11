@@ -256,11 +256,11 @@ jobs:
       - name: Install Clang-11
         run: |
           clang++ --version
-          cmake --version
           brew install llvm@11
-          export CXX=/opt/homebrew/opt/llvm@11/bin/clang++
+          echo 'export PATH="/usr/local/opt/llvm@11/bin:$PATH"' >> /Users/runner/.bash_profile
+          export CXX=/usr/local/opt/llvm@11/bin/clang++
           clang++ --version
-          cmake --version
+
 
       - name: Download Pre-Built LLVM 10.0.0
         run: |
@@ -274,7 +274,8 @@ jobs:
       - name: Build & Install
         run: |
           clang++ --version
-          export CXX=/opt/homebrew/opt/llvm@11/bin/clang++
+          export CXX=/usr/local/opt/llvm@11/bin/clang++
+          echo 'export PATH="/usr/local/opt/llvm@11/bin:$PATH"' >> /Users/runner/.bash_profile
           clang++ --version
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
