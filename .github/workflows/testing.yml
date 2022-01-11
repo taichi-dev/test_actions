@@ -253,6 +253,14 @@ jobs:
       #     key: sccache-mac-${{ github.sha }}
       #     restore-keys: |
       #       sccache-mac-
+      - name: Install Clang-11
+        run: |
+          clang++ --version
+          cmake --version
+          brew install llvm@11
+          export CXX=/opt/homebrew/opt/llvm@11/bin/clang++
+          clang++ --version
+          cmake --version
 
       - name: Download Pre-Built LLVM 10.0.0
         run: |
@@ -265,11 +273,12 @@ jobs:
 
       - name: Build & Install
         run: |
+          clang++ --version
+          export CXX=/opt/homebrew/opt/llvm@11/bin/clang++
+          clang++ --version
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
-          clang++ --version
-          cmake --version
           export PATH=`pwd`/taichi-llvm/bin/:$PATH
           .github/workflows/scripts/unix_build.sh
         env:
