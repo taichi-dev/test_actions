@@ -232,7 +232,7 @@ jobs:
       matrix:
         include:
           - os: macos-11
-            python: 3.7
+            python: 3.8
             with_cc: OFF
             with_cpp_tests: ON
             wanted_archs: "cpu"
@@ -435,6 +435,8 @@ jobs:
 
       - name: Build
         run: |
+          clang++ --version
+          cmake --version
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
