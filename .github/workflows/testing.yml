@@ -227,7 +227,7 @@ jobs:
   build_and_test_cpu_mac:
     name: Build and Test macos (CPU)
     needs: [check_code_format, check_files]
-    timeout-minutes: 60
+    timeout-minutes: 90
     strategy:
       matrix:
         include:
