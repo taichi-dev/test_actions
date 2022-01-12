@@ -262,21 +262,18 @@ jobs:
           python misc/ci_download.py
         env:
           CI_PLATFORM: ${{ matrix.os }}
+      
+      - name: Check pip
+        run: |
+          python3 -m wheel version
+          python3 -m pip install wheel setuptools pip --upgrade
+          python3 -m wheel version
+          python3 -m pip debug --verbose
 
       - name: Build & Install
         run: |
-          sw_vers
-          system_profiler SPHardwareDataType
-          python3 --version
-          python3 -m pip debug --verbose
           brew install llvm@11
-          echo '---'
-          clang++ --version
           export CXX=/usr/local/opt/llvm@11/bin/clang++
-          clang++ --version
-          echo 'export PATH="/usr/local/opt/llvm@11/bin:$PATH"' >> /Users/runner/.bash_profile
-          clang++ --version
-          echo '---'
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
@@ -423,7 +420,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-11
+          - os: macos-latest
             python: 3.8
     defaults:
       run:
