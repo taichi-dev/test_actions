@@ -19,7 +19,6 @@ if [[ "$TI_IN_DOCKER" == "true" ]]; then
 fi
 python3 -m pip install dist/*.whl
 if [ -z "$GPU_TEST" ]; then
-    echo "GPU TEST"
     python3 -m pip install -r requirements_test.txt
     python3 -m pip install torch
 else

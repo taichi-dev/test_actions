@@ -262,13 +262,6 @@ jobs:
           python misc/ci_download.py
         env:
           CI_PLATFORM: ${{ matrix.os }}
-      
-      - name: Check pip
-        run: |
-          python3 -m pip install wheel setuptools
-          python3 -m pip install wheel setuptools pip --upgrade
-          python3 -m wheel version
-          python3 -m pip debug --verbose
 
       - name: Build & Install
         run: |
