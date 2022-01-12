@@ -47,6 +47,7 @@ setup_python() {
     fi
     python3 -m pip uninstall taichi taichi-nightly -y
     if [ -z "$GPU_BUILD" ]; then
+        echo "GPU BUILD"
         python3 -m pip install -r requirements_dev.txt
     fi
 }
