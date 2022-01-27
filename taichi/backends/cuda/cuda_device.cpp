@@ -5,7 +5,8 @@ namespace lang {
 
 namespace cuda {
 
-CudaDevice::AllocInfo CudaDevice::get_alloc_info(DeviceAllocation handle) {
+CudaDevice::AllocInfo CudaDevice::get_alloc_info(
+    const DeviceAllocation handle) {
   validate_device_alloc(handle);
   return allocations_[handle.alloc_id];
 }
@@ -36,6 +37,7 @@ DeviceAllocation CudaDevice::allocate_memory(const AllocParams &params) {
 DeviceAllocation CudaDevice::allocate_memory_runtime(
     const LlvmRuntimeAllocParams &params) {
   AllocInfo info;
+  info.size = taichi::iroundup(params.size, taichi_page_size);
   if (params.host_read || params.host_write) {
     TI_NOT_IMPLEMENTED
   } else if (params.use_cached) {
@@ -43,10 +45,10 @@ DeviceAllocation CudaDevice::allocate_memory_runtime(
       caching_allocator_ = std::make_unique<CudaCachingAllocator>(this);
     }
     info.ptr = caching_allocator_->allocate(params);
+    CUDADriver::get_instance().memset((void *)info.ptr, 0, info.size);
   } else {
     info.ptr = allocate_llvm_runtime_memory_jit(params);
   }
-  info.size = taichi::iroundup(params.size, taichi_page_size);
   info.is_imported = false;
   info.use_cached = params.use_cached;
   info.use_preallocated = true;
