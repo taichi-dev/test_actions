@@ -360,7 +360,6 @@ jobs:
 
   build_and_test_windows:
     name: Build and Test Windows
-    needs: [check_code_format, check_files]
     runs-on: [self-hosted, windows, gpu]
     timeout-minutes: 90
     steps:
