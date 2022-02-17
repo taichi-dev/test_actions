@@ -9,4 +9,4 @@ if ("$env:TI_WANTED_ARCHS".Contains("cuda")) {
 } else {
     pip install torch
 }
-python tests/run_tests.py -vr2 -t2 -a "$env:TI_WANTED_ARCHS"
+python tests/run_tests.py -vr2 -t4 -a "$env:TI_WANTED_ARCHS"
