@@ -136,7 +136,7 @@ jobs:
           docker run -id --user dev --name check_clang_tidy ghcr.io/taichi-dev/taichidev-cpu-ubuntu18.04:v0.1.0 /bin/bash
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - check_clang_tidy:/home/dev/
           docker exec --user root check_clang_tidy apt install -y clang-tidy-10
-          docker exec --user dev check_clang_tidy /home/dev/taichi/.github/workflows/scripts/check_clang_tidy.sh "$CI_SETUP_CMAKE_ARGS"
+          docker exec --user dev check_clang_tidy /home/dev/test_actions/.github/workflows/scripts/check_clang_tidy.sh "$CI_SETUP_CMAKE_ARGS"
         env:
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
           CI_SETUP_CMAKE_ARGS: -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=ON -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=OFF
@@ -193,16 +193,16 @@ jobs:
           docker create --user dev --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-ubuntu18.04:v0.1.0 \
-            /home/dev/taichi/.github/workflows/scripts/unix_build.sh
+            /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
           # A tarball is needed because sccache needs some permissions that only the file owner has.
           # 1000 is the uid and gid of user "dev" in the container.
           # If the uid or gid of the user inside the docker changes, please change the uid and gid in the following line.
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
           docker start -a taichi_build
           rm -rf sccache_cache
-          docker cp taichi_build:/home/dev/taichi/sccache_cache sccache_cache
-          docker cp taichi_build:/home/dev/taichi/dist shared/dist
-          docker cp taichi_build:/home/dev/taichi/build shared/build
+          docker cp taichi_build:/home/dev/test_actions/sccache_cache sccache_cache
+          docker cp taichi_build:/home/dev/test_actions/dist shared/dist
+          docker cp taichi_build:/home/dev/test_actions/build shared/build
         env:
           PY: ${{ matrix.python }}
           PROJECT_NAME: taichi
@@ -323,16 +323,16 @@ jobs:
           docker create --user dev --name taichi_build --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
             -e PY -e GPU_BUILD -e PROJECT_NAME -e TAICHI_CMAKE_ARGS -e DISPLAY \
             registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
-            /home/dev/taichi/.github/workflows/scripts/unix_build.sh
+            /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
           # A tarball is needed because sccache needs some permissions that only the file owner has.
           # 1000 is the uid and gid of user "dev" in the container.
           # If the uid or gid of the user inside the docker changes, please change the uid and gid in the following line.
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
           docker start -a taichi_build
           rm -rf sccache_cache
-          docker cp taichi_build:/home/dev/taichi/sccache_cache sccache_cache
-          docker cp taichi_build:/home/dev/taichi/dist shared/dist
-          docker cp taichi_build:/home/dev/taichi/build shared/build
+          docker cp taichi_build:/home/dev/test_actions/sccache_cache sccache_cache
+          docker cp taichi_build:/home/dev/test_actions/dist shared/dist
+          docker cp taichi_build:/home/dev/test_actions/build shared/build
         env:
           PY: py38
           GPU_BUILD: ON
