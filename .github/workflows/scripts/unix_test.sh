@@ -35,6 +35,6 @@ TI_LIB_DIR="$TI_PATH/_lib/runtime" ./build/taichi_cpp_tests
 if [ -z "$GPU_TEST" ]; then
     python3 tests/run_tests.py -vr2 -t8 -a "$TI_WANTED_ARCHS"
 else
-    python3 tests/run_tests.py -vr2 -t8 -k "not torch" -a "$TI_WANTED_ARCHS"
-    python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
+    python3 tests/run_tests.py -vr2 -t6 -k "not torch" -a "$TI_WANTED_ARCHS"
+    #python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
 fi
