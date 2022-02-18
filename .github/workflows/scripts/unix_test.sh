@@ -32,4 +32,9 @@ echo "wanted archs: $TI_WANTED_ARCHS"
 TI_PATH=$(python3 -c "import taichi;print(taichi.__path__[0])" | tail -1)
 TI_LIB_DIR="$TI_PATH/_lib/runtime" ./build/taichi_cpp_tests
 
-python3 tests/run_tests.py -vr2 -t2 -a "$TI_WANTED_ARCHS"
+if [ -z "$GPU_TEST" ]; then
+    python3 tests/run_tests.py -vr2 -t8 -a "$TI_WANTED_ARCHS"
+else
+    python3 tests/run_tests.py -vr2 -t8 -k "not torch" -a "$TI_WANTED_ARCHS"
+    python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
+fi
