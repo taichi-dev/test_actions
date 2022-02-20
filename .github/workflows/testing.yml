@@ -296,137 +296,11 @@ jobs:
           #      env:
           #        TI_WANTED_ARCHS: ${{ matrix.wanted_archs }}
 
-  build_and_test_gpu_linux:
-    name: Build and Test (GPU)
-    needs: [check_code_format, check_files]
-    runs-on: [self-hosted, cuda, vulkan, cn]
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-
-      - name: Get sccache cache
-        uses: actions/cache@v2
-        with:
-          path: sccache_cache
-          key: sccache-linux-gpu-${{ github.sha }}
-          restore-keys: |
-            sccache-linux-gpu-
-
-      - name: Build & Install
-        run: |
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
-          mkdir -m777 shared
-          docker create --user dev --name taichi_build --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
-            -e PY -e GPU_BUILD -e PROJECT_NAME -e TAICHI_CMAKE_ARGS -e DISPLAY \
-            registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
-            /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
-          # A tarball is needed because sccache needs some permissions that only the file owner has.
-          # 1000 is the uid and gid of user "dev" in the container.
-          # If the uid or gid of the user inside the docker changes, please change the uid and gid in the following line.
-          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
-          docker start -a taichi_build
-          rm -rf sccache_cache
-          docker cp taichi_build:/home/dev/test_actions/sccache_cache sccache_cache
-          docker cp taichi_build:/home/dev/test_actions/dist shared/dist
-          docker cp taichi_build:/home/dev/test_actions/build shared/build
-        env:
-          PY: py38
-          GPU_BUILD: ON
-          PROJECT_NAME: taichi
-          TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-          DISPLAY: :1
-
-      - name: Test
-        run: |
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
-          docker create --user dev --name taichi_test --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
-            -e DISPLAY -e PY -e GPU_TEST -e TI_WANTED_ARCHS \
-             registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
-             /home/dev/unix_test.sh
-          docker cp .github/workflows/scripts/unix_test.sh taichi_test:/home/dev/unix_test.sh
-          docker cp shared/dist/ taichi_test:/home/dev/
-          docker cp shared/build/ taichi_test:/home/dev/
-          docker cp tests/ taichi_test:/home/dev/
-          docker start -a taichi_test
-        env:
-          PY: py38
-          GPU_TEST: ON
-          DISPLAY: :1
-          TI_DEVICE_MEMORY_GB: 0.6
-          TI_WANTED_ARCHS: "cpu,cuda,vulkan,opengl"
-
-      - name: clean docker container
-        if: always()
-        run: |
-          docker rm taichi_build taichi_test -f
-
-          #build_and_test_windows:
-          #  name: Build and Test Windows
+          #build_and_test_gpu_linux:
+          #  name: Build and Test (GPU)
           #  needs: [check_code_format, check_files]
-          #  runs-on: [self-hosted, windows, gpu]
-          #  timeout-minutes: 90
-          #  steps:
-          #    - uses: actions/checkout@v2
-          #      with:
-          #        submodules: "recursive"
-
-          #    - uses: actions/setup-python@v2
-          #      with:
-          #        python-version: 3.7
-
-          #    - name: Add Visual Studio Shell to ENV
-          #      uses: egor-tensin/vs-shell@v2
-          #      with:
-          #        arch: x64
-
-          #    - name: Get sccache cache
-          #      uses: actions/cache@v2
-          #      with:
-          #        path: ccache_cache
-          #        key: ccache-win64-${{ github.sha }}
-          #        restore-keys: |
-          #          ccache-win64-
-
-          #    - name: Build
-          #      shell: powershell
-          #      run: |
-          #        if ( "${{needs.check_files.outputs.run_job}}" -eq "false" ) {
-          #          exit 0
-          #        }
-          #        .\.github\workflows\scripts\win_build.ps1 -installVulkan -install -libsDir C:\
-
-          #    - name: Test
-          #      shell: powershell
-          #      run: |
-          #        if ( "${{needs.check_files.outputs.run_job}}" -eq "false" ) {
-          #          exit 0
-          #        }
-          #        .\.github\workflows\scripts\win_test.ps1
-          #      env:
-          #        TI_WANTED_ARCHS: cpu,cuda,opengl
-          #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF
-          #        TI_SKIP_VERSION_CHECK: ON
-
-          #build_and_test_m1:
-          #  name: Build and Test (Apple M1)
-          #  needs: [check_code_format, check_files]
+          #  runs-on: [self-hosted, cuda, vulkan, cn]
           #  timeout-minutes: 60
-          #  strategy:
-          #    matrix:
-          #      include:
-          #        - os: macos-latest
-          #          python: 3.8
-          #  defaults:
-          #    run:
-          #      # https://github.com/actions/runner/issues/805#issuecomment-844426478
-          #      shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
-          #  runs-on: [self-hosted, m1]
           #  steps:
           #    - uses: actions/checkout@v2
           #      with:
@@ -436,28 +310,154 @@ jobs:
           #      uses: actions/cache@v2
           #      with:
           #        path: sccache_cache
-          #        key: sccache-m1-${{ github.sha }}
+          #        key: sccache-linux-gpu-${{ github.sha }}
           #        restore-keys: |
-          #          sccache-m1-
+          #          sccache-linux-gpu-
 
-          #    - name: Build
+          #    - name: Build & Install
           #      run: |
           #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
           #          exit 0
           #        fi
-          #        rm -rf $HOME/Library/Python/3.8/lib/python/site-packages/taichi
-          #        brew install molten-vk
-          #        .github/workflows/scripts/unix_build.sh
+          #        mkdir -m777 shared
+          #        docker create --user dev --name taichi_build --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
+          #          -e PY -e GPU_BUILD -e PROJECT_NAME -e TAICHI_CMAKE_ARGS -e DISPLAY \
+          #          registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
+          #          /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
+          #        # A tarball is needed because sccache needs some permissions that only the file owner has.
+          #        # 1000 is the uid and gid of user "dev" in the container.
+          #        # If the uid or gid of the user inside the docker changes, please change the uid and gid in the following line.
+          #        tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
+          #        docker start -a taichi_build
+          #        rm -rf sccache_cache
+          #        docker cp taichi_build:/home/dev/test_actions/sccache_cache sccache_cache
+          #        docker cp taichi_build:/home/dev/test_actions/dist shared/dist
+          #        docker cp taichi_build:/home/dev/test_actions/build shared/build
           #      env:
-          #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-          #        CXX: clang++
+          #        PY: py38
+          #        GPU_BUILD: ON
+          #        PROJECT_NAME: taichi
+          #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          #        DISPLAY: :1
 
           #    - name: Test
           #      run: |
           #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
           #          exit 0
           #        fi
-          #        export PATH=$PATH:$HOME/Library/Python/3.8/bin
-          #        .github/workflows/scripts/unix_test.sh
+          #        docker create --user dev --name taichi_test --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
+          #          -e DISPLAY -e PY -e GPU_TEST -e TI_WANTED_ARCHS \
+          #           registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
+          #           /home/dev/unix_test.sh
+          #        docker cp .github/workflows/scripts/unix_test.sh taichi_test:/home/dev/unix_test.sh
+          #        docker cp shared/dist/ taichi_test:/home/dev/
+          #        docker cp shared/build/ taichi_test:/home/dev/
+          #        docker cp tests/ taichi_test:/home/dev/
+          #        docker start -a taichi_test
           #      env:
-          #        TI_WANTED_ARCHS: "metal,vulkan,cpu"
+          #        PY: py38
+          #        GPU_TEST: ON
+          #        DISPLAY: :1
+          #        TI_DEVICE_MEMORY_GB: 0.6
+          #        TI_WANTED_ARCHS: "cpu,cuda,vulkan,opengl"
+
+          #    - name: clean docker container
+          #      if: always()
+          #      run: |
+          #        docker rm taichi_build taichi_test -f
+
+      build_and_test_windows:
+        name: Build and Test Windows
+        needs: [check_code_format, check_files]
+        runs-on: [self-hosted, windows, gpu]
+        timeout-minutes: 90
+        steps:
+          - uses: actions/checkout@v2
+            with:
+              submodules: "recursive"
+
+          - uses: actions/setup-python@v2
+            with:
+              python-version: 3.7
+
+          - name: Add Visual Studio Shell to ENV
+            uses: egor-tensin/vs-shell@v2
+            with:
+              arch: x64
+
+          - name: Get sccache cache
+            uses: actions/cache@v2
+            with:
+              path: ccache_cache
+              key: ccache-win64-${{ github.sha }}
+              restore-keys: |
+                ccache-win64-
+
+          - name: Build
+            shell: powershell
+            run: |
+              if ( "${{needs.check_files.outputs.run_job}}" -eq "false" ) {
+                exit 0
+              }
+              .\.github\workflows\scripts\win_build.ps1 -installVulkan -install -libsDir C:\
+
+          - name: Test
+            shell: powershell
+            run: |
+              if ( "${{needs.check_files.outputs.run_job}}" -eq "false" ) {
+                exit 0
+              }
+              .\.github\workflows\scripts\win_test.ps1
+            env:
+              TI_WANTED_ARCHS: cpu,cuda,opengl
+              TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF
+              TI_SKIP_VERSION_CHECK: ON
+
+          # build_and_test_m1:
+          #   name: Build and Test (Apple M1)
+          #   needs: [check_code_format, check_files]
+          #   timeout-minutes: 60
+          #   strategy:
+          #     matrix:
+          #       include:
+          #         - os: macos-latest
+          #           python: 3.8
+          #   defaults:
+          #     run:
+          #       # https://github.com/actions/runner/issues/805#issuecomment-844426478
+          #       shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+          #   runs-on: [self-hosted, m1]
+          #   steps:
+          #     - uses: actions/checkout@v2
+          #       with:
+          #         submodules: "recursive"
+
+          #     - name: Get sccache cache
+          #       uses: actions/cache@v2
+          #       with:
+          #         path: sccache_cache
+          #         key: sccache-m1-${{ github.sha }}
+          #         restore-keys: |
+          #           sccache-m1-
+
+          #     - name: Build
+          #       run: |
+          #         if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+          #           exit 0
+          #         fi
+          #         rm -rf $HOME/Library/Python/3.8/lib/python/site-packages/taichi
+          #         brew install molten-vk
+          #         .github/workflows/scripts/unix_build.sh
+          #       env:
+          #         TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          #         CXX: clang++
+
+          #     - name: Test
+          #       run: |
+          #         if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+          #           exit 0
+          #         fi
+          #         export PATH=$PATH:$HOME/Library/Python/3.8/bin
+          #         .github/workflows/scripts/unix_test.sh
+          #       env:
+          #         TI_WANTED_ARCHS: "metal,vulkan,cpu"

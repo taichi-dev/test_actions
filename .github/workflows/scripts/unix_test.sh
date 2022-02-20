@@ -38,5 +38,5 @@ else
     python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a cuda 
     python3 tests/run_tests.py -vr2 -t12 -k "not torch" -a cpu,vulkan 
     python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a opengl 
-    #python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
+    python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
 fi
