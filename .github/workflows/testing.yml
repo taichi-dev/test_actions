@@ -229,72 +229,72 @@ jobs:
           #      run: |
           #        docker rm taichi_build taichi_test -f
 
-  build_and_test_cpu_mac:
-    name: Build and Test macos (CPU)
-    needs: [check_code_format, check_files]
-    timeout-minutes: 60
-    strategy:
-      matrix:
-        include:
-          - os: macos-10.15
-            python: "3.10.0"
-            with_cc: OFF
-            with_cpp_tests: ON
-            wanted_archs: "cpu"
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
+          #build_and_test_cpu_mac:
+          #  name: Build and Test macos (CPU)
+          #  needs: [check_code_format, check_files]
+          #  timeout-minutes: 60
+          #  strategy:
+          #    matrix:
+          #      include:
+          #        - os: macos-10.15
+          #          python: "3.10.0"
+          #          with_cc: OFF
+          #          with_cpp_tests: ON
+          #          wanted_archs: "cpu"
+          #  runs-on: ${{ matrix.os }}
+          #  steps:
+          #    - uses: actions/checkout@v2
+          #      with:
+          #        submodules: "recursive"
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
+          #    - uses: actions/setup-python@v2
+          #      with:
+          #        python-version: ${{ matrix.python }}
 
-      - name: Get sccache cache
-        uses: actions/cache@v2
-        with:
-          path: sccache_cache
-          key: sccache-mac-${{ github.sha }}
-          restore-keys: |
-            sccache-mac-
+          #    - name: Get sccache cache
+          #      uses: actions/cache@v2
+          #      with:
+          #        path: sccache_cache
+          #        key: sccache-mac-${{ github.sha }}
+          #        restore-keys: |
+          #          sccache-mac-
 
-      - name: Download Pre-Built LLVM 10.0.0
-        run: |
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
-          python misc/ci_download.py
-        env:
-          CI_PLATFORM: ${{ matrix.os }}
+          #    - name: Download Pre-Built LLVM 10.0.0
+          #      run: |
+          #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+          #          exit 0
+          #        fi
+          #        python misc/ci_download.py
+          #      env:
+          #        CI_PLATFORM: ${{ matrix.os }}
 
-      - name: Build & Install
-        run: |
-          brew install molten-vk
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
-          mkdir -p sccache_cache
-          export PATH=`pwd`/taichi-llvm/bin/:$PATH
-          .github/workflows/scripts/unix_build.sh
-          brew uninstall molten-vk
-        env:
-          TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-          CXX: clang++
-      # [DEBUG] Copy this step around to enable debugging inside Github Action instances.
-      #- name: Setup tmate session
-      #  uses: mxschmitt/action-tmate@v3
-      #  with:
-      #    limit-access-to-actor: true
+          #    - name: Build & Install
+          #      run: |
+          #        brew install molten-vk
+          #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+          #          exit 0
+          #        fi
+          #        mkdir -p sccache_cache
+          #        export PATH=`pwd`/taichi-llvm/bin/:$PATH
+          #        .github/workflows/scripts/unix_build.sh
+          #        brew uninstall molten-vk
+          #      env:
+          #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=${{ matrix.with_cpp_tests }} -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          #        CXX: clang++
+          #    # [DEBUG] Copy this step around to enable debugging inside Github Action instances.
+          #    #- name: Setup tmate session
+          #    #  uses: mxschmitt/action-tmate@v3
+          #    #  with:
+          #    #    limit-access-to-actor: true
 
-      - name: Test
-        run: |
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
-          .github/workflows/scripts/unix_test.sh
-        env:
-          TI_WANTED_ARCHS: ${{ matrix.wanted_archs }}
+          #    - name: Test
+          #      run: |
+          #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+          #          exit 0
+          #        fi
+          #        .github/workflows/scripts/unix_test.sh
+          #      env:
+          #        TI_WANTED_ARCHS: ${{ matrix.wanted_archs }}
 
           #build_and_test_gpu_linux:
           #  name: Build and Test (GPU)
@@ -413,51 +413,52 @@ jobs:
           #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF
           #        TI_SKIP_VERSION_CHECK: ON
 
-          #build_and_test_m1:
-          #  name: Build and Test (Apple M1)
-          #  needs: [check_code_format, check_files]
-          #  timeout-minutes: 60
-          #  strategy:
-          #    matrix:
-          #      include:
-          #        - os: macos-latest
-          #          python: 3.10
-          #  defaults:
-          #    run:
-          #      # https://github.com/actions/runner/issues/805#issuecomment-844426478
-          #      shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
-          #  runs-on: [self-hosted, m1]
-          #  steps:
-          #    - uses: actions/checkout@v2
-          #      with:
-          #        submodules: "recursive"
+      build_and_test_m1:
+        name: Build and Test (Apple M1)
+        needs: [check_code_format, check_files]
+        timeout-minutes: 60
+        strategy:
+          matrix:
+            include:
+              - os: macos-latest
+                python: 3.10
+        defaults:
+          run:
+            # https://github.com/actions/runner/issues/805#issuecomment-844426478
+            shell: "/usr/bin/arch -arch arm64e /bin/bash --noprofile --norc -eo pipefail {0}"
+        runs-on: [self-hosted, m1]
+        steps:
+          - uses: actions/checkout@v2
+            with:
+              submodules: "recursive"
 
-          #    - name: Get sccache cache
-          #      uses: actions/cache@v2
-          #      with:
-          #        path: sccache_cache
-          #        key: sccache-m1-${{ github.sha }}
-          #        restore-keys: |
-          #          sccache-m1-
+          - name: Get sccache cache
+            uses: actions/cache@v2
+            with:
+              path: sccache_cache
+              key: sccache-m1-${{ github.sha }}
+              restore-keys: |
+                sccache-m1-
 
-          #    - name: Build
-          #      run: |
-          #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-          #          exit 0
-          #        fi
-          #        rm -rf $HOME/Library/Python/3.8/lib/python/site-packages/taichi
-          #        brew install molten-vk
-          #        .github/workflows/scripts/unix_build.sh
-          #      env:
-          #        TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-          #        CXX: clang++
+          - name: Build
+            run: |
+              if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+                exit 0
+              fi
+              rm -rf $HOME/Library/Python/3.8/lib/python/site-packages/taichi
+              brew install molten-vk
+              export PATH=/Users/github/miniforge3/envs/3.10/bin:$PATH
+              .github/workflows/scripts/unix_build.sh
+            env:
+              TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=ON -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+              CXX: clang++
 
-          #    - name: Test
-          #      run: |
-          #        if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-          #          exit 0
-          #        fi
-          #        export PATH=$PATH:$HOME/Library/Python/3.8/bin
-          #        .github/workflows/scripts/unix_test.sh
-          #      env:
-          #        TI_WANTED_ARCHS: "metal,vulkan,cpu"
+          - name: Test
+            run: |
+              if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+                exit 0
+              fi
+              export PATH=/Users/github/miniforge3/envs/3.10/bin:$PATH
+              .github/workflows/scripts/unix_test.sh
+            env:
+              TI_WANTED_ARCHS: "metal,vulkan,cpu"
