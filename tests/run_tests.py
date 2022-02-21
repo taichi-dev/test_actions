@@ -104,7 +104,7 @@ def _test_python(args):
     import pytest  # pylint: disable=C0415
     retvar = int(pytest.main(pytest_args))
     print('=======retvar is ', retvar)
-    return retvar 
+    return retvar
 
 
 def test():
