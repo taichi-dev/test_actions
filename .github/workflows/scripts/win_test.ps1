@@ -9,6 +9,8 @@ if ("$env:TI_WANTED_ARCHS".Contains("cuda")) {
 } else {
     pip install torch
 }
-python tests/run_tests.py -vr2 -t6 -k "not torch" -a "$env:TI_WANTED_ARCHS"
+python tests/run_tests.py -vr2 -t6 -k "not torch" -a cuda 
+python tests/run_tests.py -vr2 -t8 -k "not torch" -a cpu 
+python tests/run_tests.py -vr2 -t6 -k "not torch" -a vulkan 
 python tests/run_tests.py -vr2 -t2 -k "torch" -a "$env:TI_WANTED_ARCHS"
 
