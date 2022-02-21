@@ -102,7 +102,9 @@ def _test_python(args):
         if int(threads) > 1:
             pytest_args += ['-n', str(threads)]
     import pytest  # pylint: disable=C0415
-    return int(pytest.main(pytest_args))
+    retvar = int(pytest.main(pytest_args))
+    print('=======retvar is ', retvar)
+    return retvar 
 
 
 def test():
