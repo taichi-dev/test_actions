@@ -37,8 +37,18 @@ TI_LIB_DIR="$TI_PATH/_lib/runtime" ./build/taichi_cpp_tests
 if [ -z "$GPU_TEST" ]; then
     python3 tests/run_tests.py -vr2 -t4 -a "$TI_WANTED_ARCHS"
 else
-    python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a cuda 
-    python3 tests/run_tests.py -vr2 -t8 -k "not torch" -a cpu,vulkan 
-    python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a opengl 
+    # only split per arch for self_hosted GPU tests
+    if [[ $TI_WANTED_ARCHS == *"cuda"* ]]; then
+        python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a cuda 
+    fi
+    if [[ $TI_WANTED_ARCHS == *"cpu"* ]]; then
+        python3 tests/run_tests.py -vr2 -t8 -k "not torch" -a cpu
+    fi
+    if [[ $TI_WANTED_ARCHS == *"vulkan"* ]]; then
+        python3 tests/run_tests.py -vr2 -t8 -k "not torch" -a vulkan 
+    fi
+    if [[ $TI_WANTED_ARCHS == *"opengl"* ]]; then
+        python3 tests/run_tests.py -vr2 -t4 -k "not torch" -a opengl 
+    fi
     python3 tests/run_tests.py -vr2 -t1 -k "torch" -a "$TI_WANTED_ARCHS"
 fi
