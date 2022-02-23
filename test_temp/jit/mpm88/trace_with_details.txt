@@ -1,0 +1,111 @@
+[T 02/22/22 13:49:12.586 14398] [program.cpp:Program@51] Program initializing...
+[T 02/22/22 13:49:12.586 14398] [snode_tree_buffer_manager.cpp:SNodeTreeBufferManager@11] SNode tree buffer manager created.
+[T 02/22/22 13:49:12.586 14398] [llvm_context.cpp:TaichiLLVMContext@63] Creating Taichi llvm context for arch: x64
+[T 02/22/22 13:49:12.586 14398] [llvm_context.cpp:get_this_thread_data@649] Creating thread local data for thread 140442101912512
+[T 02/22/22 13:49:12.586 14398] [llvm_context.cpp:TaichiLLVMContext@97] Taichi llvm context created.
+[T 02/22/22 13:49:12.586 14398] [memory_pool.cpp:MemoryPool@13] Memory pool created. Default buffer size per allocator = 1024 MB
+[T 02/22/22 13:49:12.681 14398] [program.cpp:Program@159] Program (0x55f9c8bb44d0) arch=x64 initialized.
+[T 02/22/22 13:49:12.681 14398] [misc.py:init@347] Materializing runtime...
+[T 02/22/22 13:49:12.681 14398] [unified_allocator.cpp:UnifiedAllocator@45] Memory allocated. Allocation time = 4.05e-06 s
+[T 02/22/22 13:49:12.681 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=256 remain=1073741824
+[T 02/22/22 13:49:12.681 14398] [llvm_program.cpp:materialize_runtime@394] Allocating 16 random states (used by CUDA only)
+[T 02/22/22 13:49:12.691 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=35256 remain=1073741568
+[T 02/22/22 13:49:12.691 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=2097160 remain=1073706312
+[T 02/22/22 13:49:12.691 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=1048576 remain=1071607800
+[T 02/22/22 13:49:12.691 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=320 remain=1070555136
+[T 02/22/22 13:49:12.691 14398] [llvm_program.cpp:materialize_runtime@403] LLVMRuntime initialized (excluding `root`)
+[T 02/22/22 13:49:12.691 14398] [llvm_program.cpp:materialize_runtime@406] LLVMRuntime pointer fetched
+[T 02/22/22 13:49:12.691 14398] [hacked_signal_handler.cpp:HackedSignalRegister@62] Taichi signal handlers registered. Thread ID = 14398
+[T 02/22/22 13:49:12.702 14398] [llvm_program.cpp:initialize_llvm_runtime_snodes@183] Allocating data structure of size 491520 bytes
+[T 02/22/22 13:49:12.702 14398] [snode_tree_buffer_manager.cpp:allocate@44] allocating memory for SNode Tree 0
+[T 02/22/22 13:49:12.702 14398] [unified_allocator.h:allocate@39] UM [data=140436605714432] allocate() request=491520 remain=1070554816
+[T 02/22/22 13:49:12.702 14398] [kernel_impl.py:materialize@441] Compiling kernel init_c58_0...
+[T 02/22/22 13:49:12.703 14398] [kernel_impl.py:materialize@476] [           JIT] creating kernel
+[T 02/22/22 13:49:12.703 14398] [program.h:kernel@186] [           JIT] make unique Kernel
+[T 02/22/22 13:49:12.703 14398] [kernel.cpp:Kernel@35] [           JIT] Kernel ctor 2
+[T 02/22/22 13:49:12.703 14398] [kernel.cpp:init@394] [           JIT] Kernel init
+[T 02/22/22 13:49:12.703 14398] [kernel.cpp:init@418] [           JIT] pos2
+[T 02/22/22 13:49:12.704 14398] [kernel.cpp:init@428] [           JIT] call compile()
+[T 02/22/22 13:49:12.704 14398] [kernel_impl.py:materialize@480] [           JIT] materialize rest] 0.0016105850008898415
+[T 02/22/22 13:49:12.704 14398] [kernel_impl.py:ensure_compiled@661] [           JIT] materialize()] 0.01229692600099952
+[T 02/22/22 13:49:12.704 14398] [kernel_impl.py:__call__@677] [           JIT]------------]--------
+[T 02/22/22 13:49:12.704 14398] [kernel_impl.py:func__@622] [           JIT] t_kernel(launch_ctx)
+[T 02/22/22 13:49:12.704 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:12.704 14398] [llvm_program.cpp:compile@134] [           JIT] LlvmProgramImpl::compile
+[T 02/22/22 13:49:12.706 14398] [llvm_program.cpp:compile@137] [           JIT] kernel lower
+[T 02/22/22 13:49:12.706 14398] [llvm_program.cpp:compile@140] [           JIT] kernel return codegen
+[T 02/22/22 13:49:12.730 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel init_c58_0_kernel
+[T 02/22/22 13:49:12.730 14398] [kernel_impl.py:__call__@680] [           JIT]------------] 0.02549659599935694
+[T 02/22/22 13:49:12.730 14398] [kernel_impl.py:materialize@441] Compiling kernel substep_c56_0...
+[T 02/22/22 13:49:12.732 14398] [kernel_impl.py:materialize@476] [           JIT] creating kernel
+[T 02/22/22 13:49:12.732 14398] [program.h:kernel@186] [           JIT] make unique Kernel
+[T 02/22/22 13:49:12.732 14398] [kernel.cpp:Kernel@35] [           JIT] Kernel ctor 2
+[T 02/22/22 13:49:12.732 14398] [kernel.cpp:init@394] [           JIT] Kernel init
+[T 02/22/22 13:49:12.732 14398] [kernel.cpp:init@418] [           JIT] pos2
+[T 02/22/22 13:49:12.808 14398] [kernel.cpp:init@428] [           JIT] call compile()
+[T 02/22/22 13:49:12.808 14398] [kernel_impl.py:materialize@480] [           JIT] materialize rest] 0.07633498200084432
+[T 02/22/22 13:49:12.809 14398] [kernel_impl.py:ensure_compiled@661] [           JIT] materialize()] 0.07872364200011361
+[T 02/22/22 13:49:12.809 14398] [kernel_impl.py:__call__@677] [           JIT]------------]--------
+[T 02/22/22 13:49:12.809 14398] [kernel_impl.py:func__@622] [           JIT] t_kernel(launch_ctx)
+[T 02/22/22 13:49:12.809 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:12.809 14398] [llvm_program.cpp:compile@134] [           JIT] LlvmProgramImpl::compile
+[T 02/22/22 13:49:12.828 14398] [kernel.cpp:Kernel@27] [           JIT] Kernel ctor 1
+[T 02/22/22 13:49:12.828 14398] [kernel.cpp:init@394] [           JIT] Kernel init
+[T 02/22/22 13:49:12.828 14398] [kernel.cpp:init@418] [           JIT] pos2
+[T 02/22/22 13:49:12.828 14398] [kernel.cpp:init@428] [           JIT] call compile()
+[T 02/22/22 13:49:12.828 14398] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=12397727920192291077
+[T 02/22/22 13:49:12.828 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:12.828 14398] [llvm_program.cpp:compile@134] [           JIT] LlvmProgramImpl::compile
+[T 02/22/22 13:49:12.828 14398] [llvm_program.cpp:compile@137] [           JIT] kernel lower
+[T 02/22/22 13:49:12.828 14398] [llvm_program.cpp:compile@140] [           JIT] kernel return codegen
+[T 02/22/22 13:49:12.838 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_0_kernel
+[T 02/22/22 13:49:12.838 14398] [kernel.cpp:Kernel@27] [           JIT] Kernel ctor 1
+[T 02/22/22 13:49:12.838 14398] [kernel.cpp:init@394] [           JIT] Kernel init
+[T 02/22/22 13:49:12.838 14398] [kernel.cpp:init@418] [           JIT] pos2
+[T 02/22/22 13:49:12.838 14398] [kernel.cpp:init@428] [           JIT] call compile()
+[T 02/22/22 13:49:12.838 14398] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=12397727918246134016
+[T 02/22/22 13:49:12.838 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:12.838 14398] [llvm_program.cpp:compile@134] [           JIT] LlvmProgramImpl::compile
+[T 02/22/22 13:49:12.838 14398] [llvm_program.cpp:compile@137] [           JIT] kernel lower
+[T 02/22/22 13:49:12.838 14398] [llvm_program.cpp:compile@140] [           JIT] kernel return codegen
+[T 02/22/22 13:49:12.847 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_1_kernel
+[T 02/22/22 13:49:13.014 14398] [kernel.cpp:Kernel@27] [           JIT] Kernel ctor 1
+[T 02/22/22 13:49:13.014 14398] [kernel.cpp:init@394] [           JIT] Kernel init
+[T 02/22/22 13:49:13.014 14398] [kernel.cpp:init@418] [           JIT] pos2
+[T 02/22/22 13:49:13.014 14398] [kernel.cpp:init@428] [           JIT] call compile()
+[T 02/22/22 13:49:13.014 14398] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=12397727920259663113
+[T 02/22/22 13:49:13.014 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.014 14398] [llvm_program.cpp:compile@134] [           JIT] LlvmProgramImpl::compile
+[T 02/22/22 13:49:13.015 14398] [llvm_program.cpp:compile@137] [           JIT] kernel lower
+[T 02/22/22 13:49:13.015 14398] [llvm_program.cpp:compile@140] [           JIT] kernel return codegen
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.023 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.023 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.023 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.023 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.023 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.023 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 13:49:13.026 14398] [llvm_program.cpp:compile@137] [           JIT] kernel lower
+[T 02/22/22 13:49:13.026 14398] [llvm_program.cpp:compile@140] [           JIT] kernel return codegen
+[T 02/22/22 13:49:13.074 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel substep_c56_0_kernel
+[T 02/22/22 13:49:13.074 14398] [kernel_impl.py:__call__@680] [           JIT]------------] 0.2657265729994833
+[T 02/22/22 13:49:13.074 14398] [kernel_impl.py:materialize@434] [           JIT] compiled, returned 
+[T 02/22/22 13:49:13.075 14398] [kernel_impl.py:ensure_compiled@661] [           JIT] materialize()] 4.139199882047251e-05
+[T 02/22/22 13:49:13.075 14398] [kernel_impl.py:__call__@677] [           JIT]------------]--------
+[T 02/22/22 13:49:13.075 14398] [kernel_impl.py:func__@622] [           JIT] t_kernel(launch_ctx)
+[T 02/22/22 13:49:13.075 14398] [kernel.cpp:operator()@109] [           JIT] Kernel::operator()
+[T 02/22/22 13:49:13.075 14398] [codegen_llvm.cpp:operator()@2246] Launching kernel substep_c56_0_kernel
+[T 02/22/22 13:49:13.075 14398] [kernel_impl.py:__call__@680] [           JIT]------------] 0.0006230629987840075
+[Taichi] version 0.9.0, llvm 10.0.0, commit dd7654ae, linux, python 3.8.12
+[Taichi] Starting on arch=x64
+ti init time: 0.10585920 s
+init() time: 0.03791171 s
+>>>>>>> 1 substep() time: 0.34459417 s
+2 substep() time: 0.00072633 s
+[T 02/22/22 13:49:13.105 14398] [program.cpp:finalize@467] Program finalizing...
+[T 02/22/22 13:49:13.106 14398] [program.cpp:finalize@515] Program (0x55f9c8bb44d0) finalized_.
+[T 02/22/22 13:49:13.110 14398] [hacked_signal_handler.cpp:~HackedSignalRegister@81] Taichi signal handlers unregistered. Thread ID = 14398
