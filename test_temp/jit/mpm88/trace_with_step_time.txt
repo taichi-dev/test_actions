@@ -1,0 +1,46 @@
+[T 02/22/22 10:43:31.687 4690] [program.cpp:Program@51] Program initializing...
+[T 02/22/22 10:43:31.687 4690] [snode_tree_buffer_manager.cpp:SNodeTreeBufferManager@11] SNode tree buffer manager created.
+[T 02/22/22 10:43:31.687 4690] [llvm_context.cpp:TaichiLLVMContext@63] Creating Taichi llvm context for arch: x64
+[T 02/22/22 10:43:31.687 4690] [llvm_context.cpp:get_this_thread_data@649] Creating thread local data for thread 140328470250432
+[T 02/22/22 10:43:31.687 4690] [llvm_context.cpp:TaichiLLVMContext@97] Taichi llvm context created.
+[T 02/22/22 10:43:31.687 4690] [memory_pool.cpp:MemoryPool@13] Memory pool created. Default buffer size per allocator = 1024 MB
+[T 02/22/22 10:43:31.782 4690] [program.cpp:Program@159] Program (0x55bbab715710) arch=x64 initialized.
+[T 02/22/22 10:43:31.782 4690] [misc.py:init@347] Materializing runtime...
+[T 02/22/22 10:43:31.782 4690] [unified_allocator.cpp:UnifiedAllocator@45] Memory allocated. Allocation time = 3.81e-06 s
+[T 02/22/22 10:43:31.782 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=256 remain=1073741824
+[T 02/22/22 10:43:31.782 4690] [llvm_program.cpp:materialize_runtime@391] Allocating 16 random states (used by CUDA only)
+[T 02/22/22 10:43:31.792 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=35256 remain=1073741568
+[T 02/22/22 10:43:31.792 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=2097160 remain=1073706312
+[T 02/22/22 10:43:31.792 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=1048576 remain=1071607800
+[T 02/22/22 10:43:31.792 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=320 remain=1070555136
+[T 02/22/22 10:43:31.792 4690] [llvm_program.cpp:materialize_runtime@400] LLVMRuntime initialized (excluding `root`)
+[T 02/22/22 10:43:31.792 4690] [llvm_program.cpp:materialize_runtime@403] LLVMRuntime pointer fetched
+[T 02/22/22 10:43:31.792 4690] [hacked_signal_handler.cpp:HackedSignalRegister@62] Taichi signal handlers registered. Thread ID = 4690
+[T 02/22/22 10:43:31.802 4690] [llvm_program.cpp:initialize_llvm_runtime_snodes@180] Allocating data structure of size 491520 bytes
+[T 02/22/22 10:43:31.802 4690] [snode_tree_buffer_manager.cpp:allocate@44] allocating memory for SNode Tree 0
+[T 02/22/22 10:43:31.802 4690] [unified_allocator.h:allocate@39] UM [data=140322973622272] allocate() request=491520 remain=1070554816
+[T 02/22/22 10:43:31.802 4690] [kernel_impl.py:materialize@437] Compiling kernel init_c58_0...
+[T 02/22/22 10:43:31.829 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel init_c58_0_kernel
+[T 02/22/22 10:43:31.829 4690] [kernel_impl.py:materialize@437] Compiling kernel substep_c56_0...
+[T 02/22/22 10:43:31.928 4690] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=16201203073215955205
+[T 02/22/22 10:43:31.938 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_0_kernel
+[T 02/22/22 10:43:31.938 4690] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=16201203071269798144
+[T 02/22/22 10:43:31.948 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_1_kernel
+[T 02/22/22 10:43:32.111 4690] [constant_fold.cpp:get_jit_evaluator_kernel@68] Saving JIT evaluator cache entry id=16201203073283327241
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.120 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel jit_evaluator_2_kernel
+[T 02/22/22 10:43:32.171 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel substep_c56_0_kernel
+[T 02/22/22 10:43:32.172 4690] [codegen_llvm.cpp:operator()@2246] Launching kernel substep_c56_0_kernel
+[Taichi] version 0.9.0, llvm 10.0.0, commit dd7654ae, linux, python 3.8.12
+[Taichi] Starting on arch=x64
+ti init time: 0.10571943 s
+init() time: 0.03646100 s
+>>>>>>> 1 substep() time: 0.34291046 s
+2 substep() time: 0.00053424 s
+[T 02/22/22 10:43:32.202 4690] [program.cpp:finalize@467] Program finalizing...
+[T 02/22/22 10:43:32.203 4690] [program.cpp:finalize@515] Program (0x55bbab715710) finalized_.
+[T 02/22/22 10:43:32.207 4690] [hacked_signal_handler.cpp:~HackedSignalRegister@81] Taichi signal handlers unregistered. Thread ID = 4690
