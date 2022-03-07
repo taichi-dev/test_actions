@@ -85,11 +85,11 @@ jobs:
           docker create --user dev --name taichi_build --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
             -e DISPLAY -e PY -e GPU_BUILD -e TAICHI_CMAKE_ARGS -e PROJECT_NAME \
             registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
-            /home/dev/taichi/.github/workflows/scripts/unix_build.sh
+            /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
           docker start -a taichi_build
-          docker cp taichi_build:/home/dev/taichi/dist shared/dist
-          docker cp taichi_build:/home/dev/taichi/build shared/build
+          docker cp taichi_build:/home/dev/test_actions/dist shared/dist
+          docker cp taichi_build:/home/dev/test_actions/build shared/build
         env:
           PY: ${{ matrix.conda_python }}
           GPU_BUILD: ON
@@ -127,6 +127,72 @@ jobs:
           cd shared
           pip install twine requests==2.26
           python3 ../misc/upload_release.py
+
+      - name: clean docker container
+        if: always()
+        run: |
+          docker rm taichi_build taichi_test -f
+
+  build_and_upload_linux:
+    name: Build and Upload (manylinux2014, no vulkan)
+    needs: matrix_prep
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.matrix_prep.outputs.matrix) }}
+    runs-on: [self-hosted, cuda, cn, release]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+
+      - name: Get sccache cache
+        uses: actions/cache@v2
+        with:
+          path: sccache_cache
+          key: sccache-linux-gpu-novulkan-${{ github.sha }}
+          restore-keys: |
+            sccache-linux-gpu-novulkan-
+
+      - name: Build
+        run: |
+          mkdir -m777 shared
+          docker create --user dev --name taichi_build --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
+            -e DISPLAY -e PY -e GPU_BUILD -e TAICHI_CMAKE_ARGS -e PROJECT_NAME \
+            registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
+            /home/dev/test_actions/.github/workflows/scripts/unix_build.sh
+          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:/home/dev/
+          docker start -a taichi_build
+          docker cp taichi_build:/home/dev/test_actions/dist shared/dist
+          docker cp taichi_build:/home/dev/test_actions/build shared/build
+        env:
+          PY: ${{ matrix.conda_python }}
+          GPU_BUILD: ON
+          TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=ON -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          PROJECT_NAME: ${{ matrix.name }}
+          DISPLAY: ":1"
+
+      - name: Archive Wheel Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.name }}-py${{ matrix.python }}-manylinux2014.whl
+          path: shared/dist/*.whl
+          retention-days: 20
+
+      - name: Test
+        run: |
+          docker create --user dev --name taichi_test --gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
+            -e DISPLAY -e PY -e GPU_TEST registry.taichigraphics.com/taichidev-ubuntu18.04:v0.1.1 \
+            /home/dev/unix_test.sh
+          docker cp .github/workflows/scripts/unix_test.sh taichi_test:/home/dev/unix_test.sh
+          docker cp ./requirements_test.txt taichi_test:/home/dev/requirements_test.txt
+          docker cp shared/dist/ taichi_test:/home/dev/
+          docker cp shared/build/ taichi_test:/home/dev/
+          docker cp tests/ taichi_test:/home/dev/
+          docker start -a taichi_test
+        env:
+          PY: ${{ matrix.conda_python }}
+          GPU_TEST: ON
+          DISPLAY: ":1"
 
       - name: clean docker container
         if: always()
