@@ -29,6 +29,7 @@ jobs:
 
       - name: Save new version
         run: |
+          [[ "$GITHUB_REPOSITORY" == "taichi-dev/taichi" ]] || exit 0
           python3 -m pip install requests==2.26
           python3 misc/save_new_version.py
 
