@@ -50,7 +50,8 @@ def upload_artifact(is_taichi):
 
 
 if __name__ == '__main__':
-    if os.getenv('GITHUB_REPOSITORY', 'taichi-dev/taichi') != 'taichi-dev/taichi':
+    if os.getenv('GITHUB_REPOSITORY',
+                 'taichi-dev/taichi') != 'taichi-dev/taichi':
         sys.exit(0)
     is_taichi = os.getenv('PROJECT_NAME', 'taichi') == 'taichi'
     upload_artifact(is_taichi)
