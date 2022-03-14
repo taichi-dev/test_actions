@@ -6,9 +6,9 @@ on:
     # Manually trigger the release workflow, a version must be provided
     inputs:
       version:
-        description: "The version to release (e.g. v0.8.0)"
+        description: 'The version to release (e.g. v0.8.0), or leave it empty for nightly build'
         type: string
-        required: true
+        required: false
 
 env:
   PROD_PWD: ${{ secrets.PYPI_PWD_PROD }}
