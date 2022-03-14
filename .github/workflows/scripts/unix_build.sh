@@ -11,7 +11,7 @@ check_in_docker() {
 }
 
 IN_DOCKER=$(check_in_docker)
-[[ "$IN_DOCKER" == "true" ]] && cd taichi
+[[ "$IN_DOCKER" == "true" ]] && cd test_actions
 
 setup_sccache() {
     export SCCACHE_DIR=$(pwd)/sccache_cache
