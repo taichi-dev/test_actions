@@ -58,10 +58,10 @@ build() {
     fi
 
     if [[ $OSTYPE == "linux-"* ]]; then
-        if [[ "$(grep '^NAME' /etc/os-release)" == *"CentOS"* ]]; then
+        if [ -f /etc/centos-release ] ; then
             EXTRA_ARGS="-p manylinux2014_x86_64"
         else
-            EXTRA_ARGS="-p manylinux1_x86_64"
+            EXTRA_ARGS="-p manylinux_2_27_x86_64"
         fi
     fi
     python3 misc/make_changelog.py origin/master ./ True
