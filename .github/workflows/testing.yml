@@ -164,8 +164,9 @@ jobs:
           submodules: 'recursive'
 
       - name: Build
-        shell: powershell
+        shell: bash
         run: |
+          docker info
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-ubuntu18.04:v0.3.0 \
