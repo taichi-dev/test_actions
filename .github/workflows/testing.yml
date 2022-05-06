@@ -170,7 +170,7 @@ jobs:
             exit 0
           fi
           echo $CR_PAT | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker pull mcr.microsoft.com/windows/servercore:ltsc2019
+          docker pull ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1
         env:
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
 
