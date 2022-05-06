@@ -164,6 +164,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Build
+        shell: powershell
         run: |
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
