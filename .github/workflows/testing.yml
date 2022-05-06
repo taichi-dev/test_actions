@@ -169,7 +169,6 @@ jobs:
           docker info
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
-            ghcr.io/taichi-dev/taichidev-cpu-ubuntu18.04:v0.3.0 \
             registry.taichigraphics.com/taichidev-cpu-windows:v0.0.1 \
             C:/test_actions/.github/workflows/scripts/win_build_cpu.ps1
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx --owner 1000 --group 1000 | docker cp - taichi_build:C:\
