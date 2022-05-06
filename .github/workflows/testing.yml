@@ -170,6 +170,7 @@ jobs:
             exit 0
           fi
           echo $CR_PAT | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker info
           docker pull ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1
         env:
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -177,7 +178,6 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          docker info
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1 \
