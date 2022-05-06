@@ -165,9 +165,6 @@ jobs:
 
       - name: Build
         run: |
-          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
-            exit 0
-          fi
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-ubuntu18.04:v0.3.0 \
