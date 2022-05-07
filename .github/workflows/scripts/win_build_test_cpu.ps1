@@ -5,7 +5,7 @@ param (
     [switch]$installVulkan = $false,
     [switch]$develop = $false,
     [switch]$install = $false,
-    [string]$libsDir = "."
+    [string]$libsDir = "C:\"
 )
 
 $ErrorActionPreference = "Stop"
@@ -33,6 +33,7 @@ if (-not (Test-Path "taichi_clang")) {
     7z x clang-10.0.0-win.zip -otaichi_clang
 }
 
+WriteInfo("Setting the env vars")
 $env:LLVM_DIR = "C://taichi_llvm"
 $env:TAICHI_CMAKE_ARGS =' -DCMAKE_CXX_COMPILER=C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/BuildTools/vc/Tools/Llvm/x64/bin/clang++.exe -DCMAKE_C_COMPILER=C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/BuildTools/vc/Tools/Llvm/x64/bin/clang.exe'
 $env:TAICHI_CMAKE_ARGS += " -DCLANG_EXECUTABLE=C:\\taichi_clang\\bin\\clang++.exe"
@@ -56,4 +57,10 @@ if (-not $?) { exit 1 }
 
 WriteInfo("Building Taichi")
 python setup.py develop
+if (-not $?) { exit 1 }
 WriteInfo("Build finished")
+
+
+WriteInfo("Testing Taichi")
+python tests/run_tests.py -vr2 -t2 -k "not torch and not paddle" -a cpu
+WriteInfo("Test finished")

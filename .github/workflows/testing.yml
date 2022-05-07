@@ -182,27 +182,21 @@ jobs:
         env:
           CR_PAT: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build and Test
         shell: bash
         run: |
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
-          mkdir shared
-          
-          docker create --name taichi_build \
+          docker create --name taichi_build_test \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1 \
-            C:/test_actions/.github/workflows/scripts/win_build_cpu.ps1
-         
-          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx | docker cp - taichi_build:C:/
-
-          docker start -a taichi_build 
+            C:/test_actions/.github/workflows/scripts/win_build_test_cpu.ps1
+          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx | docker cp - taichi_build_test:C:/
+          docker start -a taichi_build_test
 
           rm -rf sccache_cache
-          docker cp taichi_build:C:/taichi/sccache_cache sccache_cache
-          docker cp taichi_build:C:/taichi/dist shared/dist
-          docker cp taichi_build:C:/taichi/build shared/build
+          docker cp taichi_build_test:C:/taichi/sccache_cache sccache_cache
           
         env:
           PY: ${{ matrix.python }}
@@ -211,6 +205,7 @@ jobs:
 
 
       - name: clean docker container
+        shell: bash
         if: always()
         run: |
-          docker rm taichi_build -f
+          docker rm taichi_build_test -f
