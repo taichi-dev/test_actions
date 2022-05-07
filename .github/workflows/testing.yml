@@ -163,6 +163,14 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: Get sccache cache
+        uses: actions/cache@v2
+        with:
+          path: sccache_cache
+          key: sccache-win64-${{matrix.with_cc}}-${{ github.sha }}
+          restore-keys: |
+            sccache-win64-${{matrix.with_cc}}-
+
       - name: Get docker images
         shell: bash
         run: |
@@ -177,11 +185,25 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
+            exit 0
+          fi
+          mkdir -m777 shared
+          
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
             ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1 \
             C:/test_actions/.github/workflows/scripts/win_build_cpu.ps1
-          docker start -a taichi_build
+         
+          tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx | docker cp - taichi_build:C:/
+
+          docker start -a taichi_build 
+
+          rm -rf sccache_cache
+          docker cp taichi_build:C:/taichi/sccache_cache sccache_cache
+          docker cp taichi_build:C:/taichi/dist shared/dist
+          docker cp taichi_build:C:/taichi/build shared/build
+          
         env:
           PY: ${{ matrix.python }}
           PROJECT_NAME: taichi
