@@ -2,7 +2,7 @@ cmake
 colorama
 coverage
 Pillow
-pybind11
+pybind11==2.9.1
 GitPython
 yapf
 distro
