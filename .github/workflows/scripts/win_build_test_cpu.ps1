@@ -48,9 +48,9 @@ git clone --recurse-submodules $RepoURL
 Set-Location .\taichi
 
 WriteInfo("Setting up Python environment")
-#conda activate py37
-conda create -n py39 python=3.9
-conda activate py39
+conda activate py37
+#conda create -n py39 python=3.9
+#conda activate py39
 
 python -m pip install numpy
 python -m pip install wheel
