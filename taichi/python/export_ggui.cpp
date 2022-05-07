@@ -272,8 +272,7 @@ struct PyWindow {
   }
 
   py::list get_events(EventType tag) {
-    //return py::cast(window->get_events(tag));
-    TI_NOT_IMPLEMENTED;
+    return py::cast(window->get_events(tag));
   }
 
   bool get_event(EventType e) {

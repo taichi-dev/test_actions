@@ -319,7 +319,7 @@ if(TI_WITH_LLVM)
             ipo
             Analysis
             )
-    target_link_libraries(${LIBRARY_NAME} PRIVATE ${llvm_libs})
+    target_link_libraries(${LIBRARY_NAME} PUBLIC ${llvm_libs})
 
     if (APPLE AND "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "arm64")
         llvm_map_components_to_libnames(llvm_aarch64_libs AArch64)
@@ -479,7 +479,10 @@ if(NOT TI_EMSCRIPTENED)
     target_link_libraries(${CORE_WITH_PYBIND_LIBRARY_NAME} PRIVATE ${CORE_LIBRARY_NAME})
 
     # These commands should apply to the DLL that is loaded from python, not the OBJECT library.
-    #set_property(TARGET ${CORE_WITH_PYBIND_LIBRARY_NAME} APPEND PROPERTY LINK_FLAGS /DEBUG)
+    if (MSVC)
+      message("MSVC is used: [DEBUG TI]")
+        set_property(TARGET ${CORE_WITH_PYBIND_LIBRARY_NAME} APPEND PROPERTY LINK_FLAGS /DEBUG)
+    endif ()
 
     if (WIN32)
         set_target_properties(${CORE_WITH_PYBIND_LIBRARY_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
