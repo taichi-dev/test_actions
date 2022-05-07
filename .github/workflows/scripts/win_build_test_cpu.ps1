@@ -8,8 +8,6 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-$RepoURL = 'https://github.com/taichi-dev/taichi'
-
 function WriteInfo($text) {
     Write-Host -ForegroundColor Green "[BUILD] $text"
 }
@@ -34,7 +32,8 @@ if (-not (Test-Path "taichi_clang")) {
 WriteInfo("Setting the env vars")
 
 $env:LLVM_DIR = "C://taichi_llvm"
-$env:TAICHI_CMAKE_ARGS = "$TAICHI_CMAKE_ARGS_CPU"
+$env:TAICHI_CMAKE_ARGS = "-DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=OFF -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON"
+
 #TODO: For now we have to hard code the compiler path from build tools 2019 
 $env:TAICHI_CMAKE_ARGS +=' -DCMAKE_CXX_COMPILER=C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/BuildTools/vc/Tools/Llvm/x64/bin/clang++.exe -DCMAKE_C_COMPILER=C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2019/BuildTools/vc/Tools/Llvm/x64/bin/clang.exe'
 $env:TAICHI_CMAKE_ARGS += " -DCLANG_EXECUTABLE=C:\\taichi_clang\\bin\\clang++.exe"
@@ -43,14 +42,11 @@ $env:TAICHI_CMAKE_ARGS += " -DLLVM_AS_EXECUTABLE=C:\\taichi_llvm\\bin\\llvm-as.e
 Pop-Location
 clang --version
 
-WriteInfo("Clone the repository")
-git clone --recurse-submodules $RepoURL
-Set-Location .\taichi
+WriteInfo("Enter the repository")
+Set-Location .\test_actions
 
 WriteInfo("Setting up Python environment")
 conda activate py37
-#conda create -n py39 python=3.9
-#conda activate py39
 
 python -m pip install numpy
 python -m pip install wheel
