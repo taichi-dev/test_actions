@@ -151,7 +151,7 @@ jobs:
       matrix:
         include:
           - os: windows-2019
-            python: py37
+            python: py39
             with_cc: OFF
             wanted_archs: 'cpu'
     runs-on: ${{ matrix.os }}
@@ -189,7 +189,7 @@ jobs:
             exit 0
           fi
           docker create --name taichi_build_test \
-            -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
+            -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS_CPU \
             ghcr.io/taichi-dev/taichidev-cpu-windows:v0.0.1 \
             C:/test_actions/.github/workflows/scripts/win_build_test_cpu.ps1
           tar -cf - ../${{ github.event.repository.name }} --mode u=+rwx,g=+rwx,o=+rwx | docker cp - taichi_build_test:C:/
@@ -201,7 +201,7 @@ jobs:
         env:
           PY: ${{ matrix.python }}
           PROJECT_NAME: taichi
-          TAICHI_CMAKE_ARGS: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          TAICHI_CMAKE_ARGS_CPU: -DTI_WITH_OPENGL:BOOL=OFF -DTI_WITH_CC:BOOL=${{ matrix.with_cc }} -DTI_WITH_VULKAN:BOOL=OFF -DTI_WITH_CUDA:BOOL=OFF -DTI_BUILD_TESTS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
 
       - name: clean docker container
