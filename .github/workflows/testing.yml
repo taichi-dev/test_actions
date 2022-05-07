@@ -151,7 +151,7 @@ jobs:
       matrix:
         include:
           - os: windows-2019
-            python: py39
+            python: py37
             with_cc: OFF
             wanted_archs: 'cpu'
     runs-on: ${{ matrix.os }}
@@ -188,7 +188,7 @@ jobs:
           if [[ ${{needs.check_files.outputs.run_job}} == false ]]; then
             exit 0
           fi
-          mkdir -m777 shared
+          mkdir shared
           
           docker create --name taichi_build \
             -e PY -e PROJECT_NAME -e TAICHI_CMAKE_ARGS \
