@@ -41,7 +41,7 @@ $env:TAICHI_CMAKE_ARGS += " -DCLANG_EXECUTABLE=C:\\taichi_clang\\bin\\clang++.ex
 $env:TAICHI_CMAKE_ARGS += " -DLLVM_AS_EXECUTABLE=C:\\taichi_llvm\\bin\\llvm-as.exe -DTI_WITH_VULKAN:BOOL=OFF"
 
 # Disable all verification for python
-$env:PYTHONHTTPSVERIFY=0 
+$env:PYTHONHTTPSVERIFY = "0"
 
 Pop-Location
 clang --version
