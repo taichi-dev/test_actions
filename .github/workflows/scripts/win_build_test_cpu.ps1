@@ -40,9 +40,6 @@ $env:TAICHI_CMAKE_ARGS +=' -DCMAKE_CXX_COMPILER=C:/Program\ Files\ (x86)/Microso
 $env:TAICHI_CMAKE_ARGS += " -DCLANG_EXECUTABLE=C:\\taichi_clang\\bin\\clang++.exe"
 $env:TAICHI_CMAKE_ARGS += " -DLLVM_AS_EXECUTABLE=C:\\taichi_llvm\\bin\\llvm-as.exe -DTI_WITH_VULKAN:BOOL=OFF"
 
-# Disable all verification for python
-$env:PYTHONHTTPSVERIFY = "0"
-
 Pop-Location
 clang --version
 
@@ -54,13 +51,16 @@ conda activate py37
 
 python -m pip install --upgrade setuptools
 python -m pip install numpy
+
+python -m pip uninstall wheel
 python -m pip install wheel
+
 python -m pip install -r requirements_dev.txt
 python -m pip install -r requirements_test.txt
 if (-not $?) { exit 1 }
 
 WriteInfo("Building Taichi")
-python setup.py develop
+python setup.py install
 if (-not $?) { exit 1 }
 WriteInfo("Build finished")
 
