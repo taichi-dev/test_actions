@@ -49,6 +49,8 @@ Set-Location .\test_actions
 WriteInfo("Setting up Python environment")
 conda activate py37
 
+python -m pip install --upgrade
+python -m pip install certifi
 python -m pip install numpy
 python -m pip install wheel
 python -m pip install -r requirements_dev.txt
