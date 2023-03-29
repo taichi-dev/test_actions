@@ -48,7 +48,6 @@ jobs:
             -DTI_BUILD_TESTS:BOOL=OFF
             -DTI_WITH_C_API=OFF
 
-      # --------------
       - name: Run taichi-benchmark
         id: run-benchmark
         run: |
