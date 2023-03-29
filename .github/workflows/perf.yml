@@ -2,8 +2,10 @@ name: Performance Monitoring
 on:
   push:
     branches:
-      - master
-  workflow_dispatch:
+    - master
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [benchmark-command]
 
 env:
   CI_IMAGE_VERSION: '202303241150'
@@ -69,10 +71,15 @@ jobs:
           sleep 0.5
 
           ci-docker-run-gpu --name taichi-benchmark-run \
+            -e GITHUB_TOKEN \
+            -e GITHUB_EVENT_ACTION \
             -e BENCHMARK_UPLOAD_TOKEN \
+            -v $GITHUB_EVENT_PATH:/github-event.json \
             registry.botmaster.tgr/taichi-test-android:${{ env.CI_IMAGE_VERSION }} \
             /home/dev/taichi/.github/workflows/scripts/unix-perf-mon.sh
 
         env:
           PY: '3.8'
           BENCHMARK_UPLOAD_TOKEN: ${{ secrets.BENCHMARK_UPLOAD_TOKEN }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_TOKEN: ${{ secrets.GARDENER_PAT }}
