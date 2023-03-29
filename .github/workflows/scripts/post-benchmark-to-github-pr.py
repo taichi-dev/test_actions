@@ -47,6 +47,13 @@ def flatten_metric(m):
     return (f'{m["name"]}@{tags}', m['value'])
 
 
+def fmt(v):
+    if 0 < abs(v) < 1:
+        return f'{v:.3g}'
+    else:
+        return f'{v:.3f}'
+
+
 def render_result(baseline, sha, rs):
     texts = []
     _ = texts.append
@@ -66,7 +73,7 @@ def render_result(baseline, sha, rs):
 
         rate = f'{" +"[rate > 0]}{rate:.2f}'
 
-        _(fr'| {name} | {rv:.2f} | {cv:.2f} | $\textcolor{{{color}}}{{\textsf{{{rate}\\%}}}}$ |'
+        _(fr'| {name} | {fmt(rv)} | {fmt(cv)} | $\textcolor{{{color}}}{{\textsf{{{rate}\\%}}}}$ |'
           )
 
     return '\n'.join(texts)
