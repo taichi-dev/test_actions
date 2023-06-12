@@ -94,10 +94,8 @@ def main():
             name = cr["name"]
             if name == 'Copilot for PRs':
                 continue
-            if status == 'success':
-                continue
             must(
-                status == "failure",
+                status == "neutral",
                 f"PR #{n} check-run `{name}`'s status `{status}` is not failure!",
             )
         print("SUCCESS!")
